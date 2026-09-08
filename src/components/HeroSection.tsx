@@ -178,17 +178,33 @@ export default function HeroSection() {
 
         {/* ── STEEZAVERSE TEXT ── */}
         {isMobile ? (
-          <motion.div
-            className="absolute left-0 w-full flex justify-center z-10 select-none pointer-events-none"
-            style={{ bottom: "20vh" }}
-            initial={{ opacity: 0, y: 15 }}
-            animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-            transition={{ duration: 1.0, delay: 0.7, ease }}
-          >
-            <span ref={centerRef} style={{ ...wordStyle, fontSize: "clamp(24px, 11vw, 45px)", letterSpacing: "0.02em" }}>
-              STEEZAVERSE
-            </span>
-          </motion.div>
+          <>
+            {/* ── STEEZA ── */}
+            <motion.div
+              className="absolute left-0 z-10 select-none pointer-events-none"
+              style={{ bottom: "20vh" }}
+              initial={{ opacity: 0, x: -40 }}
+              animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
+              transition={{ duration: 1.0, delay: 0.7, ease }}
+            >
+              <span ref={leftRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)" }}>
+                STEEZA
+              </span>
+            </motion.div>
+
+            {/* ── VERSE ── */}
+            <motion.div
+              className="absolute right-0 z-10 select-none pointer-events-none"
+              style={{ bottom: "20vh" }}
+              initial={{ opacity: 0, x: 40 }}
+              animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+              transition={{ duration: 1.0, delay: 0.7, ease }}
+            >
+              <span ref={rightRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)" }}>
+                VERSE
+              </span>
+            </motion.div>
+          </>
         ) : (
           <>
             {/* ── STEEZA ── */}
