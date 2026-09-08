@@ -41,6 +41,7 @@ export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const leftRef    = useRef<HTMLSpanElement>(null);
   const rightRef   = useRef<HTMLSpanElement>(null);
+  const centerRef  = useRef<HTMLSpanElement>(null);
   const modelRef   = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -67,11 +68,13 @@ export default function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const section = sectionRef.current!;
-      const left    = leftRef.current!;
-      const right   = rightRef.current!;
-      const model   = modelRef.current!;
-      const overlay = overlayRef.current!;
+      const section = sectionRef.current;
+      const left    = leftRef.current;
+      const right   = rightRef.current;
+      const center  = centerRef.current;
+      const model   = modelRef.current;
+
+      if (!section || !model) return;
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -84,9 +87,10 @@ export default function HeroSection() {
         },
       });
 
-      tl.to(model,   { y: "-18vh", duration: 1, ease: "none" }, 0)
-        .to(left,    { x: "-20vw", opacity: 0, duration: 1, ease: "power2.inOut" }, 0)
-        .to(right,   { x: "20vw",  opacity: 0, duration: 1, ease: "power2.inOut" }, 0);
+      tl.to(model, { y: "-18vh", duration: 1, ease: "none" }, 0);
+      if (left) tl.to(left, { x: "-20vw", opacity: 0, duration: 1, ease: "power2.inOut" }, 0);
+      if (right) tl.to(right, { x: "20vw", opacity: 0, duration: 1, ease: "power2.inOut" }, 0);
+      if (center) tl.to(center, { opacity: 0, duration: 1, ease: "power2.inOut" }, 0);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -172,31 +176,48 @@ export default function HeroSection() {
           </motion.div>
         )}
 
-        {/* ── STEEZA ── */}
-        <motion.div
-          className="absolute left-0 z-10 select-none pointer-events-none"
-          style={{ bottom: isMobile ? "16vh" : "12vh" }}
-          initial={{ opacity: 0, x: -40 }}
-          animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
-          transition={{ duration: 1.0, delay: 0.7, ease }}
-        >
-          <span ref={leftRef} style={wordStyle}>
-            STEEZA
-          </span>
-        </motion.div>
+        {/* ── STEEZAVERSE TEXT ── */}
+        {isMobile ? (
+          <motion.div
+            className="absolute left-1/2 -translate-x-1/2 z-10 select-none pointer-events-none"
+            style={{ bottom: "20vh" }}
+            initial={{ opacity: 0, y: 15 }}
+            animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+            transition={{ duration: 1.0, delay: 0.7, ease }}
+          >
+            <span ref={centerRef} style={{ ...wordStyle, fontSize: "clamp(32px, 14vw, 65px)", letterSpacing: "0.02em" }}>
+              STEEZAVERSE
+            </span>
+          </motion.div>
+        ) : (
+          <>
+            {/* ── STEEZA ── */}
+            <motion.div
+              className="absolute left-0 z-10 select-none pointer-events-none"
+              style={{ bottom: "12vh" }}
+              initial={{ opacity: 0, x: -40 }}
+              animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
+              transition={{ duration: 1.0, delay: 0.7, ease }}
+            >
+              <span ref={leftRef} style={wordStyle}>
+                STEEZA
+              </span>
+            </motion.div>
 
-        {/* ── VERSE ── */}
-        <motion.div
-          className="absolute right-0 z-10 select-none pointer-events-none"
-          style={{ bottom: isMobile ? "16vh" : "12vh" }}
-          initial={{ opacity: 0, x: 40 }}
-          animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-          transition={{ duration: 1.0, delay: 0.7, ease }}
-        >
-          <span ref={rightRef} style={wordStyle}>
-            VERSE
-          </span>
-        </motion.div>
+            {/* ── VERSE ── */}
+            <motion.div
+              className="absolute right-0 z-10 select-none pointer-events-none"
+              style={{ bottom: "12vh" }}
+              initial={{ opacity: 0, x: 40 }}
+              animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+              transition={{ duration: 1.0, delay: 0.7, ease }}
+            >
+              <span ref={rightRef} style={wordStyle}>
+                VERSE
+              </span>
+            </motion.div>
+          </>
+        )}
 
         {/* ── EDITORIAL META — desktop only ── */}
         {!isMobile && (
@@ -254,21 +275,20 @@ export default function HeroSection() {
         {/* ── MAIN CTA BUTTON ── */}
         <motion.div
           className="absolute z-40 left-1/2 -translate-x-1/2"
-          style={{ bottom: isMobile ? "5vh" : "8vh" }}
+          style={{ bottom: isMobile ? "6vh" : "8vh" }}
           initial={fadeUpObj(1.1).initial}
           animate={playAnimations ? fadeUpObj(1.1).animate : fadeUpObj(1.1).initial}
           transition={fadeUpObj(1.1).transition}
         >
           <motion.button
-            className="group flex items-center gap-3 overflow-hidden rounded-full px-8 py-3 border border-white/20 hover:border-white/40 transition-colors duration-500"
-            style={{ backdropFilter: "blur(12px)", backgroundColor: "rgba(20, 8, 8, 0.35)", boxShadow: "0 8px 32px rgba(0, 0, 0, 0.35)" }}
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
+            className="group relative overflow-hidden rounded-full border border-white/30 px-10 py-3.5 transition-colors duration-500 hover:bg-white"
+            style={{ backdropFilter: "blur(8px)", backgroundColor: "rgba(0,0,0,0.15)" }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: "smooth" })}
             data-cursor="pointer"
           >
-            <div className="w-1.5 h-1.5 rounded-full bg-[#ff2a2a] group-hover:scale-[2] transition-transform duration-500 ease-out" />
-            <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 600, fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>
+            <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 500, fontSize: "10px", letterSpacing: "0.25em", textTransform: "uppercase" }} className="text-white group-hover:text-black transition-colors duration-500 relative z-10">
               Shop Drop 001
             </span>
           </motion.button>
