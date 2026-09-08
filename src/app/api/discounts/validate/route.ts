@@ -5,12 +5,14 @@ export async function POST(request: Request) {
   try {
     const { code, cartTotal } = await request.json();
 
-    const { data: discount, error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('discounts')
       .select('*')
       .eq('code', code)
       .eq('active', true)
       .single();
+
+    const discount = data as any;
 
     if (error || !discount) {
       return NextResponse.json({ success: false, error: 'Invalid discount code' }, { status: 400 });

@@ -20,11 +20,13 @@ export async function POST(request: Request) {
       const reference = event.data.reference;
       
       // Idempotency check: Ensure order isn't already paid
-      const { data: existingOrder } = await supabaseAdmin
+      const { data, error } = await supabaseAdmin
         .from('orders')
         .select('payment_status')
         .eq('payment_reference', reference)
         .single();
+        
+      const existingOrder = data as any;
 
       if (existingOrder && existingOrder.payment_status === 'paid') {
         return NextResponse.json({ success: true, message: 'Already processed' });
