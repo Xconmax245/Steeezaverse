@@ -141,7 +141,7 @@ export default function HeroSection() {
         {isMobile ? (
           <motion.div
             className="absolute left-1/2 z-20 pointer-events-none"
-            style={{ top: "50%", width: "160vw", height: "115vh" }}
+            style={{ top: "48%", width: "130vw", height: "75vh" }}
             initial={{ opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             transition={{ duration: 1.1, delay: 0.5, ease }}
@@ -304,7 +304,7 @@ export default function HeroSection() {
             onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: "smooth" })}
             data-cursor="pointer"
           >
-            <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "11px", letterSpacing: "0.25em", textTransform: "uppercase", marginRight: "-0.25em" }} className="text-black group-hover:text-white transition-colors duration-500 relative z-10">
+            <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "11px", letterSpacing: "0.25em", textTransform: "uppercase", paddingLeft: "0.25em" }} className="text-black group-hover:text-white transition-colors duration-500 relative z-10">
               Shop Drop 001
             </span>
           </motion.button>
