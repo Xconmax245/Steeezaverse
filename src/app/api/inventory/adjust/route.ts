@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     // Also log to inventory_log
     const { error: logError } = await supabaseAdmin
       .from('inventory_log')
-      .insert([{ variant_id: variantId, change_qty: changeQty, reason, admin_id: adminId }] as any);
+      .insert([{ variant_id: variantId, change_qty: changeQty, reason, admin_id: adminId }]);
 
     if (logError) throw logError;
 
