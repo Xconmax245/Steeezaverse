@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     // Log the notification
     const { error: logError } = await supabaseAdmin
       .from('notification_log')
-      .insert([{ type, recipient, status: 'sent' }]);
+      .insert([{ type, recipient, status: 'sent' }] as any);
 
     if (logError) throw logError;
 

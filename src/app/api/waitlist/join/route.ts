@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
     const { error } = await supabaseAdmin
       .from('waitlist_signups')
-      .insert([{ product_id: productId, variant_id: variantId || null, email }]);
+      .insert([{ product_id: productId, variant_id: variantId || null, email }] as any);
 
     if (error) throw error;
 

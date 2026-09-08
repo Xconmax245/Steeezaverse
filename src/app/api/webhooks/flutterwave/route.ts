@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       // Update order status
       await supabaseAdmin
         .from('orders')
-        .update({ payment_status: 'paid', status: 'processing', updated_at: new Date().toISOString() })
+        .update({ payment_status: 'paid', status: 'processing', updated_at: new Date().toISOString() } as any)
         .eq('payment_reference', reference);
         
       // Trigger notification
