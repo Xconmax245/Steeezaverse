@@ -291,7 +291,7 @@ export default function HeroSection() {
         {/* ── MAIN CTA BUTTON ── */}
         <motion.div
           className="absolute z-40 left-0 w-full flex justify-center"
-          style={{ bottom: "4vh" }}
+          style={{ bottom: "12vh" }}
           initial={fadeUpObj(1.1).initial}
           animate={playAnimations ? fadeUpObj(1.1).animate : fadeUpObj(1.1).initial}
           transition={fadeUpObj(1.1).transition}
@@ -305,7 +305,7 @@ export default function HeroSection() {
             data-cursor="pointer"
           >
             <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "11px", letterSpacing: "0.25em", textTransform: "uppercase", paddingLeft: "0.25em" }} className="text-black group-hover:text-white transition-colors duration-500 relative z-10">
-              Shop Drop 001
+              Shop Now
             </span>
           </motion.button>
         </motion.div>
