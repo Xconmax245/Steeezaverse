@@ -9,8 +9,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
     }
 
-    const { error } = await supabaseAdmin
-      .from('waitlist_signups')
+    const { error } = await (supabaseAdmin.from('waitlist_signups') as any)
       .insert([{ product_id: productId, variant_id: variantId || null, email }]);
 
     if (error) throw error;

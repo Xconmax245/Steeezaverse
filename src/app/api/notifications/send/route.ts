@@ -8,8 +8,7 @@ export async function POST(request: Request) {
     // Send email logic goes here using an email provider (Resend, SendGrid, etc.)
 
     // Log the notification
-    const { error: logError } = await supabaseAdmin
-      .from('notification_log')
+    const { error: logError } = await (supabaseAdmin.from('notification_log') as any)
       .insert([{ type, recipient, status: 'sent' }]);
 
     if (logError) throw logError;
