@@ -251,7 +251,28 @@ export default function HeroSection() {
           </motion.div>
         )}
 
-
+        {/* ── MAIN CTA BUTTON ── */}
+        <motion.div
+          className="absolute z-40 left-1/2 -translate-x-1/2"
+          style={{ bottom: isMobile ? "5vh" : "8vh" }}
+          initial={fadeUpObj(1.1).initial}
+          animate={playAnimations ? fadeUpObj(1.1).animate : fadeUpObj(1.1).initial}
+          transition={fadeUpObj(1.1).transition}
+        >
+          <motion.button
+            className="group flex items-center gap-3 overflow-hidden rounded-full px-8 py-3 border border-white/20 hover:border-white/40 transition-colors duration-500"
+            style={{ backdropFilter: "blur(12px)", backgroundColor: "rgba(20, 8, 8, 0.35)", boxShadow: "0 8px 32px rgba(0, 0, 0, 0.35)" }}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: "smooth" })}
+            data-cursor="pointer"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-[#ff2a2a] group-hover:scale-[2] transition-transform duration-500 ease-out" />
+            <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 600, fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(255,255,255,0.9)" }}>
+              Shop Drop 001
+            </span>
+          </motion.button>
+        </motion.div>
 
       </motion.section>
     </ClickBlackHole>
