@@ -297,14 +297,14 @@ export default function HeroSection() {
           transition={fadeUpObj(1.1).transition}
         >
           <motion.button
-            className="group relative overflow-hidden rounded-full border border-white/30 px-10 py-3.5 transition-colors duration-500 hover:bg-white"
-            style={{ backdropFilter: "blur(8px)", backgroundColor: "rgba(0,0,0,0.15)" }}
+            className="group relative flex items-center justify-center overflow-hidden rounded-full border border-white px-10 py-3.5 transition-colors duration-500 hover:bg-black"
+            style={{ backdropFilter: "blur(8px)", backgroundColor: "#ffffff" }}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: "smooth" })}
             data-cursor="pointer"
           >
-            <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 500, fontSize: "10px", letterSpacing: "0.25em", textTransform: "uppercase" }} className="text-white group-hover:text-black transition-colors duration-500 relative z-10">
+            <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "11px", letterSpacing: "0.25em", textTransform: "uppercase", marginRight: "-0.25em" }} className="text-black group-hover:text-white transition-colors duration-500 relative z-10">
               Shop Drop 001
             </span>
           </motion.button>
