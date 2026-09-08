@@ -141,7 +141,7 @@ export default function HeroSection() {
         {isMobile ? (
           <motion.div
             className="absolute left-1/2 z-20 pointer-events-none"
-            style={{ top: "52%", width: "100vw", height: "75vh" }}
+            style={{ top: "50%", width: "100vw", height: "90vh" }}
             initial={{ opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             transition={{ duration: 1.1, delay: 0.5, ease }}
@@ -151,7 +151,7 @@ export default function HeroSection() {
                 src="/IMG_3889-removebg-preview.png"
                 alt="Steezaverse model"
                 fill priority
-                className="object-contain object-bottom select-none"
+                className="object-contain object-center select-none"
                 draggable={false}
               />
             </div>
@@ -182,7 +182,7 @@ export default function HeroSection() {
             {/* ── STEEZA ── */}
             <motion.div
               className="absolute left-0 z-10 select-none pointer-events-none"
-              style={{ bottom: "20vh" }}
+              style={{ top: "45%" }}
               initial={{ opacity: 0, x: -40 }}
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
@@ -195,7 +195,7 @@ export default function HeroSection() {
             {/* ── VERSE ── */}
             <motion.div
               className="absolute right-0 z-10 select-none pointer-events-none"
-              style={{ bottom: "20vh" }}
+              style={{ top: "45%" }}
               initial={{ opacity: 0, x: 40 }}
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
