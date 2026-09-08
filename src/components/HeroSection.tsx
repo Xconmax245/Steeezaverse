@@ -137,9 +137,9 @@ export default function HeroSection() {
         {isMobile ? (
           <motion.div
             className="absolute left-1/2 z-20 pointer-events-none"
-            style={{ top: "4vh", width: "82vw", height: "76vh" }}
-            initial={{ opacity: 0, x: "-50%", scale: 0.96 }}
-            animate={playAnimations ? { opacity: 1, x: "-50%", scale: 1 } : { opacity: 0, x: "-50%", scale: 0.96 }}
+            style={{ top: "46%", width: "95vw", height: "75vh" }}
+            initial={{ opacity: 0, x: "-50%", y: "-50%", scale: 0.96 }}
+            animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%", scale: 1 } : { opacity: 0, x: "-50%", y: "-50%", scale: 0.96 }}
             transition={{ duration: 1.1, delay: 0.5, ease }}
           >
             <div ref={modelRef} className="w-full h-full relative">
@@ -175,7 +175,7 @@ export default function HeroSection() {
         {/* ── STEEZA ── */}
         <motion.div
           className="absolute left-0 z-10 select-none pointer-events-none"
-          style={{ bottom: isMobile ? "3vh" : "12vh" }}
+          style={{ bottom: isMobile ? "16vh" : "12vh" }}
           initial={{ opacity: 0, x: -40 }}
           animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
           transition={{ duration: 1.0, delay: 0.7, ease }}
@@ -188,7 +188,7 @@ export default function HeroSection() {
         {/* ── VERSE ── */}
         <motion.div
           className="absolute right-0 z-10 select-none pointer-events-none"
-          style={{ bottom: isMobile ? "3vh" : "12vh" }}
+          style={{ bottom: isMobile ? "16vh" : "12vh" }}
           initial={{ opacity: 0, x: 40 }}
           animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
           transition={{ duration: 1.0, delay: 0.7, ease }}
@@ -254,7 +254,7 @@ export default function HeroSection() {
         {/* ── CYAN DOT CTA ── */}
         <motion.div
           className="absolute z-40"
-          style={isMobile ? { bottom: "3vh", right: "4vw" } : { top: "50%", transform: "translateY(-50%)", left: "3vw" }}
+          style={isMobile ? { bottom: "6vh", right: "5vw" } : { top: "50%", transform: "translateY(-50%)", left: "3vw" }}
           initial={fadeInObj(1.2, 0.6).initial}
           animate={playAnimations ? fadeInObj(1.2, 0.6).animate : fadeInObj(1.2, 0.6).initial}
           transition={fadeInObj(1.2, 0.6).transition}
