@@ -8,9 +8,8 @@
 @property --angle { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
 @property --speed { syntax: '<number>'; inherits: true; initial-value: 0; }
 
-/* ─── Fonts: Ranade + Archivo via Fontshare CDN ──────
+/* ─── Fonts: Synonym + Chillax via Fontshare CDN ─────
    (loaded in layout.tsx <head> — no local @font-face needed)
-   Brotheric gothic font removed per client direction.
 ──────────────────────────────────────────────────── */
 
 /* ─── Design Tokens ───────────────────────────────── */
@@ -35,8 +34,8 @@ html { scroll-behavior: smooth; }
 body {
   background-color: var(--black);
   color: var(--white);
-  font-family: 'Ranade', sans-serif;
-  font-weight: 300;
+  font-family: 'Synonym', sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: none;          /* custom cursor active */
@@ -57,7 +56,7 @@ body {
 
 /* ─── Utilities ───────────────────────────────────── */
 @layer utilities {
-  .font-archivo  { font-family: 'Archivo', sans-serif; font-weight: 600; }
+  .font-chillax  { font-family: 'Chillax', sans-serif; font-weight: 600; }
   .text-red      { color: var(--red); }
   .text-blue     { color: var(--blue); }
   .bg-red        { background-color: var(--red); }

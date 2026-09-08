@@ -17,8 +17,8 @@ const config: Config = {
         "sz-blue-dim":"#1250bb",
       },
       fontFamily: {
-        sans:    ["Ranade", "sans-serif"],
-        archivo: ["Archivo", "sans-serif"],
+        sans:    ["Synonym", "sans-serif"],
+        chillax: ["Chillax", "sans-serif"],
         aktura:  ["Aktura", "serif"],
       },
       letterSpacing: {

@@ -78,7 +78,7 @@ export default function ManifestoSection() {
   }, []);
 
   const textStyle = {
-    fontFamily: "'Archivo', sans-serif",
+    fontFamily: "'Chillax', sans-serif",
     fontWeight: 900,
     fontSize: "clamp(32px, 6vw, 72px)",
     letterSpacing: "0.05em",
