@@ -40,7 +40,7 @@ export default function MarqueeDivider() {
           <div className="marquee-track" aria-hidden="true">
             {/* First copy */}
             <span 
-              className="font-archivo uppercase italic" 
+              className="font-chillax uppercase italic" 
               style={{ 
                 fontWeight: 900, 
                 fontSize: "clamp(48px, 8vw, 96px)", 
@@ -52,7 +52,7 @@ export default function MarqueeDivider() {
             </span>
             {/* Second identical copy for seamless looping */}
             <span 
-              className="font-archivo uppercase italic" 
+              className="font-chillax uppercase italic" 
               style={{ 
                 fontWeight: 900, 
                 fontSize: "clamp(48px, 8vw, 96px)", 

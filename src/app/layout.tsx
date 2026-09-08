@@ -20,10 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link 
-          href="https://api.fontshare.com/v2/css?f[]=synonym@400&f[]=chillax@600&display=swap" 
-          rel="stylesheet" 
-        />
+        <link href="https://api.fontshare.com/v2/css?f[]=synonym@400&display=swap" rel="stylesheet" />
+        <link href="https://api.fontshare.com/v2/css?f[]=chillax@600&display=swap" rel="stylesheet" />
         <link href="https://api.fontshare.com/v2/css?f[]=aktura@400&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-black text-white antialiased">
