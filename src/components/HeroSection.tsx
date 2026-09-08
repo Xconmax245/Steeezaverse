@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import ClickBlackHole from "./ClickBlackHole";
 import HeroBlobs from "./HeroBlobs";
 
@@ -46,6 +46,40 @@ export default function HeroSection() {
   const overlayRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [playAnimations, setPlayAnimations] = useState(false);
+
+  // Parallax Gyroscope values
+  const gyroX = useMotionValue(0);
+  const gyroY = useMotionValue(0);
+  
+  const smoothGyroX = useSpring(gyroX, { stiffness: 100, damping: 30 });
+  const smoothGyroY = useSpring(gyroY, { stiffness: 100, damping: 30 });
+
+  const modelX = useTransform(smoothGyroX, x => x * 1.5);
+  const modelY = useTransform(smoothGyroY, y => y * 1.5);
+
+  const steezaX = useTransform(smoothGyroX, x => x * -0.6);
+  const steezaY = useTransform(smoothGyroY, y => y * -0.6);
+
+  const verseX = useTransform(smoothGyroX, x => x * -0.3);
+  const verseY = useTransform(smoothGyroY, y => y * -0.3);
+
+  useEffect(() => {
+    if (!isMobile || typeof window === "undefined" || !window.DeviceOrientationEvent) return;
+
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+      const gamma = event.gamma || 0; 
+      const beta = event.beta || 0;   
+      
+      const clampedGamma = Math.max(-45, Math.min(45, gamma));
+      const clampedBeta = Math.max(0, Math.min(90, beta)) - 45;
+
+      gyroX.set((clampedGamma / 45) * 35);
+      gyroY.set((clampedBeta / 45) * 35);
+    };
+
+    window.addEventListener("deviceorientation", handleOrientation);
+    return () => window.removeEventListener("deviceorientation", handleOrientation);
+  }, [isMobile, gyroX, gyroY]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -146,7 +180,7 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             transition={{ duration: 1.1, delay: 0.5, ease }}
           >
-            <div ref={modelRef} className="w-full h-full relative">
+            <motion.div ref={modelRef} className="w-full h-full relative" style={{ x: modelX, y: modelY }}>
               <Image
                 src="/IMG_3889-removebg-preview.png"
                 alt="Steezaverse model"
@@ -154,7 +188,7 @@ export default function HeroSection() {
                 className="object-contain object-center select-none"
                 draggable={false}
               />
-            </div>
+            </motion.div>
           </motion.div>
         ) : (
           <motion.div
@@ -187,9 +221,9 @@ export default function HeroSection() {
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
             >
-              <span ref={leftRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)" }}>
+              <motion.span ref={leftRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)", x: steezaX, y: steezaY }}>
                 STEEZA
-              </span>
+              </motion.span>
             </motion.div>
 
             {/* ── VERSE ── */}
@@ -200,9 +234,9 @@ export default function HeroSection() {
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
             >
-              <span ref={rightRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)" }}>
+              <motion.span ref={rightRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)", x: verseX, y: verseY }}>
                 VERSE
-              </span>
+              </motion.span>
             </motion.div>
           </>
         ) : (
