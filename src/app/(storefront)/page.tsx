@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import MarqueeDivider from "@/components/MarqueeDivider";
+import ManifestoSection from "@/components/ManifestoSection";
 
 export default function HomePage() {
   return (
@@ -10,6 +11,8 @@ export default function HomePage() {
       
       {/* ── Wavy Divider & Marquee ── */}
       <MarqueeDivider />
+
+      <ManifestoSection />
 
       {/* ── Placeholder for next sections (Day 4 onwards) ─────────────── */}
       <div className="min-h-screen bg-black flex items-center justify-center">
