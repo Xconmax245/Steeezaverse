@@ -141,9 +141,9 @@ export default function HeroSection() {
         {isMobile ? (
           <motion.div
             className="absolute left-1/2 z-20 pointer-events-none"
-            style={{ top: "50%", width: "135vw", height: "65vh" }}
-            initial={{ opacity: 0, x: "-50%", y: "-50%", scale: 0.96 }}
-            animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%", scale: 1 } : { opacity: 0, x: "-50%", y: "-50%", scale: 0.96 }}
+            style={{ top: "50%", width: "160vw", height: "115vh" }}
+            initial={{ opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
+            animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             transition={{ duration: 1.1, delay: 0.5, ease }}
           >
             <div ref={modelRef} className="w-full h-full relative">
@@ -179,13 +179,13 @@ export default function HeroSection() {
         {/* ── STEEZAVERSE TEXT ── */}
         {isMobile ? (
           <motion.div
-            className="absolute left-1/2 -translate-x-1/2 z-10 select-none pointer-events-none"
+            className="absolute left-0 w-full flex justify-center z-10 select-none pointer-events-none"
             style={{ bottom: "20vh" }}
             initial={{ opacity: 0, y: 15 }}
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
             transition={{ duration: 1.0, delay: 0.7, ease }}
           >
-            <span ref={centerRef} style={{ ...wordStyle, fontSize: "clamp(24px, 10vw, 45px)", letterSpacing: "0.02em" }}>
+            <span ref={centerRef} style={{ ...wordStyle, fontSize: "clamp(24px, 11vw, 45px)", letterSpacing: "0.02em" }}>
               STEEZAVERSE
             </span>
           </motion.div>
