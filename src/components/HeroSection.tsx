@@ -159,7 +159,7 @@ export default function HeroSection() {
         ) : (
           <motion.div
             className="absolute left-1/2 z-20 pointer-events-none"
-            style={{ top: "50%", width: "clamp(420px, 58vw, 980px)", height: "90vh" }}
+            style={{ top: "50%", width: "clamp(550px, 66vw, 1200px)", height: "115vh" }}
             initial={{ opacity: 0, x: "-50%", y: "calc(-50% + 30px)" }}
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 30px)" }}
             transition={{ duration: 1.2, delay: 0.55, ease }}
@@ -169,7 +169,7 @@ export default function HeroSection() {
                 src="/IMG_3889-removebg-preview.png"
                 alt="Steezaverse model"
                 fill priority
-                className="object-contain object-center select-none"
+                className="object-contain object-bottom select-none"
                 draggable={false}
               />
             </div>
@@ -278,7 +278,7 @@ export default function HeroSection() {
         {/* ── MAIN CTA BUTTON ── */}
         <motion.div
           className="absolute z-40 left-0 w-full flex justify-center"
-          style={{ bottom: isMobile ? "6vh" : "8vh" }}
+          style={{ bottom: "4vh" }}
           initial={fadeUpObj(1.1).initial}
           animate={playAnimations ? fadeUpObj(1.1).animate : fadeUpObj(1.1).initial}
           transition={fadeUpObj(1.1).transition}
