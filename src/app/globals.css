@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Custom Properties ───────────────────────────── */
+@property --x { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
+@property --y { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
+@property --angle { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+@property --speed { syntax: '<number>'; inherits: true; initial-value: 0; }
+
+/* ─── Fonts: Ranade + Archivo via Fontshare CDN ──────
+   (loaded in layout.tsx <head> — no local @font-face needed)
+   Brotheric gothic font removed per client direction.
+──────────────────────────────────────────────────── */
+
+/* ─── Design Tokens ───────────────────────────────── */
+@layer base {
+  :root {
+    --black:    #080808;
+    --white:    #f5f5f5;
+    --red:      #7c0a0a;
+    --red-dim:  #4a0606;
+    --blue:     #1a6cf5;
+    --blue-dim: #1250bb;
+    --ink-2:    var(--red);
+    --ink-3:    var(--blue);
+  }
+}
+
+/* ─── Base Reset ──────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--black);
+  color: var(--white);
+  font-family: 'Ranade', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  cursor: none;          /* custom cursor active */
+  overflow-x: hidden;
+}
+
+@media (hover: none) {
+  body { cursor: auto; } /* restore on touch */
+}
+
+/* ─── Scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+/* ─── Selection ───────────────────────────────────── */
+::selection { background: var(--red); color: var(--black); }
+
+/* ─── Utilities ───────────────────────────────────── */
+@layer utilities {
+  .font-archivo  { font-family: 'Archivo', sans-serif; font-weight: 600; }
+  .text-red      { color: var(--red); }
+  .text-blue     { color: var(--blue); }
+  .bg-red        { background-color: var(--red); }
+  .bg-blue       { background-color: var(--blue); }
+  .text-balance  { text-wrap: balance; }
+}
+
+/* ─── Scroll indicator keyframe ───────────────────── */
+@keyframes scrollLine {
+  0%   { top: -40%; opacity: 0; }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
