@@ -159,7 +159,7 @@ export default function HeroSection() {
         ) : (
           <motion.div
             className="absolute left-1/2 z-20 pointer-events-none"
-            style={{ top: "50%", width: "clamp(420px, 52vw, 980px)", height: "115vh" }}
+            style={{ top: "50%", width: "clamp(420px, 58vw, 980px)", height: "90vh" }}
             initial={{ opacity: 0, x: "-50%", y: "calc(-50% + 30px)" }}
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 30px)" }}
             transition={{ duration: 1.2, delay: 0.55, ease }}
@@ -169,7 +169,7 @@ export default function HeroSection() {
                 src="/IMG_3889-removebg-preview.png"
                 alt="Steezaverse model"
                 fill priority
-                className="object-contain object-bottom select-none"
+                className="object-contain object-center select-none"
                 draggable={false}
               />
             </div>
@@ -179,14 +179,17 @@ export default function HeroSection() {
         {/* ── STEEZAVERSE TEXT ── */}
         {isMobile ? (
           <motion.div
-            className="absolute left-1/2 -translate-x-1/2 z-10 select-none pointer-events-none"
-            style={{ bottom: "20vh" }}
+            className="absolute left-1/2 -translate-x-1/2 z-10 select-none pointer-events-none flex flex-col items-center"
+            style={{ bottom: "16vh" }}
             initial={{ opacity: 0, y: 15 }}
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
             transition={{ duration: 1.0, delay: 0.7, ease }}
           >
-            <span ref={centerRef} style={{ ...wordStyle, fontSize: "clamp(32px, 14vw, 65px)", letterSpacing: "0.02em" }}>
-              STEEZAVERSE
+            <span ref={leftRef} style={{ ...wordStyle, fontSize: "clamp(50px, 20vw, 90px)", lineHeight: 0.8 }}>
+              STEEZA
+            </span>
+            <span ref={rightRef} style={{ ...wordStyle, fontSize: "clamp(50px, 20vw, 90px)", lineHeight: 0.8 }}>
+              VERSE
             </span>
           </motion.div>
         ) : (
