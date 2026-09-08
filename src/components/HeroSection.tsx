@@ -251,37 +251,7 @@ export default function HeroSection() {
           </motion.div>
         )}
 
-        {/* ── CYAN DOT CTA ── */}
-        <motion.div
-          className="absolute z-40"
-          style={isMobile ? { bottom: "6vh", right: "5vw" } : { top: "50%", transform: "translateY(-50%)", left: "3vw" }}
-          initial={fadeInObj(1.2, 0.6).initial}
-          animate={playAnimations ? fadeInObj(1.2, 0.6).animate : fadeInObj(1.2, 0.6).initial}
-          transition={fadeInObj(1.2, 0.6).transition}
-        >
-          <motion.div
-            className="flex items-center gap-3 cursor-pointer"
-            initial="idle"
-            whileHover="hover"
-            onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: "smooth" })}
-          >
-            <motion.div
-              className="rounded-full bg-[#00ffff] shrink-0"
-              style={{ width: 8, height: 8, boxShadow: "0 0 12px rgba(0,255,255,0.5)" }}
-              variants={{ idle: { scale: 1 }, hover: { scale: 1.5 } }}
-              transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            />
-            <motion.div
-              className="overflow-hidden"
-              variants={{ idle: { width: 0, opacity: 0 }, hover: { width: "auto", opacity: 1 } }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-            >
-              <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 600, fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: "#00ffff", whiteSpace: "nowrap" }}>
-                Explore Drop
-              </span>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+
 
       </motion.section>
     </ClickBlackHole>
