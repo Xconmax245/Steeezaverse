@@ -113,7 +113,7 @@ export default function ClickBlackHole({
   }, []);
 
   return (
-    <div ref={containerRef} className={`relative ${className}`} onClick={handleClick}>
+    <div ref={containerRef} className={`relative ${className}`} onClick={handleClick} data-cuelume-press="pulse">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 pointer-events-none z-40"

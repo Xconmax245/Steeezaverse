@@ -337,6 +337,9 @@ export default function HeroSection() {
             whileTap={{ scale: 0.98 }}
             onClick={() => window.scrollBy({ top: window.innerHeight * 1.5, behavior: "smooth" })}
             data-cursor="pointer"
+            data-cuelume-press
+            data-cuelume-release
+            data-cuelume-hover="tick"
           >
             <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "11px", letterSpacing: "0.25em", textTransform: "uppercase", paddingLeft: "0.25em" }} className="text-black group-hover:text-white transition-colors duration-500 relative z-10">
               Shop Now
