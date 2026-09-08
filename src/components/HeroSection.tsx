@@ -274,7 +274,7 @@ export default function HeroSection() {
 
         {/* ── MAIN CTA BUTTON ── */}
         <motion.div
-          className="absolute z-40 left-1/2 -translate-x-1/2"
+          className="absolute z-40 left-0 w-full flex justify-center"
           style={{ bottom: isMobile ? "6vh" : "8vh" }}
           initial={fadeUpObj(1.1).initial}
           animate={playAnimations ? fadeUpObj(1.1).animate : fadeUpObj(1.1).initial}
