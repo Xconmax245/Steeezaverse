@@ -15,6 +15,7 @@ export interface LookbookItem {
     id: string;
     name: string;
     slug: string;
+    base_price: number;
     images: { id: string; url: string; sort_order: number }[];
   } | null;
 }
@@ -33,6 +34,7 @@ export const getPublishedLookbook = unstable_cache(
           id,
           name, 
           slug,
+          base_price,
           product_images(id, url, sort_order)
         )
       `)
@@ -60,6 +62,7 @@ export const getPublishedLookbook = unstable_cache(
               id: img.products.id,
               name: img.products.name,
               slug: img.products.slug,
+              base_price: Number(img.products.base_price),
               images: productImages,
             }
           : null,
