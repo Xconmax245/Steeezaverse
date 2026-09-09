@@ -220,16 +220,18 @@ export async function updateProduct(productId: string, input: ProductFormInput):
   const normalized = normalizeInput(input);
   if (!normalized.ok) return { success: false, error: normalized.error };
 
-  const { error: productError } = await (getSupabaseAdmin() as any)
+  const { data: updatedData, error: productError } = await (getSupabaseAdmin() as any)
     .from('products')
     .update({ ...normalized.product, updated_at: new Date().toISOString() })
-    .eq('id', productId);
+    .eq('id', productId)
+    .select('id')
+    .single();
 
-  if (productError) {
-    if (/duplicate key.*products_slug_key/i.test(productError.message)) {
+  if (productError || !updatedData) {
+    if (productError && /duplicate key.*products_slug_key/i.test(productError.message)) {
       return { success: false, error: `Slug "${input.slug}" is already in use — pick a different one.` };
     }
-    return { success: false, error: productError.message };
+    return { success: false, error: productError ? productError.message : 'Product not found. It may have been deleted.' };
   }
 
   // ── Variant sync (diff by id: update kept, insert new, delete removed) ──
