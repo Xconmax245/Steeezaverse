@@ -350,3 +350,20 @@ export async function toggleProductFeatured(productId: string, isFeatured: boole
   revalidatePath('/');
   return { success: true };
 }
+
+export async function deleteProduct(productId: string): Promise<ActionResult> {
+  const admin = await getAdminUser();
+  if (!admin) return { success: false, error: 'Unauthorized' };
+
+  const { error } = await (getSupabaseAdmin() as any)
+    .from('products')
+    .delete()
+    .eq('id', productId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidateTag(MINI_SHOP_TAG);
+  revalidateTag(PRODUCTS_TAG);
+  revalidatePath('/');
+  return { success: true };
+}

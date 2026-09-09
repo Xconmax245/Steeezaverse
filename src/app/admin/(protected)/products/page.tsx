@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import FeaturedToggle from '@/components/admin/FeaturedToggle';
+import DeleteProductButton from '@/components/admin/DeleteProductButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -134,6 +135,7 @@ export default async function AdminProductsPage() {
                       >
                         Customize
                       </Link>
+                      <DeleteProductButton productId={product.id} />
                     </td>
                   </tr>
                 );
