@@ -113,6 +113,7 @@ export default function Navbar() {
             
             <MuteToggle />
             <button
+              id="navbar-cart-btn"
               className="relative text-white/70 hover:text-white transition-colors duration-200"
               aria-label="Cart"
               data-cursor="navbar"
@@ -168,6 +169,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <MuteToggle />
             <button
+              id="navbar-cart-btn-mobile"
               className="relative text-white/70 hover:text-white transition-colors duration-200"
               aria-label="Cart"
               data-cuelume-press
