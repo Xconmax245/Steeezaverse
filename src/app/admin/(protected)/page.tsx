@@ -185,50 +185,62 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* ── Recent orders + low stock ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-chillax text-lg font-bold uppercase tracking-widest text-white">
-              Recent <span className="text-sz-red">Orders</span>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-chillax text-lg font-bold uppercase tracking-widest text-white flex items-center gap-3">
+              <span className="w-2 h-2 bg-sz-red rounded-full block" />
+              Recent Orders
             </h3>
-            <Link href="/admin/orders" className="text-sz-red hover:underline text-sm">
-              View all
+            <Link 
+              href="/admin/orders" 
+              className="text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors border border-white/5 px-3 py-1.5 rounded bg-white/[0.02] hover:bg-white/5 hover:border-white/20"
+              data-cuelume-hover="tick"
+            >
+              View all →
             </Link>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-x-auto relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[100px] pointer-events-none" />
+            <table className="w-full text-sm relative z-10">
               <thead>
-                <tr className="text-left text-gray-400 border-b border-gray-800">
-                  <th className="px-4 py-3 font-medium">Order</th>
-                  <th className="px-4 py-3 font-medium">Customer</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 font-medium text-right">Total</th>
+                <tr className="text-left text-[10px] uppercase tracking-widest text-white/40 border-b border-white/10">
+                  <th className="px-5 py-4 font-semibold">Order</th>
+                  <th className="px-5 py-4 font-semibold">Customer</th>
+                  <th className="px-5 py-4 font-semibold">Status</th>
+                  <th className="px-5 py-4 font-semibold text-right">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {recentOrders.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-4 py-8 text-center text-gray-500">
-                      No orders yet
+                    <td colSpan={4} className="px-5 py-12 text-center">
+                      <p className="text-[10px] uppercase tracking-widest text-white/30">No orders yet</p>
                     </td>
                   </tr>
                 ) : (
                   recentOrders.map((order) => {
                     const style = ORDER_STATUS_STYLES[order.status] ?? ORDER_STATUS_STYLES.pending;
                     return (
-                      <tr key={order.id} className="border-b border-gray-800 last:border-b-0 hover:bg-gray-800/40">
-                        <td className="px-4 py-3">
-                          <Link href={`/admin/orders/${order.id}`} className="font-medium text-white hover:text-sz-red">
+                      <tr key={order.id} className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors group">
+                        <td className="px-5 py-4">
+                          <Link 
+                            href={`/admin/orders/${order.id}`} 
+                            className="font-medium text-white group-hover:text-sz-red transition-colors"
+                            data-cuelume-hover="tick"
+                          >
                             {order.order_number}
                           </Link>
                         </td>
-                        <td className="px-4 py-3 text-gray-400">{order.customers?.email ?? 'Guest'}</td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium border ${style.className}`}>
+                        <td className="px-5 py-4 text-white/60">{order.customers?.email ?? 'Guest'}</td>
+                        <td className="px-5 py-4">
+                          <span className={`inline-block rounded-md px-3 py-1 text-[10px] uppercase tracking-widest font-bold border ${style.className}`}>
                             {style.label}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-right text-gray-300">{formatNGN(Number(order.total))}</td>
+                        <td className="px-5 py-4 text-right text-white/80 font-chillax tracking-wide">
+                          {formatNGN(Number(order.total))}
+                        </td>
                       </tr>
                     );
                   })
@@ -239,38 +251,44 @@ export default async function AdminDashboardPage() {
         </section>
 
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-chillax text-lg font-bold uppercase tracking-widest text-white">
-              Low <span className="text-sz-red">Stock</span>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-chillax text-lg font-bold uppercase tracking-widest text-white flex items-center gap-3">
+              <span className="w-2 h-2 bg-sz-red rounded-full block" />
+              Low Stock
             </h3>
-            <Link href="/admin/products" className="text-sz-red hover:underline text-sm">
-              Manage products
+            <Link 
+              href="/admin/products" 
+              className="text-[10px] uppercase tracking-widest text-white/40 hover:text-white transition-colors border border-white/5 px-3 py-1.5 rounded bg-white/[0.02] hover:bg-white/5 hover:border-white/20"
+              data-cuelume-hover="tick"
+            >
+              Manage products →
             </Link>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-x-auto relative">
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-sz-red/5 rounded-full blur-[100px] pointer-events-none" />
+            <table className="w-full text-sm relative z-10">
               <thead>
-                <tr className="text-left text-gray-400 border-b border-gray-800">
-                  <th className="px-4 py-3 font-medium">Product</th>
-                  <th className="px-4 py-3 font-medium">Variant</th>
-                  <th className="px-4 py-3 font-medium text-right">Stock</th>
+                <tr className="text-left text-[10px] uppercase tracking-widest text-white/40 border-b border-white/10">
+                  <th className="px-5 py-4 font-semibold">Product</th>
+                  <th className="px-5 py-4 font-semibold">Variant</th>
+                  <th className="px-5 py-4 font-semibold text-right">Stock</th>
                 </tr>
               </thead>
               <tbody>
                 {lowStock.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
-                      No low-stock variants — inventory is healthy
+                    <td colSpan={3} className="px-5 py-12 text-center">
+                      <p className="text-[10px] uppercase tracking-widest text-white/30">No low-stock variants — inventory healthy</p>
                     </td>
                   </tr>
                 ) : (
                   lowStock.map((variant) => (
-                    <tr key={variant.id} className="border-b border-gray-800 last:border-b-0 hover:bg-gray-800/40">
-                      <td className="px-4 py-3 font-medium text-white">{variant.products?.name ?? 'Unknown product'}</td>
-                      <td className="px-4 py-3 text-gray-400">
+                    <tr key={variant.id} className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors group">
+                      <td className="px-5 py-4 font-medium text-white">{variant.products?.name ?? 'Unknown product'}</td>
+                      <td className="px-5 py-4 text-white/60">
                         {[variant.size, variant.color].filter(Boolean).join(' / ') || '—'}
                       </td>
-                      <td className={`px-4 py-3 text-right font-semibold ${variant.stock_quantity === 0 ? 'text-sz-red' : 'text-yellow-400'}`}>
+                      <td className={`px-5 py-4 text-right font-chillax tracking-wide font-bold ${variant.stock_quantity === 0 ? 'text-sz-red' : 'text-yellow-500'}`}>
                         {variant.stock_quantity}
                       </td>
                     </tr>
@@ -283,32 +301,33 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* ── Top products ── */}
-      <section>
-        <h3 className="font-chillax text-lg font-bold uppercase tracking-widest text-white mb-4">
-          Top <span className="text-sz-red">Products</span>
+      <section className="mb-20">
+        <h3 className="font-chillax text-lg font-bold uppercase tracking-widest text-white mb-6 flex items-center gap-3">
+          <span className="w-2 h-2 bg-sz-red rounded-full block" />
+          Top Products
         </h3>
-        <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-x-auto">
-          <table className="w-full text-sm">
+        <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-x-auto relative">
+          <table className="w-full text-sm relative z-10">
             <thead>
-              <tr className="text-left text-gray-400 border-b border-gray-800">
-                <th className="px-4 py-3 font-medium">Product</th>
-                <th className="px-4 py-3 font-medium text-right">Units sold</th>
-                <th className="px-4 py-3 font-medium text-right">Revenue</th>
+              <tr className="text-left text-[10px] uppercase tracking-widest text-white/40 border-b border-white/10">
+                <th className="px-5 py-4 font-semibold">Product</th>
+                <th className="px-5 py-4 font-semibold text-right">Units Sold</th>
+                <th className="px-5 py-4 font-semibold text-right">Revenue</th>
               </tr>
             </thead>
             <tbody>
               {topProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
-                    No paid orders yet — revenue will appear here once orders come in
+                  <td colSpan={3} className="px-5 py-12 text-center">
+                    <p className="text-[10px] uppercase tracking-widest text-white/30">No paid orders yet — revenue tracking pending</p>
                   </td>
                 </tr>
               ) : (
                 topProducts.map((product) => (
-                  <tr key={product.name} className="border-b border-gray-800 last:border-b-0">
-                    <td className="px-4 py-3 font-medium text-white">{product.name}</td>
-                    <td className="px-4 py-3 text-right text-gray-300">{formatNumber(product.units)}</td>
-                    <td className="px-4 py-3 text-right text-gray-300">{formatNGN(product.revenue)}</td>
+                  <tr key={product.name} className="border-b border-white/5 last:border-b-0 hover:bg-white/[0.02] transition-colors group">
+                    <td className="px-5 py-4 font-medium text-white">{product.name}</td>
+                    <td className="px-5 py-4 text-right text-white/80 font-chillax tracking-wide">{formatNumber(product.units)}</td>
+                    <td className="px-5 py-4 text-right text-sz-red font-chillax tracking-wide font-bold">{formatNGN(product.revenue)}</td>
                   </tr>
                 ))
               )}
