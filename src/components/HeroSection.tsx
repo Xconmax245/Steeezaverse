@@ -112,7 +112,7 @@ export default function HeroSection() {
         style={{ x: bgX, y: bgY }}
       >
         <Image
-          src="/240_F_333810258_5gP2SBYroH0jtgAtI2ANibRRDe2YY7dU.jpg"
+          src="/fashionable-man-woman-posing-with-copy-space.jpg"
           alt="Steezaverse Models"
           fill
           priority
@@ -160,8 +160,8 @@ export default function HeroSection() {
         </div>
 
         <motion.p
-          className="mt-6 mb-10 text-white/80"
-          style={{ fontFamily: "'Ranade', sans-serif", fontSize: "14px" }}
+          className="mt-6 mb-10 text-white/80 uppercase tracking-widest"
+          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "12px", fontWeight: 600 }}
           initial={{ opacity: 0 }}
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease }}
@@ -170,7 +170,7 @@ export default function HeroSection() {
         </motion.p>
 
         <motion.button
-          className="flex items-center justify-center bg-white px-10 py-3 transition-colors duration-300 hover:bg-white/80"
+          className="group flex items-center justify-center bg-white px-10 py-3 transition-colors duration-300 hover:bg-[var(--red)]"
           initial={{ opacity: 0, y: 10 }}
           animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.8, delay: 0.9, ease }}
@@ -195,7 +195,7 @@ export default function HeroSection() {
               letterSpacing: "0.15em",
               textTransform: "uppercase",
             }}
-            className="text-black transition-colors duration-300"
+            className="text-black transition-colors duration-300 group-hover:text-white"
           >
             Shop Now
           </span>
