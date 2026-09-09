@@ -100,13 +100,21 @@ export default function HeroSection() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
+  // Separate refs for GSAP to avoid conflict with Framer Motion gyro styles
+  const gsapLeftRef    = useRef<HTMLSpanElement>(null);
+  const gsapRightRef   = useRef<HTMLSpanElement>(null);
+  const gsapCenterRef  = useRef<HTMLSpanElement>(null);
+  const gsapModelRef   = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
+    // Adding isMobile to the dependency array ensures GSAP rebuilds its ScrollTrigger
+    // after the client-side hydration swaps the DOM elements.
     const ctx = gsap.context(() => {
       const section = sectionRef.current;
-      const left    = leftRef.current;
-      const right   = rightRef.current;
-      const center  = centerRef.current;
-      const model   = modelRef.current;
+      const left    = gsapLeftRef.current;
+      const right   = gsapRightRef.current;
+      const center  = gsapCenterRef.current;
+      const model   = gsapModelRef.current;
 
       if (!section || !model) return;
 
@@ -128,7 +136,7 @@ export default function HeroSection() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [isMobile]);
 
   const desktopFontSize = "clamp(90px, 11vw, 210px)";
   const mobileFontSize  = "clamp(36px, 12.5vw, 65px)";
@@ -180,14 +188,16 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 15px)" }}
             transition={{ duration: 1.1, delay: 0.5, ease }}
           >
-            <motion.div ref={modelRef} className="w-full h-full relative" style={{ x: modelX, y: modelY }}>
-              <Image
-                src="/IMG_3889-removebg-preview.png"
-                alt="Steezaverse model"
-                fill priority
-                className="object-contain object-center select-none"
-                draggable={false}
-              />
+            <motion.div className="w-full h-full relative" style={{ x: modelX, y: modelY }}>
+              <div ref={gsapModelRef} className="w-full h-full relative">
+                <Image
+                  src="/IMG_3889-removebg-preview.png"
+                  alt="Steezaverse model"
+                  fill priority
+                  className="object-contain object-center select-none"
+                  draggable={false}
+                />
+              </div>
             </motion.div>
           </motion.div>
         ) : (
@@ -198,14 +208,16 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, x: "-50%", y: "-50%" } : { opacity: 0, x: "-50%", y: "calc(-50% + 30px)" }}
             transition={{ duration: 1.2, delay: 0.55, ease }}
           >
-            <div ref={modelRef} className="w-full h-full relative">
-              <Image
-                src="/IMG_3889-removebg-preview.png"
-                alt="Steezaverse model"
-                fill priority
-                className="object-contain object-bottom select-none"
-                draggable={false}
-              />
+            <div className="w-full h-full relative">
+              <div ref={gsapModelRef} className="w-full h-full relative">
+                <Image
+                  src="/IMG_3889-removebg-preview.png"
+                  alt="Steezaverse model"
+                  fill priority
+                  className="object-contain object-bottom select-none"
+                  draggable={false}
+                />
+              </div>
             </div>
           </motion.div>
         )}
@@ -221,9 +233,11 @@ export default function HeroSection() {
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
             >
-              <motion.span ref={leftRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)", x: steezaX, y: steezaY }}>
-                STEEZA
-              </motion.span>
+              <motion.div style={{ x: steezaX, y: steezaY }}>
+                <span ref={gsapLeftRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)" }}>
+                  STEEZA
+                </span>
+              </motion.div>
             </motion.div>
 
             {/* ── VERSE ── */}
@@ -234,9 +248,11 @@ export default function HeroSection() {
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
             >
-              <motion.span ref={rightRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)", x: verseX, y: verseY }}>
-                VERSE
-              </motion.span>
+              <motion.div style={{ x: verseX, y: verseY }}>
+                <span ref={gsapRightRef} style={{ ...wordStyle, fontSize: "clamp(30px, 14.5vw, 60px)" }}>
+                  VERSE
+                </span>
+              </motion.div>
             </motion.div>
           </>
         ) : (
@@ -249,7 +265,7 @@ export default function HeroSection() {
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
             >
-              <span ref={leftRef} style={wordStyle}>
+              <span ref={gsapLeftRef} style={wordStyle}>
                 STEEZA
               </span>
             </motion.div>
@@ -262,7 +278,7 @@ export default function HeroSection() {
               animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
               transition={{ duration: 1.0, delay: 0.7, ease }}
             >
-              <span ref={rightRef} style={wordStyle}>
+              <span ref={gsapRightRef} style={wordStyle}>
                 VERSE
               </span>
             </motion.div>

@@ -3,6 +3,7 @@ import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
 import IntroSplash from "@/components/IntroSplash";
 import CuelumeProvider from "@/components/CuelumeProvider";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export const metadata: Metadata = {
   title: "Steezaverse — Streetwear",
@@ -31,6 +32,8 @@ export default function RootLayout({
         <IntroSplash />
         {/* Custom cursor — rendered at root so it works site-wide */}
         <CustomCursor />
+        {/* Visitor analytics — beacons public page views, admin pages excluded */}
+        <AnalyticsTracker />
         {children}
       </body>
     </html>

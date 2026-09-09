@@ -1,20 +1,300 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/server';
+import crypto from 'crypto';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { initializePayment, PaymentGateway } from '@/lib/payments';
+
+// Creates a `pending` order, atomically reserves stock, and initializes the
+// payment session. The order is only marked `paid` by the gateway webhook —
+// never at creation time.
+//
+// Stock semantics: quantities are decremented here (single atomic RPC per line)
+// to prevent overselling during a checkout rush. If the payment session fails
+// to initialize, stock is restored and the order is cancelled. Abandoned
+// pending orders are cancelled and their stock released by the DB-side job in
+// migration 00003 (pg_cron every 20 min; also triggerable via
+// /api/cron/release-pending-stock).
+
+interface CartLine {
+  quantity: number;
+  variant: {
+    id: string;
+    sku: string | null;
+    size: string | null;
+    color: string | null;
+    stock_quantity: number;
+    price_override: number | null;
+    product: {
+      id: string;
+      name: string;
+      slug: string;
+      base_price: number;
+      status: string;
+      is_drop: boolean;
+    };
+  };
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    // Expected body: { cartId, customerId (optional), shippingAddressId, gateway (paystack|flutterwave) }
+    const {
+      cartId,
+      customerId,
+      email,
+      shippingAddressId,
+      gateway,
+      discountCode,
+    } = body;
 
-    // 1. Fetch cart items & validate stock (use supabaseAdmin for backend checks)
-    // 2. Decrement stock atomically (Requires a database function or transaction, implementing placeholder)
-    // 3. Create 'pending' order in `orders` table
-    // 4. Create `order_items`
-    // 5. Initialize payment session with chosen gateway
-    // 6. Return payment URL/reference
+    if (!cartId || typeof cartId !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'cartId is required' },
+        { status: 400 }
+      );
+    }
+    if (!email || typeof email !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'email is required for payment' },
+        { status: 400 }
+      );
+    }
+    if (gateway !== 'paystack' && gateway !== 'flutterwave') {
+      return NextResponse.json(
+        { success: false, error: "gateway must be 'paystack' or 'flutterwave'" },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json({ success: true, message: 'Order created, proceed to payment' });
+    // 1. Fetch cart lines with variant + product data (single nested query).
+    const { data: rawItems, error: itemsError } = await (getSupabaseAdmin() as any)
+      .from('cart_items')
+      .select(
+        `quantity,
+         product_variants(
+           id, sku, size, color, stock_quantity, price_override,
+           products(id, name, slug, base_price, status, is_drop)
+         )`
+      )
+      .eq('cart_id', cartId);
+
+    if (itemsError) throw itemsError;
+    if (!rawItems?.length) {
+      return NextResponse.json(
+        { success: false, error: 'Cart is empty' },
+        { status: 400 }
+      );
+    }
+
+    const lines: CartLine[] = rawItems.map((item: any) => ({
+      quantity: item.quantity,
+      variant: item.product_variants,
+    }));
+
+    // 2. Validate every line is purchasable and in stock.
+    for (const line of lines) {
+      const p = line.variant?.product;
+      if (!p) {
+        return NextResponse.json(
+          { success: false, error: 'Cart contains an unavailable item' },
+          { status: 400 }
+        );
+      }
+      if (p.status !== 'published' && !p.is_drop) {
+        return NextResponse.json(
+          { success: false, error: `${p.name} is not available for purchase` },
+          { status: 400 }
+        );
+      }
+      if (line.variant.stock_quantity < line.quantity) {
+        return NextResponse.json(
+          { success: false, error: `Insufficient stock for ${p.name}` },
+          { status: 409 }
+        );
+      }
+    }
+
+    // 3. Compute totals.
+    const subtotal = lines.reduce((sum, line) => {
+      const unitPrice = line.variant.price_override ?? line.variant.product.base_price;
+      return sum + unitPrice * line.quantity;
+    }, 0);
+
+    // 4. Validate discount (if provided).
+    let discountAmount = 0;
+    if (discountCode) {
+      const { data: discount, error: discountError } = await getSupabaseAdmin()
+        .from('discounts')
+        .select('*')
+        .ilike('code', discountCode.trim())
+        .eq('active', true)
+        .single();
+
+      if (discountError || !discount) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid discount code' },
+          { status: 400 }
+        );
+      }
+
+      const d = discount as any;
+      const now = new Date();
+      if (d.expires_at && new Date(d.expires_at) < now) {
+        return NextResponse.json(
+          { success: false, error: 'Discount expired' },
+          { status: 400 }
+        );
+      }
+      if (d.min_order_value && subtotal < Number(d.min_order_value)) {
+        return NextResponse.json(
+          { success: false, error: `Minimum order value of ${d.min_order_value} required` },
+          { status: 400 }
+        );
+      }
+      if (d.usage_limit && d.times_used >= d.usage_limit) {
+        return NextResponse.json(
+          { success: false, error: 'Discount usage limit reached' },
+          { status: 400 }
+        );
+      }
+
+      discountAmount =
+        d.type === 'percentage'
+          ? (subtotal * Number(d.value)) / 100
+          : Math.min(Number(d.value), subtotal);
+    }
+
+    const shippingCost = Number(process.env.SHIPPING_COST_NGN || 0);
+    const total = Math.max(0, subtotal - discountAmount) + shippingCost;
+
+    // 5. Generate order identifiers.
+    const orderNumber = `STZ-${Date.now().toString(36).toUpperCase()}`;
+    const paymentReference = `STZ-${Date.now()}-${crypto
+      .randomBytes(4)
+      .toString('hex')
+      .toUpperCase()}`;
+
+    // 6. Atomically reserve stock (single guarded UPDATE per line via RPC).
+    const reserved: CartLine[] = [];
+    for (const line of lines) {
+      const { data: ok, error: rpcError } = await (getSupabaseAdmin().rpc as any)(
+        'decrement_stock',
+        { p_variant_id: line.variant.id, p_qty: line.quantity }
+      );
+      if (rpcError) {
+        await restoreStock(reserved); // release what was already reserved
+        throw rpcError;
+      }
+      if (ok === false) {
+        // Another checkout grabbed the last unit between validation and now.
+        await restoreStock(reserved); // release only the lines we reserved
+        return NextResponse.json(
+          { success: false, error: `Insufficient stock for ${line.variant.product.name}` },
+          { status: 409 }
+        );
+      }
+      reserved.push(line);
+    }
+
+    // 7. Create the pending order.
+    const { data: order, error: orderError } = await (getSupabaseAdmin() as any)
+      .from('orders')
+      .insert([
+        {
+          customer_id: customerId || null,
+          order_number: orderNumber,
+          status: 'pending',
+          subtotal: round2(subtotal),
+          discount_amount: round2(discountAmount),
+          shipping_cost: round2(shippingCost),
+          total: round2(total),
+          payment_status: 'pending',
+          payment_reference: paymentReference,
+          payment_gateway: gateway,
+          shipping_address_id: shippingAddressId || null,
+          discount_code: discountCode || null,
+        },
+      ])
+      .select()
+      .single();
+
+    if (orderError) {
+      await restoreStock(lines);
+      throw orderError;
+    }
+
+    // 8. Snapshot line items.
+    const orderItems = lines.map((line) => ({
+      order_id: order.id,
+      variant_id: line.variant.id,
+      quantity: line.quantity,
+      unit_price: round2(line.variant.price_override ?? line.variant.product.base_price),
+      product_name_snapshot: line.variant.product.name,
+      variant_snapshot: {
+        sku: line.variant.sku,
+        size: line.variant.size,
+        color: line.variant.color,
+      },
+    }));
+
+    const { error: itemsInsertError } = await (getSupabaseAdmin() as any)
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemsInsertError) {
+      await restoreStock(lines);
+      await (getSupabaseAdmin() as any).from('orders').delete().eq('id', order.id);
+      throw itemsInsertError;
+    }
+
+    // 9. Initialize the payment session.
+    try {
+      const callbackUrl = `${
+        process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+      }/checkout/complete?reference=${paymentReference}&gateway=${gateway}`;
+
+      const session = await initializePayment({
+        gateway: gateway as PaymentGateway,
+        email,
+        amount: total,
+        reference: paymentReference,
+        callbackUrl,
+        orderId: order.id,
+      });
+
+      return NextResponse.json({
+        success: true,
+        orderId: order.id,
+        orderNumber,
+        paymentReference,
+        authorizationUrl: session.authorizationUrl,
+        gateway,
+      });
+    } catch (paymentError: any) {
+      // Payment session failed — release stock, cancel the order.
+      await restoreStock(lines);
+      await (getSupabaseAdmin() as any)
+        .from('orders')
+        .update({ status: 'cancelled', payment_status: 'failed' })
+        .eq('id', order.id);
+      throw paymentError;
+    }
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
+  }
+}
+
+function round2(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+/** Best-effort release of reserved stock (log 'manual' entries for audit). */
+async function restoreStock(lines: CartLine[]): Promise<void> {
+  for (const line of lines) {
+    await (getSupabaseAdmin().rpc as any)('adjust_stock', {
+      p_variant_id: line.variant.id,
+      p_change_qty: line.quantity,
+      p_reason: 'manual',
+      p_admin_id: null,
+    });
   }
 }

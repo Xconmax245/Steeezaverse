@@ -1,9 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
 // Lazy singleton — only created when first used (not at build time)
 // WARNING: This client bypasses RLS. Use only in trusted server environments.
-let _supabaseAdmin: ReturnType<typeof createClient<Database>> | null = null;
+let _supabaseAdmin: SupabaseClient<Database> | null = null;
 
 export function getSupabaseAdmin() {
   if (!_supabaseAdmin) {
@@ -21,7 +21,7 @@ export function getSupabaseAdmin() {
 }
 
 // Backward-compat export (resolved lazily via getter)
-export const supabaseAdmin = new Proxy({} as ReturnType<typeof createClient<Database>>, {
+export const supabaseAdmin = new Proxy({} as SupabaseClient<Database>, {
   get(_target, prop) {
     return (getSupabaseAdmin() as any)[prop];
   },

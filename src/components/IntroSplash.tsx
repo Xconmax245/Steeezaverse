@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 const WORD = "STEEZAVERSE";
@@ -85,7 +86,13 @@ function LoaderBar({ delay = 900, duration = 1700 }: { delay?: number; duration?
 }
 
 export default function IntroSplash() {
-  const [visible, setVisible] = useState(true);
+  const pathname = usePathname();
+  // Root-layout component: it mounts once per document load, so capture the
+  // route of THAT load. Client-side navigations change `pathname` but never
+  // remount the component, so they can never replay the splash.
+  const initialPathname = useRef(pathname);
+
+  const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState<"in" | "out">("in");
   const dismiss = useCallback(() => {
     setPhase("out");
@@ -95,7 +102,25 @@ export default function IntroSplash() {
     }
   }, []);
 
+  // Only play on a real load of the landing page: first visit ("navigate") or
+  // a refresh ("reload"). Skip on every other route, on back/forward restores
+  // (bfcache), and always on client-side navigation. When skipped, fire
+  // "introComplete" immediately so hero animations start without the splash.
   useEffect(() => {
+    const nav = performance?.getEntriesByType?.("navigation")?.[0] as
+      PerformanceNavigationTiming | undefined;
+    const navType = nav?.type ?? "navigate";
+
+    if (initialPathname.current !== "/" || navType === "back_forward") {
+      (window as any).introPlayed = true;
+      window.dispatchEvent(new Event("introComplete"));
+      return;
+    }
+    setVisible(true);
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const onInteract = () => dismiss();
     window.addEventListener("keydown", onInteract, { once: true });
@@ -107,7 +132,7 @@ export default function IntroSplash() {
       window.removeEventListener("keydown", onInteract);
       window.removeEventListener("pointerdown", onInteract);
     };
-  }, [dismiss]);
+  }, [visible, dismiss]);
 
   const onExitComplete = useCallback(async () => {
     setVisible(false);

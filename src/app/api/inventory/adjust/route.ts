@@ -1,27 +1,53 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/server';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { requireAdmin } from '@/lib/admin-auth';
 
+const VALID_REASONS = ['restock', 'damage', 'manual'];
+
+// Admin manual stock adjustment. Uses the atomic `adjust_stock` RPC (single
+// guarded UPDATE + inventory_log insert in one transaction) — never
+// read-then-write. Usage: { variantId, changeQty, reason, adminId? }
 export async function POST(request: Request) {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const { variantId, changeQty, reason, adminId } = await request.json();
 
-    // Note: Stock decrement/increment should be atomic. 
-    // In Postgres, this is best done with an RPC call to a PL/pgSQL function.
-    // Placeholder logic for incrementing stock via RPC (assuming an rpc 'adjust_stock' exists):
-    
-    /*
-    const { data, error } = await supabaseAdmin.rpc('adjust_stock', {
+    if (!variantId || typeof variantId !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'variantId is required' },
+        { status: 400 }
+      );
+    }
+    if (typeof changeQty !== 'number' || !Number.isInteger(changeQty) || changeQty === 0) {
+      return NextResponse.json(
+        { success: false, error: 'changeQty must be a non-zero integer' },
+        { status: 400 }
+      );
+    }
+    if (!VALID_REASONS.includes(reason)) {
+      return NextResponse.json(
+        { success: false, error: `reason must be one of: ${VALID_REASONS.join(', ')}` },
+        { status: 400 }
+      );
+    }
+
+    const { data: ok, error } = await (getSupabaseAdmin().rpc as any)('adjust_stock', {
       p_variant_id: variantId,
-      p_change_qty: changeQty
+      p_change_qty: changeQty,
+      p_reason: reason,
+      p_admin_id: adminId || null,
     });
+
     if (error) throw error;
-    */
 
-    // Also log to inventory_log
-    const { error: logError } = await (supabaseAdmin.from('inventory_log') as any)
-      .insert([{ variant_id: variantId, change_qty: changeQty, reason, admin_id: adminId }]);
-
-    if (logError) throw logError;
+    if (ok === false) {
+      return NextResponse.json(
+        { success: false, error: 'Adjustment would put stock below zero' },
+        { status: 409 }
+      );
+    }
 
     return NextResponse.json({ success: true, message: 'Inventory adjusted' });
   } catch (error: any) {

@@ -5,10 +5,18 @@ export async function POST(request: Request) {
   try {
     const { code, cartTotal } = await request.json();
 
+    if (!code || typeof code !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'Discount code is required' },
+        { status: 400 }
+      );
+    }
+
+    // Codes are matched case-insensitively.
     const { data, error } = await supabaseAdmin
       .from('discounts')
       .select('*')
-      .eq('code', code)
+      .ilike('code', code.trim())
       .eq('active', true)
       .single();
 

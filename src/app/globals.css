@@ -39,7 +39,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   cursor: none;          /* custom cursor active */
-  overflow-x: hidden;
+  overflow-x: clip;      /* clip prevents GSAP scroll bugs on iOS Safari */
 }
 
 @media (hover: none) {
@@ -62,6 +62,13 @@ body {
   .bg-red        { background-color: var(--red); }
   .bg-blue       { background-color: var(--blue); }
   .text-balance  { text-wrap: balance; }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ─── Scroll indicator keyframe ───────────────────── */

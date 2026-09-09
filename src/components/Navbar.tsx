@@ -203,7 +203,7 @@ function DesktopNavLink({ href, label, active }: { href: string; label: string; 
   return (
     <Link href={href} className="relative group flex items-center justify-center" data-cursor="navbar" data-cuelume-hover="tick">
       <span 
-        className="text-[11px] font-semibold tracking-[0.2em] uppercase text-white/65 group-hover:text-white transition-colors duration-250"
+        className="text-[11px] font-semibold tracking-[0.2em] uppercase text-white/60 group-hover:text-white transition-colors duration-200"
         style={{ fontFamily: "'Chillax', sans-serif", color: active ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.65)' }}
       >
         {label}

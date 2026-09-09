@@ -1,40 +1,107 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase/server';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { verifyWebhookAmount } from '@/lib/payments';
 
+// Flutterwave webhook — confirms a `pending` order as `paid`.
+// Idempotent: the status flip is a single UPDATE gated on `payment_status =
+// 'pending'`, so duplicate or concurrent deliveries can only succeed once and
+// can never double-decrement stock (stock is reserved at order creation).
 export async function POST(request: Request) {
   try {
     const signature = request.headers.get('verif-hash');
     const secret = process.env.FLUTTERWAVE_SECRET_KEY!;
 
-    // Verify signature
     if (!signature || signature !== secret) {
-      return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'Invalid signature' },
+        { status: 400 }
+      );
     }
 
     const event = await request.json();
 
     if (event.event === 'charge.completed' && event.data.status === 'successful') {
       const reference = event.data.tx_ref;
-      
-      // Idempotency check
-      const { data, error } = await supabaseAdmin
+
+      // Fetch order to verify the charged amount matches.
+      const { data: orderData } = await (getSupabaseAdmin() as any)
         .from('orders')
-        .select('payment_status')
+        .select('id, total, discount_code, status')
         .eq('payment_reference', reference)
         .single();
-        
-      const existingOrder = data as any;
 
-      if (existingOrder && existingOrder.payment_status === 'paid') {
+      const order = orderData as any;
+      if (!order) {
+        // Unknown reference — ack to stop provider retries; nothing to process.
+        return NextResponse.json({ success: true, message: 'Order not found, acked' });
+      }
+
+      // The stock-release job may have cancelled an abandoned order before the
+      // payment landed. Money was taken for a cancelled order — flag it for a
+      // manual refund and ack (do NOT flip it to paid).
+      if (order.status === 'cancelled') {
+        await (getSupabaseAdmin() as any)
+          .from('notification_log')
+          .insert([
+            {
+              type: 'order_confirmation',
+              recipient: event.data.customer?.email || '',
+              status: 'needs_refund',
+            },
+          ]);
+        return NextResponse.json({ success: true, message: 'Order cancelled, refund needed' });
+      }
+
+      // Flutterwave sends amount in NGN (may carry decimals); reject mismatches.
+      if (
+        event.data.currency !== 'NGN' ||
+        !verifyWebhookAmount('flutterwave', Number(order.total), Number(event.data.amount))
+      ) {
+        return NextResponse.json(
+          { success: false, error: 'Amount mismatch' },
+          { status: 400 }
+        );
+      }
+
+      // Atomic flip: only a `pending` order can be marked paid. Zero rows
+      // updated = already processed (idempotent retry), so just ack.
+      const { data: updated, error: updateError } = await (getSupabaseAdmin() as any)
+        .from('orders')
+        .update({
+          payment_status: 'paid',
+          status: 'processing',
+          payment_gateway: 'flutterwave',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('payment_reference', reference)
+        .eq('payment_status', 'pending')
+        .eq('status', 'pending')
+        .select('id, discount_code');
+
+      if (updateError) throw updateError;
+
+      if (!updated?.length) {
         return NextResponse.json({ success: true, message: 'Already processed' });
       }
 
-      // Update order status
-      await (supabaseAdmin.from('orders') as any)
-        .update({ payment_status: 'paid', status: 'processing', updated_at: new Date().toISOString() })
-        .eq('payment_reference', reference);
-        
-      // Trigger notification
+      // Consume discount usage exactly once per paid order.
+      if (order.discount_code) {
+        await (getSupabaseAdmin().rpc as any)('increment_discount_usage', {
+          p_code: order.discount_code,
+        });
+      }
+
+      // Log the confirmation notification (email dispatch is wired via
+      // /api/notifications/send once an email provider is configured).
+      await (getSupabaseAdmin() as any)
+        .from('notification_log')
+        .insert([
+          {
+            type: 'order_confirmation',
+            recipient: event.data.customer?.email || '',
+            status: 'sent',
+          },
+        ]);
     }
 
     return NextResponse.json({ success: true });
