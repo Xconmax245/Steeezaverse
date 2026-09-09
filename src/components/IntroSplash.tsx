@@ -23,14 +23,13 @@ function LoaderBar({ delay = 900, duration = 1700 }: { delay?: number; duration?
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
       <div style={{ width: "min(220px, 34vw)", height: 1, background: "rgba(255,255,255,0.08)", borderRadius: 9999, overflow: "hidden" }}>
-        <div style={{
+        <div className="bg-gradient-to-r from-[var(--red)] to-[var(--blue)]" style={{
           height: "100%", width: `${width}%`,
-          background: "linear-gradient(90deg, #5e0505, #9e0e0e)",
           borderRadius: 9999,
           transition: `width ${duration}ms cubic-bezier(0.4,0,0.2,1)`,
         }} />
       </div>
-      <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 600, fontSize: "8px", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.25)" }}>
+      <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "8px", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
         {label}
       </span>
     </div>
@@ -194,22 +193,25 @@ function SplashContent() {
           </motion.div>
 
           {/* ── TAGLINE ── */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.38 }}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 0.9, y: 0 }}
             transition={{ duration: 0.7, delay: 0.85, ease: "easeOut" }}
             style={{
-              fontFamily: "'Chillax', sans-serif",
-              fontWeight: 600,
-              fontSize: "clamp(9px, 1vw, 13px)",
-              letterSpacing: "0.28em",
+              fontFamily: "'Bespoke Sans', sans-serif",
+              fontWeight: 800,
+              fontSize: "clamp(12px, 1.5vw, 16px)",
+              letterSpacing: "0.25em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.45)",
+              color: "white",
               marginTop: "clamp(10px, 1.5vw, 18px)",
+              textAlign: "center",
+              lineHeight: 1.4
             }}
           >
-            Streetwear is dead — long live Steezaverse
-          </motion.p>
+            BUILDING THE FOUNDATION <br className="hidden md:block" />
+            FOR A NEW ERA OF <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.3em", letterSpacing: "0", fontWeight: 400, textTransform: "none" }}>creation</span>
+          </motion.div>
 
           {/* Thin divider */}
           <motion.div
@@ -235,11 +237,11 @@ function SplashContent() {
             <LoaderBar delay={850} duration={1800} />
             <span
               style={{
-                fontFamily: "'Archivo', sans-serif",
+                fontFamily: "'Chillax', sans-serif",
                 fontWeight: 700,
-                fontSize: "11px",
+                fontSize: "12px",
                 letterSpacing: "0.3em",
-                color: "rgba(255,255,255,0.4)",
+                color: "rgba(255,255,255,0.5)",
                 fontVariantNumeric: "tabular-nums",
               }}
             >
@@ -250,34 +252,34 @@ function SplashContent() {
           {/* Bottom edition stamp */}
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.13 }}
+            animate={{ opacity: 0.2 }}
             transition={{ duration: 0.5, delay: 2.4 }}
             style={{
-              fontFamily: "'Archivo', sans-serif",
+              fontFamily: "'Chillax', sans-serif",
               fontWeight: 600,
-              fontSize: "8px",
-              letterSpacing: "0.22em",
+              fontSize: "9px",
+              letterSpacing: "0.25em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.3)",
+              color: "rgba(255,255,255,0.5)",
               position: "absolute",
               bottom: "36px",
             }}
           >
-            Est. 2024 — Drop 001 — FW26 — Limited Edition
+            Est. 2024 — Drop 001 — FW26 — Steezaverse
           </motion.p>
 
           {/* Skip hint */}
           <motion.p
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.18 }}
+            animate={{ opacity: 0.25 }}
             transition={{ duration: 0.4, delay: 1.7 }}
             style={{
-              fontFamily: "'Archivo', sans-serif",
+              fontFamily: "'Chillax', sans-serif",
               fontWeight: 600,
-              fontSize: "8px",
+              fontSize: "9px",
               letterSpacing: "0.25em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.22)",
+              color: "rgba(255,255,255,0.4)",
               position: "absolute",
               bottom: "18px",
             }}
