@@ -112,12 +112,34 @@ export default function HeroSection() {
         },
       });
 
-      // Simple parallax fade and slight zoom out on scroll down
+      // Premium parallax outro effect
       if (bg) {
-        tl.to(bg, { opacity: 0.3, scale: 1.05, duration: 1, ease: "none" }, 0);
+        // Background pushes in, blurs, and fades to black
+        tl.to(bg, { 
+          opacity: 0.2, 
+          scale: 1.15, 
+          filter: "blur(12px)",
+          duration: 1, 
+          ease: "power1.inOut" 
+        }, 0);
       }
-      if (content) {
-        tl.to(content, { y: "-15vh", opacity: 0, duration: 1, ease: "power2.inOut" }, 0);
+      if (content && content.children.length >= 2) {
+        // Left text block (massive text) scrolls up faster and scales down slightly
+        tl.to(content.children[0], { 
+          y: "-35vh", 
+          opacity: 0, 
+          scale: 0.9,
+          duration: 1, 
+          ease: "power2.inOut" 
+        }, 0);
+        
+        // Right block (typewriter + button) scrolls up slower for depth separation
+        tl.to(content.children[1], { 
+          y: "-15vh", 
+          opacity: 0, 
+          duration: 0.8, 
+          ease: "power3.in" 
+        }, 0.1);
       }
     }, sectionRef);
 
