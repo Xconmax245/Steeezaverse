@@ -105,7 +105,7 @@ export default function IntroSplash() {
     </AnimatePresence>
   );
 }
-
+function SplashContent() {
   return (
     <>
       {/* ── BIG BRAND LOGO ── */}
