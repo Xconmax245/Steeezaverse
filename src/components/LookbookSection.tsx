@@ -29,7 +29,7 @@ export default async function LookbookSection() {
     <section className="relative w-full bg-black py-24 overflow-hidden z-20">
       <div className="max-w-[95vw] mx-auto px-4 md:px-8">
         {/* Section heading — mirrors MiniShopSection */}
-        <div className="flex items-end justify-between mb-12">
+        <div className="flex items-end justify-between mb-12" data-aos="fade-up" data-aos-duration="800">
           <h2 className="font-chillax text-xs md:text-sm uppercase tracking-[0.3em] text-white/50">
             Lookbook
           </h2>
@@ -56,6 +56,9 @@ function LookbookTile({ item, span, index }: { item: LookbookItem; span: string;
       className={`group relative ${span} ${aspect} w-full bg-[#111] rounded-lg overflow-hidden`}
       style={{ perspective: "1000px" }}
       data-cuelume-hover="tick"
+      data-aos="zoom-in-up"
+      data-aos-delay={(index % 3) * 90}
+      data-aos-duration="850"
     >
       {item.image_url && (
         <Image

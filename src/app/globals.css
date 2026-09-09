@@ -71,6 +71,43 @@ body {
   }
 }
 
+/* ─── AOS — brand easing + reduced-motion safety ──── */
+/* AOS injects its own easing presets; register ours via CSS custom props so
+   every reveal shares the storefront's heavy out-quint curve. */
+[data-aos] {
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-aos^="fade"][data-aos],
+  [data-aos^="zoom"][data-aos],
+  [data-aos^="slide"][data-aos],
+  [data-aos^="flip"][data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ─── Intro curtain panels (IntroSplash exit) ─────── */
+@keyframes sz-curtain-up {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-101%); }
+}
+
+/* ─── Mini marquee (shop stats ticker) ─────────────── */
+@keyframes marquee-mini {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track-mini {
+  animation: marquee-mini 28s linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track-mini { animation: none; }
+}
+
 /* ─── Scroll indicator keyframe ───────────────────── */
 @keyframes scrollLine {
   0%   { top: -40%; opacity: 0; }

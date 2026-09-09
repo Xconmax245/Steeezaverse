@@ -44,7 +44,7 @@ async function DropsContent() {
   return (
     <section className="relative w-full pt-40 pb-32">
       <div className="max-w-[95vw] mx-auto px-4 md:px-8">
-        <header className="mb-16">
+        <header className="mb-16" data-aos="fade-up" data-aos-duration="900">
           <h1 className="font-chillax text-4xl md:text-6xl font-bold uppercase tracking-tight text-white">
             The <span className="text-sz-red">Drops</span>
           </h1>
@@ -90,7 +90,7 @@ function DropGroup({
   muted?: boolean;
 }) {
   return (
-    <div>
+    <div data-aos="fade-up" data-aos-duration="800">
       <div className="flex items-center gap-4 mb-8">
         <h2
           className={`font-chillax text-xs uppercase tracking-[0.3em] ${

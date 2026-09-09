@@ -49,7 +49,7 @@ export default async function ProductDetailPage({ params }: Props) {
       <section className="pt-32 pb-24">
         <div className="max-w-[95vw] mx-auto px-4 md:px-8">
           {/* Breadcrumb */}
-          <nav className="mb-10 flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/30">
+          <nav data-aos="fade-in" className="mb-10 flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/30">
             <Link href="/shop" className="hover:text-white transition-colors">
               Shop
             </Link>
@@ -59,7 +59,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
             {/* ── Gallery ── */}
-            <div className="lg:col-span-3 flex flex-col gap-4">
+            <div className="lg:col-span-3 flex flex-col gap-4" data-aos="fade-up" data-aos-duration="900">
               {gallery ? (
                 <>
                   <div className="relative w-full aspect-[4/5] bg-[#111] rounded-lg overflow-hidden">
@@ -104,7 +104,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
 
             {/* ── Details ── */}
-            <div className="lg:col-span-2 flex flex-col gap-8 lg:sticky lg:top-32 self-start">
+            <div className="lg:col-span-2 flex flex-col gap-8 lg:sticky lg:top-32 self-start" data-aos="fade-up" data-aos-delay="120" data-aos-duration="900">
               <header>
                 <h1 className="font-chillax text-3xl md:text-4xl font-bold uppercase tracking-tight text-white">
                   {product.name}

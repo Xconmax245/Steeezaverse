@@ -13,30 +13,41 @@ interface ProductCardProps {
   product: MiniShopItem;
   className?: string;
   enable3D?: boolean;
+  /** Set false when a parent (e.g. ShopBrowser) already animates the entrance. */
+  enableEntrance?: boolean;
 }
 
-export function ProductCard({ product, className = "", enable3D = false }: ProductCardProps) {
+export function ProductCard({
+  product,
+  className = "",
+  enable3D = false,
+  enableEntrance = true,
+}: ProductCardProps) {
   const cardRef = useRef<HTMLAnchorElement>(null);
-  const isNew = Date.now() - new Date(product.updated_at).getTime() < 1000 * 60 * 60 * 24 * 7;
+  const isNew =
+    Date.now() - new Date(product.updated_at).getTime() <
+    1000 * 60 * 60 * 24 * 7;
 
   // Optional 3D Tilt Effect
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  
+
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
 
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["8deg", "-8deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-8deg", "8deg"]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+  const handleMouseMove = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
     if (!enable3D || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    
+
     x.set(mouseX / width - 0.5);
     y.set(mouseY / height - 0.5);
   };
@@ -54,11 +65,24 @@ export function ProductCard({ product, className = "", enable3D = false }: Produ
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className={`group relative flex flex-col gap-0 rounded-[24px] bg-white/[0.02] border border-white/[0.05] p-3 overflow-hidden touch-pan-y transition-colors duration-500 hover:bg-white/[0.04] hover:border-white/10 ${className}`}
-      style={enable3D ? { rotateX, rotateY, transformStyle: "preserve-3d", perspective: "1000px" } : {}}
-      initial={{ opacity: 0, y: 40, scale: 0.95 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      style={
+        enable3D
+          ? {
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
+              perspective: "1000px",
+            }
+          : {}
+      }
+      {...(enableEntrance
+        ? {
+            initial: { opacity: 0, y: 40, scale: 0.95 },
+            whileInView: { opacity: 1, y: 0, scale: 1 },
+            viewport: { once: true, margin: "-50px" },
+            transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+          }
+        : {})}
       data-cuelume-hover="tick"
       draggable={false}
     >
@@ -66,7 +90,7 @@ export function ProductCard({ product, className = "", enable3D = false }: Produ
       <div className="absolute inset-0 bg-sz-red/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl pointer-events-none" />
 
       {/* Image Container */}
-      <div 
+      <div
         className="w-full aspect-[4/5] bg-black rounded-[16px] overflow-hidden relative z-10"
         style={enable3D ? { transform: "translateZ(30px)" } : {}}
       >
@@ -97,7 +121,7 @@ export function ProductCard({ product, className = "", enable3D = false }: Produ
             draggable={false}
           />
         )}
-        
+
         {/* Hover Image */}
         {product.hover_image && (
           <Image
@@ -118,7 +142,7 @@ export function ProductCard({ product, className = "", enable3D = false }: Produ
       </div>
 
       {/* Content Container */}
-      <div 
+      <div
         className="flex flex-col pt-4 pb-2 px-2 relative z-10"
         style={enable3D ? { transform: "translateZ(20px)" } : {}}
       >
@@ -130,11 +154,12 @@ export function ProductCard({ product, className = "", enable3D = false }: Produ
             <p className="font-sans text-[15px] text-sz-red font-semibold">
               {formatNGN(product.base_price)}
             </p>
-            {product.compare_at_price != null && product.compare_at_price > product.base_price && (
-              <p className="font-sans text-[11px] text-white/30 line-through mt-0.5">
-                {formatNGN(product.compare_at_price)}
-              </p>
-            )}
+            {product.compare_at_price != null &&
+              product.compare_at_price > product.base_price && (
+                <p className="font-sans text-[11px] text-white/30 line-through mt-0.5">
+                  {formatNGN(product.compare_at_price)}
+                </p>
+              )}
           </div>
         </div>
 

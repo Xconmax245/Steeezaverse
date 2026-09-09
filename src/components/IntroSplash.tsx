@@ -144,16 +144,73 @@ export default function IntroSplash() {
   return (
     <AnimatePresence onExitComplete={onExitComplete}>
       {phase !== "out" && (
-        <motion.div
-          key="intro"
-          className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden select-none"
-          style={{ backgroundColor: "#0a0a0a", zIndex: 9999, cursor: "pointer" }}
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
-          onClick={dismiss}
-        >
-          {/* Soft ambient bloom — warm, not harsh */}
+        <motion.div key="intro" className="fixed inset-0" style={{ zIndex: 9999 }}>
+          {/* ── CONTENT LAYER — lifts away first ── */}
+          <motion.div
+            className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden select-none"
+            style={{ backgroundColor: "#0a0a0a", cursor: "pointer" }}
+            exit={{ y: "-6%", opacity: 0, scale: 0.985 }}
+            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+            onClick={dismiss}
+          >
+            <SplashContent />
+          </motion.div>
+
+          {/* ── CURTAIN PANELS — staggered wipe, reveals the hero beneath ──
+              Driven purely by `exit` so AnimatePresence holds the unmount
+              until the full staggered wipe finishes. */}
+          <div className="fixed inset-0 flex pointer-events-none" style={{ zIndex: 2 }}>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <motion.div
+                key={i}
+                className="h-full flex-1"
+                style={{
+                  backgroundColor: "#0a0a0a",
+                  boxShadow: "1px 0 0 rgba(255,255,255,0.045)",
+                  willChange: "transform",
+                }}
+                initial={{ y: "0%" }}
+                exit={{
+                  y: "-102%",
+                  transition: { duration: 0.72, ease: [0.76, 0, 0.24, 1], delay: i * 0.055 },
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/** All visual content of the splash, split out so the exit choreography stays readable. */
+function SplashContent() {
+  const reduced =
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Ghost counter — a loader-style percentage readout that races to 100
+  // alongside the bar, then flips to READY. Purely decorative.
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const start = performance.now();
+    const DURATION = 2250;
+    let raf: number;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / DURATION);
+      // ease-out so it flies up fast, then crawls — classic loader feel
+      const eased = 1 - Math.pow(1 - t, 3);
+      setCount(Math.round(eased * 100));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduced]);
+
+  return (
+    <>
+      {/* Soft ambient bloom — warm, not harsh */}
           <motion.div
             className="absolute inset-0 pointer-events-none"
             style={{ background: "radial-gradient(ellipse 60% 48% at 50% 52%, rgba(124,10,10,0.25) 0%, transparent 72%)" }}
@@ -238,9 +295,21 @@ export default function IntroSplash() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 1.2 }}
-            style={{ marginTop: "clamp(18px, 2.5vw, 28px)" }}
+            style={{ marginTop: "clamp(18px, 2.5vw, 28px)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}
           >
             <LoaderBar delay={850} duration={1800} />
+            <span
+              style={{
+                fontFamily: "'Archivo', sans-serif",
+                fontWeight: 700,
+                fontSize: "11px",
+                letterSpacing: "0.3em",
+                color: "rgba(255,255,255,0.4)",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {String(count).padStart(3, "0")}%
+            </span>
           </motion.div>
 
           {/* Bottom edition stamp */}
@@ -280,8 +349,6 @@ export default function IntroSplash() {
           >
             Tap anywhere to skip →
           </motion.p>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    </>
   );
 }

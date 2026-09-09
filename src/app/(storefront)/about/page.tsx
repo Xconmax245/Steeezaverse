@@ -14,7 +14,7 @@ export default function AboutPage() {
 
       <section className="pt-40 pb-32">
         <div className="max-w-4xl mx-auto px-4 md:px-8">
-          <header className="mb-16">
+          <header className="mb-16" data-aos="fade-up" data-aos-duration="900">
             <h1 className="font-chillax text-4xl md:text-6xl font-bold uppercase tracking-tight text-white">
               About <span className="text-sz-red">Steezaverse</span>
             </h1>
@@ -24,20 +24,20 @@ export default function AboutPage() {
           </header>
 
           <div className="flex flex-col gap-10 font-sans text-base md:text-lg leading-relaxed text-white/60">
-            <p>
+            <p data-aos="fade-up" data-aos-delay="100" data-aos-duration="800">
               Steezaverse is a streetwear label built around one idea:{" "}
               <span className="text-white">drops, limited runs, and nothing else</span>. No endless
               catalog. No restocks forever. Every piece is produced in a small, deliberate batch —
               and when it sells through, it&apos;s gone.
             </p>
-            <p>
+            <p data-aos="fade-up" data-aos-delay="180" data-aos-duration="800">
               Each drop is designed, sampled, and shot locally. Time-gated releases mean the rack
               opens and closes on a schedule, so the only way in is to be there when it happens.
             </p>
           </div>
 
           {/* Manifesto-style pull quote — echoes the homepage marquee */}
-          <blockquote className="my-20 border-l-2 border-sz-red pl-6 md:pl-10">
+          <blockquote className="my-20 border-l-2 border-sz-red pl-6 md:pl-10" data-aos="fade-right" data-aos-duration="900">
             <p
               className="font-chillax uppercase italic text-2xl md:text-4xl font-black leading-snug"
               style={{ color: "var(--red)" }}
@@ -58,7 +58,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="mt-16 flex flex-wrap gap-4">
+          <div className="mt-16 flex flex-wrap gap-4" data-aos="fade-up" data-aos-delay="120">
             <Link
               href="/drops"
               className="rounded-full border border-white px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-black bg-white hover:bg-transparent hover:text-white transition-colors duration-500"

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import "aos/dist/aos.css";
 import "./globals.css";
+import AOSProvider from "@/components/AOSProvider";
 import CustomCursor from "@/components/CustomCursor";
 import IntroSplash from "@/components/IntroSplash";
 import CuelumeProvider from "@/components/CuelumeProvider";
@@ -28,6 +30,8 @@ export default function RootLayout({
       <body className="bg-black text-white antialiased">
         {/* Cuelume sound engine — wires all data-cuelume-* attributes */}
         <CuelumeProvider />
+        {/* AOS scroll-reveal engine — drives all data-aos attributes */}
+        <AOSProvider />
         {/* Intro splash — shows once per session */}
         <IntroSplash />
         {/* Custom cursor — rendered at root so it works site-wide */}
