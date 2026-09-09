@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { motion } from "framer-motion";
 
 export default function SocialProofStrip() {
   const pressMentions = [
@@ -23,7 +26,13 @@ export default function SocialProofStrip() {
   };
 
   return (
-    <section className="w-full relative z-10 bg-[#0a0a0a] py-10 md:py-12 overflow-hidden">
+    <motion.section 
+      className="w-full relative z-10 bg-[#0a0a0a] py-10 md:py-12 overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10% 0px" }}
+      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+    >
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes social-scroll-left {
           0% { transform: translateX(0); }
@@ -49,6 +58,6 @@ export default function SocialProofStrip() {
           {renderTrack()}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
