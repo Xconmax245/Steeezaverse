@@ -86,6 +86,7 @@ export default function SocialProofStrip() {
           {renderTrack()}
         </div>
       </div>
+      </div>
     </section>
   );
 }
