@@ -226,8 +226,8 @@ export default function HeroSection() {
         style={{ x: contentX, y: contentY }}
       >
         <motion.p
-          className="mb-6 text-black/70 uppercase tracking-widest min-h-[1.5rem]"
-          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "11px", fontWeight: 600 }}
+          className="mb-6 text-white uppercase tracking-widest min-h-[1.5rem] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "14px", fontWeight: 600 }}
           initial={{ opacity: 0 }}
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease }}
@@ -255,7 +255,7 @@ export default function HeroSection() {
         >
           <span
             className="text-white font-semibold uppercase tracking-[0.2em]"
-            style={{ fontFamily: "'Chillax', sans-serif", fontSize: "13px" }}
+            style={{ fontFamily: "'Chillax', sans-serif", fontSize: "15px" }}
           >
             SHOP THE DROP
           </span>
