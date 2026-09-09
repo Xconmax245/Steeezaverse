@@ -5,55 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
-const WORD = "STEEZAVERSE";
 
-function randomChar() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return chars[Math.floor(Math.random() * chars.length)];
-}
-
-function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
-  const [displayed, setDisplayed] = useState<string[]>(() => text.split(""));
-  const [done, setDone] = useState(false);
-  const isMounted = useRef(false);
-
-  useEffect(() => { isMounted.current = true; return () => { isMounted.current = false; }; }, []);
-
-  useEffect(() => {
-    let t1: ReturnType<typeof setTimeout>;
-    let iv: ReturnType<typeof setInterval>;
-    let step = 0;
-    const total = text.length * 3;
-
-    t1 = setTimeout(() => {
-      if (!isMounted.current) return;
-      setDisplayed(text.split("").map(() => randomChar()));
-      iv = setInterval(() => {
-        step++;
-        setDisplayed(text.split("").map((char, i) => {
-          const resolveAt = Math.floor((i / text.length) * total);
-          return step >= resolveAt ? char : randomChar();
-        }));
-        if (step >= total) { clearInterval(iv); setDone(true); }
-      }, 42);
-    }, delay);
-
-    return () => { clearTimeout(t1); clearInterval(iv); };
-  }, [text, delay]);
-
-  return (
-    <span aria-label={text}>
-      {displayed.map((char, i) => (
-        <span key={i} style={{
-          color: done || char === text[i] ? "#ffffff" : "rgba(180,30,30,0.85)",
-          transition: "color 0.1s",
-        }}>
-          {char}
-        </span>
-      ))}
-    </span>
-  );
-}
 
 function LoaderBar({ delay = 900, duration = 1700 }: { delay?: number; duration?: number }) {
   const [width, setWidth] = useState(0);
@@ -225,37 +177,20 @@ function SplashContent() {
             style={{ background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,0.55) 100%)" }}
           />
 
-          {/* ── LARGE BRAND LOGO — STV_mini_logo ── */}
+          {/* ── BIG BRAND LOGO ── */}
           <motion.div
-            style={{ position: "relative", width: "clamp(130px, 20vw, 280px)", height: "clamp(65px, 10vw, 140px)", marginBottom: "clamp(20px, 3.5vw, 44px)" }}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: "relative", width: "clamp(200px, 60vw, 800px)", height: "clamp(80px, 20vw, 250px)", marginBottom: "clamp(10px, 2vw, 30px)" }}
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <Image
-              src="/STV_mini_logo-removebg-preview.png"
+              src="/STV_logo_black-removebg-preview.png"
               alt="Steezaverse"
               fill
               priority
-              className="object-contain"
+              className="object-contain invert"
             />
-          </motion.div>
-
-          {/* ── WORDMARK — Chillax, massive ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, delay: 0.38, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              fontFamily: "'Chillax', sans-serif",
-              fontSize: "clamp(46px, 10vw, 172px)",
-              fontWeight: 700,
-              letterSpacing: "-0.03em",
-              lineHeight: 0.88,
-              textAlign: "center",
-            }}
-          >
-            <ScrambleText text={WORD} delay={460} />
           </motion.div>
 
           {/* ── TAGLINE ── */}
