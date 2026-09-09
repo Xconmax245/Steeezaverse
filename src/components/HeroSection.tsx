@@ -5,7 +5,6 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import ClickBlackHole from "./ClickBlackHole";
 import HeroBlobs from "./HeroBlobs";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -152,13 +151,6 @@ export default function HeroSection() {
   };
 
   return (
-    <ClickBlackHole
-      dotSize={3}
-      count={65}
-      coreRadius={12}
-      color="#ffffff"
-      className="w-full"
-    >
       <motion.section
         ref={sectionRef}
         className="relative w-full h-screen overflow-hidden"
@@ -436,6 +428,5 @@ export default function HeroSection() {
           </motion.button>
         </motion.div>
       </motion.section>
-    </ClickBlackHole>
   );
 }
