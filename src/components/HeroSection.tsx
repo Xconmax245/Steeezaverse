@@ -406,8 +406,7 @@ export default function HeroSection() {
           transition={fadeUpObj(1.1).transition}
         >
           <motion.button
-            className="group relative flex items-center justify-center overflow-hidden rounded-full border border-white px-10 py-3.5 transition-colors duration-500 hover:bg-black"
-            style={{ backdropFilter: "blur(8px)", backgroundColor: "#ffffff" }}
+            className="flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 transition-colors duration-300 hover:bg-white/90"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() =>
@@ -428,12 +427,12 @@ export default function HeroSection() {
                 fontSize: "11px",
                 letterSpacing: "0.25em",
                 textTransform: "uppercase",
-                paddingLeft: "0.25em",
               }}
-              className="text-black group-hover:text-white transition-colors duration-500 relative z-10"
+              className="text-black transition-colors duration-300"
             >
               Shop Now
             </span>
+            <span className="text-black text-[14px]">→</span>
           </motion.button>
         </motion.div>
       </motion.section>

@@ -212,12 +212,16 @@ function DesktopNavLink({ href, label, active }: { href: string; label: string; 
       >
         {label}
       </span>
-      {/* Hover Dot - Red for Steezaverse */}
-      <div 
-        className="absolute -top-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#ff2a2a] rounded-full transition-all duration-300 ease-out"
-        style={{ opacity: active ? 1 : 0, transform: active ? 'scale(1)' : 'scale(0)' }} 
-      />
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#ff2a2a] rounded-full opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out" />
+      {/* Hover/Active Dot - Hidden for Home link */}
+      {href !== '/' && (
+        <>
+          <div 
+            className="absolute -top-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#ff2a2a] rounded-full transition-all duration-300 ease-out"
+            style={{ opacity: active ? 1 : 0, transform: active ? 'scale(1)' : 'scale(0)' }} 
+          />
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#ff2a2a] rounded-full opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out" />
+        </>
+      )}
     </Link>
   );
 }
