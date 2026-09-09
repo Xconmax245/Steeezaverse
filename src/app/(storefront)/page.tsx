@@ -7,6 +7,7 @@ import LookbookSection from "@/components/LookbookSection";
 import HomeTransitionWrapper from "@/components/HomeTransitionWrapper";
 import DropSection from "@/components/DropSection";
 import SilenceSection from "@/components/SilenceSection";
+import SocialProofStrip from "@/components/SocialProofStrip";
 
 export default function HomePage() {
   return (
@@ -32,6 +33,9 @@ export default function HomePage() {
 
       {/* ── Silence Section ── */}
       <SilenceSection />
+
+      {/* ── Social Proof / Press Strip ── */}
+      <SocialProofStrip />
     </main>
   );
 }
