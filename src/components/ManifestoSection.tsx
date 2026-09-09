@@ -46,7 +46,7 @@ export default function ManifestoSection() {
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=180%",
+          end: "+=150%",
           pin: true,
           scrub: 1.2,
         }
@@ -66,11 +66,8 @@ export default function ManifestoSection() {
       // Line 3: blur to focus
       tl.to(line3Ref.current, { filter: "blur(0px)", opacity: 1, duration: 0.34, ease: "power2.out" }, 0.66);
 
-      // Hold briefly before exiting
+      // Hold briefly before exiting (we removed the scale/fade out so it doesn't leave an empty black space before MiniShop)
       tl.to({}, { duration: 0.2 });
-
-      // Exit: scale down and fade out so it "closes" smoothly
-      tl.to([contentWrapperRef.current, dividerRef.current], { scale: 0.9, opacity: 0, duration: 0.3, ease: "power2.inOut" });
 
     }, sectionRef);
 

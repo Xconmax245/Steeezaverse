@@ -135,7 +135,14 @@ export default function HeroSection() {
       if (center) tl.to(center, { opacity: 0, duration: 1, ease: "power2.inOut" }, 0);
     }, sectionRef);
 
-    return () => ctx.revert();
+    // Force GSAP to recalculate all triggers on the page after this new pin is created.
+    // We defer slightly to allow the DOM swap to complete.
+    const timer = setTimeout(() => ScrollTrigger.refresh(), 100);
+
+    return () => {
+      clearTimeout(timer);
+      ctx.revert();
+    };
   }, [isMobile]);
 
   const desktopFontSize = "clamp(90px, 11vw, 210px)";
