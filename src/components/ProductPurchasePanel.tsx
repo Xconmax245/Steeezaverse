@@ -59,8 +59,8 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
   return (
     <div className="flex flex-col gap-8">
       {/* Price */}
-      <div className="flex items-baseline gap-3">
-        <p className="font-chillax text-3xl font-bold text-sz-red">{formatNGN(unitPrice)}</p>
+      <div className="flex items-baseline gap-4">
+        <p className="font-sans text-2xl font-semibold text-sz-red tracking-tight">{formatNGN(unitPrice)}</p>
         {product.compare_at_price != null && product.compare_at_price > unitPrice && (
           <p className="font-sans text-sm text-white/30 line-through">
             {formatNGN(product.compare_at_price)}
@@ -70,11 +70,11 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
 
       {/* Variant picker */}
       {product.variants.length > 0 && (
-        <div>
-          <p className="text-[10px] uppercase tracking-widest text-white/40 mb-3">
+        <div className="flex flex-col gap-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
             Select variant
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {product.variants.map((variant) => {
               const isSelected = variant.id === selectedId;
               const out = variant.stock_quantity <= 0;
@@ -84,12 +84,12 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
                   type="button"
                   disabled={out}
                   onClick={() => setSelectedId(variant.id)}
-                  className={`rounded-full px-4 py-2 text-xs uppercase tracking-wider border transition-all duration-300 ${
+                  className={`rounded-full px-5 py-2.5 text-xs font-medium uppercase tracking-wider border transition-all duration-300 ${
                     isSelected
-                      ? "bg-sz-red/10 border-sz-red text-sz-red"
+                      ? "bg-white border-white text-black shadow-[0_0_20px_rgba(255,255,255,0.1)]"
                       : out
-                        ? "bg-transparent border-white/5 text-white/20 line-through cursor-not-allowed"
-                        : "bg-transparent border-white/15 text-white/60 hover:border-white/40 hover:text-white"
+                        ? "bg-transparent border-white/[0.05] text-white/20 line-through cursor-not-allowed"
+                        : "bg-white/[0.02] border-white/10 text-white/70 hover:bg-white/[0.05] hover:border-white/30 hover:text-white"
                   }`}
                   title={
                     out
@@ -104,31 +104,30 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
           </div>
 
           {/* Stock line */}
-          <p className="mt-3 text-[10px] uppercase tracking-wider">
+          <p className="mt-1 text-[11px] font-medium uppercase tracking-wider">
             {selected && selected.stock_quantity > 0 ? (
               selected.stock_quantity <= 5 ? (
-                <span className="text-yellow-400">
+                <span className="text-amber-500/90">
                   Only {selected.stock_quantity} left — moving fast
                 </span>
               ) : (
-                <span className="text-white/30">In stock and ready to ship</span>
+                <span className="text-white/40">In stock and ready to ship</span>
               )
             ) : (
-              <span className="text-sz-red">This variant is sold out</span>
+              <span className="text-sz-red/90">This variant is sold out</span>
             )}
           </p>
         </div>
       )}
 
-      {/* Primary CTA — checkout wired in when the cart flow ships */}
+      {/* Primary CTA */}
       {!soldOut && (
         <button
           type="button"
-          className="w-full rounded-full bg-white text-black py-4 text-xs font-bold uppercase tracking-widest hover:bg-white/85 transition-colors disabled:opacity-50"
+          className="w-full rounded-full bg-white text-black py-5 mt-2 text-[13px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
           data-cuelume-press
           data-cuelume-release
           onClick={() => {
-            // Placeholder until the cart/checkout flow lands on the storefront.
             alert("Checkout is coming soon — this button will start payment.");
           }}
         >
@@ -138,7 +137,7 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
 
       {/* Waitlist for sold-out products / variants */}
       {(soldOut || product.variants.length === 0) && (
-        <div className="border border-white/10 rounded-lg p-6 bg-white/[0.02]">
+        <div className="border border-white/[0.05] rounded-[24px] p-8 bg-white/[0.02] mt-2">
           {waitlistState === "done" ? (
             <p className="text-xs uppercase tracking-widest text-green-400">
               You&apos;re on the list — we&apos;ll email you the moment it&apos;s back

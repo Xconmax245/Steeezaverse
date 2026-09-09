@@ -57,60 +57,64 @@ export default async function ProductDetailPage({ params }: Props) {
             <span className="text-white/60">{product.name}</span>
           </nav>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
-            {/* ── Gallery ── */}
-            <div className="lg:col-span-3 flex flex-col gap-4" data-aos="fade-up" data-aos-duration="900">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+            {/* ── Gallery (Apple-aesthetic padded frame) ── */}
+            <div className="flex flex-col gap-6" data-aos="fade-up" data-aos-duration="900">
               {gallery ? (
                 <>
-                  <div className="relative w-full aspect-[4/5] bg-[#111] rounded-lg overflow-hidden">
-                    <Image
-                      src={gallery[0].url}
-                      alt={gallery[0].alt_text ?? product.name}
-                      fill
-                      priority
-                      sizes="(max-width: 1024px) 100vw, 60vw"
-                      className="object-cover"
-                    />
-                    {product.is_drop && (
-                      <div className="absolute top-4 left-4 bg-sz-red text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                        Drop{dropLabel ? ` · ${dropLabel}` : ""}
-                      </div>
-                    )}
+                  <div className="relative w-full aspect-[4/5] bg-[#0a0a0a] border border-white/[0.04] rounded-[32px] p-4 md:p-8 flex items-center justify-center overflow-hidden group">
+                    <div className="relative w-full h-full rounded-[20px] overflow-hidden">
+                      <Image
+                        src={gallery[0].url}
+                        alt={gallery[0].alt_text ?? product.name}
+                        fill
+                        priority
+                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
+                      />
+                      {product.is_drop && (
+                        <div className="absolute top-4 left-4 bg-sz-red/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
+                          Drop{dropLabel ? ` · ${dropLabel}` : ""}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   {gallery.length > 1 && (
-                    <div className="grid grid-cols-4 gap-3">
+                    <div className="grid grid-cols-4 gap-4">
                       {gallery.slice(1, 5).map((img) => (
                         <div
                           key={img.id}
-                          className="relative aspect-square bg-[#111] rounded-md overflow-hidden"
+                          className="relative aspect-square bg-[#0a0a0a] border border-white/[0.04] p-2 rounded-2xl overflow-hidden hover:border-white/20 transition-colors cursor-pointer"
                         >
-                          <Image
-                            src={img.url}
-                            alt={img.alt_text ?? `${product.name} view`}
-                            fill
-                            sizes="20vw"
-                            className="object-cover"
-                          />
+                          <div className="relative w-full h-full rounded-xl overflow-hidden">
+                            <Image
+                              src={img.url}
+                              alt={img.alt_text ?? `${product.name} view`}
+                              fill
+                              sizes="15vw"
+                              className="object-cover"
+                            />
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                 </>
               ) : (
-                <div className="w-full aspect-[4/5] bg-[#111] rounded-lg flex items-center justify-center text-white/20 text-[10px] uppercase tracking-widest">
+                <div className="w-full aspect-[4/5] bg-[#0a0a0a] rounded-[32px] flex items-center justify-center text-white/20 text-[10px] uppercase tracking-widest">
                   No imagery yet
                 </div>
               )}
             </div>
 
             {/* ── Details ── */}
-            <div className="lg:col-span-2 flex flex-col gap-8 lg:sticky lg:top-32 self-start" data-aos="fade-up" data-aos-delay="120" data-aos-duration="900">
-              <header>
-                <h1 className="font-chillax text-3xl md:text-4xl font-bold uppercase tracking-tight text-white">
+            <div className="flex flex-col gap-10 lg:sticky lg:top-32 py-4" data-aos="fade-up" data-aos-delay="120" data-aos-duration="900">
+              <header className="flex flex-col gap-4">
+                <h1 className="font-chillax text-4xl md:text-5xl font-medium tracking-wide text-white/90 leading-tight">
                   {product.name}
                 </h1>
                 {product.description && (
-                  <p className="mt-4 font-sans text-sm leading-relaxed text-white/50">
+                  <p className="font-sans text-[15px] leading-relaxed text-white/50 max-w-xl">
                     {product.description}
                   </p>
                 )}
@@ -120,25 +124,25 @@ export default async function ProductDetailPage({ params }: Props) {
 
               {/* Materials / care */}
               {(product.materials || product.care_instructions) && (
-                <div className="border-t border-white/10 pt-6 flex flex-col gap-4">
+                <div className="border-t border-white/[0.05] pt-8 flex flex-col gap-6">
                   {product.materials && (
                     <div>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30 mb-2">
                         Materials
                       </p>
-                      <p className="text-sm text-white/60">{product.materials}</p>
+                      <p className="text-sm font-medium text-white/70">{product.materials}</p>
                     </div>
                   )}
                   {product.care_instructions && (
                     <div>
-                      <p className="text-[10px] uppercase tracking-widest text-white/40 mb-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30 mb-2">
                         Care
                       </p>
-                      <p className="text-sm text-white/60">{product.care_instructions}</p>
+                      <p className="text-sm font-medium text-white/70">{product.care_instructions}</p>
                     </div>
                   )}
                   {product.compare_at_price != null && product.compare_at_price > product.base_price && (
-                    <p className="text-[10px] uppercase tracking-wider text-white/30">
+                    <p className="text-[10px] uppercase tracking-wider text-white/30 mt-2">
                       Compare at {formatNGN(product.compare_at_price)}
                     </p>
                   )}
