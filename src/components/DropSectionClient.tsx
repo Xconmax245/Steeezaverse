@@ -199,7 +199,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
             <div className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-6 backdrop-blur-md">
               {waitlistState === "done" ? (
                 <p className="text-sm uppercase tracking-widest text-green-400 text-center font-bold">
-                  You're on the list
+                  You&apos;re on the list
                 </p>
               ) : (
                 <form onSubmit={joinWaitlist} className="flex flex-col gap-4">
