@@ -71,6 +71,17 @@ body {
   }
 }
 
+@layer components {
+  .hero-word {
+    position: absolute;
+    left: calc(var(--fx) * 100%);
+    top: calc(var(--fy) * 100%);
+    transform: translate(-50%, -50%) translate(var(--nx, 0px), var(--ny, 0px));
+    font-size: clamp(40px, 11vw, 160px);
+    white-space: nowrap;
+  }
+}
+
 /* ─── AOS — brand easing + reduced-motion safety ──── */
 /* AOS injects its own easing presets; register ours via CSS custom props so
    every reveal shares the storefront's heavy out-quint curve. */
