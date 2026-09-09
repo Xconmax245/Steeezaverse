@@ -10,6 +10,25 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+/**
+ * ─── Cover-lock typography calibration ──────────────────────────────────────
+ * Fractions are in IMAGE SPACE (0..1 across the full 1280x719 photo), NOT
+ * viewport %. Because object-position is `center 20%`, horizontal subject
+ * fractions are rock solid; vertical fractions shift a little on very wide
+ * screens (the photo crops top/bottom around the 20% line).
+ *
+ * Calibrated against public/photo_2026-09-09_21-08-39.jpg:
+ *   blue guy   torso ≈ x 0.055 → 0.215, chest centroid ≈ x 0.135, y 0.63
+ *   yellow guy torso ≈ x 0.400 → 0.570, chest centroid ≈ x 0.490, y 0.63
+ *   red guy    torso ≈ x 0.680 → 0.905, chest centroid ≈ x 0.790, y 0.63
+ *
+ * Tune with:  fx/fy  = anchor point in the photo (0..1)
+ *             nx/ny  = small offsets in em (relative to font size) or px
+ * ────────────────────────────────────────────────────────────────────────────
+ */
+const STEEZA_ANCHOR = { fx: 0.135, fy: 0.63, nx: "-0.60em", ny: "0.55em" };
+const VERSE_ANCHOR = { fx: 0.728, fy: 0.63, nx: "0px", ny: "0.55em" };
+
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -132,44 +151,57 @@ export default function HeroSection() {
     letterSpacing: "-0.02em",
   };
 
+  const heroFrameStyle = {
+    "--img-ar": 1.7803,
+    "--render-w": "max(100vw, calc(var(--img-ar) * 100vh))",
+    "--render-h": "max(100vh, calc(100vw / var(--img-ar)))",
+    "--crop-x": "calc((var(--render-w) - 100vw) / 2)",
+    "--crop-y": "calc((var(--render-h) - 100vh) * 0.2)",
+  } as React.CSSProperties;
+
+  // Full uncropped photo box, expressed relative to the section. The photo
+  // paints exactly inside this box (object-cover center 20%), so anything
+  // placed in image-space coordinates lines up with the models 1:1.
+  const photoBoxStyle = {
+    left: "calc(-1 * var(--crop-x))",
+    top: "calc(-1 * var(--crop-y))",
+    width: "var(--render-w)",
+    height: "var(--render-h)",
+  } as React.CSSProperties;
+
+  const anchorStyle = (a: { fx: number; fy: number; nx: string; ny: string }) =>
+    ({
+      "--fx": a.fx,
+      "--fy": a.fy,
+      "--nx": a.nx,
+      "--ny": a.ny,
+    }) as React.CSSProperties;
+
   return (
     <motion.section
       ref={sectionRef}
       className="relative w-full h-screen overflow-hidden bg-[#e8e8e8]"
+      style={heroFrameStyle}
       aria-label="Hero"
       initial={{ opacity: 0 }}
       animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* ── Layer 1 (bottom): VERSE text sits BEHIND image ── */}
+      {/* ── Layer 1 (bottom): VERSE sits BEHIND the image ──
+          Anchored in image space; the full-photo extent div guarantees the
+          word is never clipped when the render box exceeds the viewport. */}
       <motion.div
         className="absolute inset-0 z-[1] pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
-        <span
-          className="absolute opacity-0 select-none"
-          style={{
-            ...wordStyle,
-            fontSize: "clamp(30px, 9vw, 140px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            left: "14%",
-          }}
-        >
-          STEEZA
-        </span>
-        <span
-          className="absolute text-[var(--red)] select-none"
-          style={{
-            ...wordStyle,
-            fontSize: "clamp(30px, 9vw, 140px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            left: "74%",
-          }}
-        >
-          VERSE
-        </span>
+        <div className="absolute" style={photoBoxStyle}>
+          <span
+            className="hero-word text-[var(--red)] select-none"
+            style={{ ...wordStyle, ...anchorStyle(VERSE_ANCHOR) }}
+          >
+            VERSE
+          </span>
+        </div>
       </motion.div>
 
       {/* ── Layer 2 (middle): The photo — mix-blend-multiply reveals text through studio grey bg ── */}
@@ -188,35 +220,27 @@ export default function HeroSection() {
         />
       </motion.div>
 
-      {/* ── Layer 3 (top): STEEZA sits IN FRONT of image ── */}
+      {/* ── Layer 3 (top): STEEZA sits IN FRONT of the image ──
+          --shift-x pushes the word off the blue guy by exactly 15.7% of the
+          photo's width — the same fraction of pixels the photo's render box
+          moves, so the word tracks the photo crop instead of the viewport. */}
       <motion.div
         className="absolute inset-0 z-[3] pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
-        <span
-          className="absolute text-black select-none"
-          style={{
-            ...wordStyle,
-            fontSize: "clamp(30px, 9vw, 140px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            left: "14%",
-          }}
-        >
-          STEEZA
-        </span>
-        <span
-          className="absolute opacity-0 select-none"
-          style={{
-            ...wordStyle,
-            fontSize: "clamp(30px, 9vw, 140px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            left: "74%",
-          }}
-        >
-          VERSE
-        </span>
+        <div className="absolute" style={photoBoxStyle}>
+          <span
+            className="hero-word text-black select-none"
+            style={{
+              ...wordStyle,
+              ...anchorStyle(STEEZA_ANCHOR),
+              "--shift-x": "calc(var(--render-w) * 0.157)",
+              "--nx": "var(--shift-x)",
+            } as React.CSSProperties}
+          >
+            STEEZA
+          </span>
+        </div>
       </motion.div>
 
       {/* ── UI Layer: typewriter + CTA button, interactable ── */}
@@ -226,8 +250,8 @@ export default function HeroSection() {
         style={{ x: contentX, y: contentY }}
       >
         <motion.p
-          className="mb-6 text-white uppercase tracking-widest min-h-[1.5rem] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "14px", fontWeight: 600 }}
+          className="mb-6 text-black/70 uppercase tracking-widest min-h-[1.5rem]"
+          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "11px", fontWeight: 600 }}
           initial={{ opacity: 0 }}
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease }}
@@ -255,7 +279,7 @@ export default function HeroSection() {
         >
           <span
             className="text-white font-semibold uppercase tracking-[0.2em]"
-            style={{ fontFamily: "'Chillax', sans-serif", fontSize: "15px" }}
+            style={{ fontFamily: "'Chillax', sans-serif", fontSize: "13px" }}
           >
             SHOP THE DROP
           </span>
