@@ -167,6 +167,8 @@ export default function HeroSection() {
           alt="Steezaverse Models"
           fill
           priority
+          quality={100}
+          sizes="100vw"
           className="object-cover object-[center_20%] select-none hidden md:block"
           draggable={false}
         />
@@ -176,6 +178,8 @@ export default function HeroSection() {
           alt="Steezaverse Models Mobile"
           fill
           priority
+          quality={100}
+          sizes="100vw"
           className="object-cover object-[center_20%] select-none block md:hidden"
           draggable={false}
         />
