@@ -75,10 +75,10 @@ export default function ManifestoSection() {
   }, []);
 
   const textStyle = {
-    fontFamily: "'Chillax', sans-serif",
-    fontWeight: 900,
+    fontFamily: "'Bespoke Sans', sans-serif",
+    fontWeight: 800,
     fontSize: "clamp(32px, 6vw, 72px)",
-    letterSpacing: "0.05em",
+    letterSpacing: "0.02em",
     lineHeight: 1.3,
     color: "rgba(255,255,255,0.92)",
     textTransform: "uppercase" as const,
@@ -101,20 +101,20 @@ export default function ManifestoSection() {
         
         {/* Line 1 */}
         <div ref={line1Ref} style={textStyle}>
-          BUILDING THE <span style={{ color: "var(--red)" }}>FOUNDATION</span>
+          BUILDING THE <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>foundation</span>
         </div>
 
         {/* Line 2 */}
-        <div ref={line2Ref} style={textStyle} className="flex gap-[0.3em] flex-wrap justify-center">
+        <div ref={line2Ref} style={textStyle} className="flex gap-[0.3em] flex-wrap justify-center items-center">
           {"FOR A NEW ERA OF".split(" ").map((word, i) => (
             <span key={i} className="word inline-block">{word}</span>
           ))}
-          <span className="word inline-block" style={{ color: "var(--red)" }}>CREATION</span>
+          <span className="word inline-block font-zodiak italic lowercase text-[var(--blue)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>creation</span>
         </div>
 
         {/* Line 3 */}
         <div ref={line3Ref} style={textStyle}>
-          WELCOME TO THE <span style={{ color: "var(--red)" }}>MANIFESTO</span>
+          WELCOME TO THE <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>manifesto</span>
         </div>
 
       </div>
