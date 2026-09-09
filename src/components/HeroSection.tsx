@@ -172,7 +172,7 @@ export default function HeroSection() {
         />
         {/* Mobile Image */}
         <Image
-          src="/fashionable-man-woman-posing-with-copy-space.jpg"
+          src="/One_voice,_three_shades_Style_that_rides_the_wave_of_fire,_calm (3).jpg"
           alt="Steezaverse Models Mobile"
           fill
           priority
