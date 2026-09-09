@@ -150,10 +150,10 @@ export default function HeroSection() {
           className="absolute opacity-0 select-none"
           style={{
             ...wordStyle,
-            fontSize: "clamp(40px, 11vw, 160px)",
+            fontSize: "clamp(30px, 9vw, 140px)",
             top: "50%",
             transform: "translateY(-50%)",
-            left: "8%",
+            left: "14%",
           }}
         >
           STEEZA
@@ -162,10 +162,10 @@ export default function HeroSection() {
           className="absolute text-[var(--red)] select-none"
           style={{
             ...wordStyle,
-            fontSize: "clamp(40px, 11vw, 160px)",
+            fontSize: "clamp(30px, 9vw, 140px)",
             top: "50%",
             transform: "translateY(-50%)",
-            left: "62%",
+            left: "74%",
           }}
         >
           VERSE
@@ -197,10 +197,10 @@ export default function HeroSection() {
           className="absolute text-black select-none"
           style={{
             ...wordStyle,
-            fontSize: "clamp(40px, 11vw, 160px)",
+            fontSize: "clamp(30px, 9vw, 140px)",
             top: "50%",
             transform: "translateY(-50%)",
-            left: "8%",
+            left: "14%",
           }}
         >
           STEEZA
@@ -209,10 +209,10 @@ export default function HeroSection() {
           className="absolute opacity-0 select-none"
           style={{
             ...wordStyle,
-            fontSize: "clamp(40px, 11vw, 160px)",
+            fontSize: "clamp(30px, 9vw, 140px)",
             top: "50%",
             transform: "translateY(-50%)",
-            left: "62%",
+            left: "74%",
           }}
         >
           VERSE
