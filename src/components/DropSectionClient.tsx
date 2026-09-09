@@ -154,7 +154,12 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
         
         {/* Kinetic Countdown */}
         {!isLive && timeLeft && (
-          <div className="flex gap-4 md:gap-8 text-white font-black text-6xl md:text-9xl tracking-tighter" style={{ fontFamily: "Archivo, sans-serif" }}>
+          <div 
+            className="flex gap-4 md:gap-8 text-white font-black text-6xl md:text-9xl tracking-tighter" 
+            style={{ fontFamily: "Archivo, sans-serif" }}
+            data-aos="zoom-in"
+            data-aos-duration="1200"
+          >
             <div className="flex">
               <GlitchDigit digit={timeLeft.d[0]} isLive={isLive} reducedMotion={reducedMotion} />
               <GlitchDigit digit={timeLeft.d[1]} isLive={isLive} reducedMotion={reducedMotion} />
@@ -190,7 +195,12 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
           </motion.h2>
         )}
 
-        <div className="flex flex-col items-center gap-6 mt-8 w-full max-w-md">
+        <div 
+          className="flex flex-col items-center gap-6 mt-8 w-full max-w-md"
+          data-aos="fade-up"
+          data-aos-delay="200"
+          data-aos-duration="1000"
+        >
           <p className="text-white/60 font-semibold tracking-[0.2em] uppercase text-xs text-center">
             {drop.name}
           </p>
