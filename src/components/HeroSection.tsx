@@ -128,45 +128,48 @@ export default function HeroSection() {
     fontFamily: "'Bespoke Sans', sans-serif",
     fontWeight: 800,
     textTransform: "uppercase",
-    lineHeight: 1.05,
-    letterSpacing: "0.05em",
-    display: "block",
+    lineHeight: 1,
+    letterSpacing: "-0.02em",
   };
 
   return (
     <motion.section
       ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden bg-[#e6e6e6]"
+      className="relative w-full h-screen overflow-hidden bg-[#e8e8e8]"
       aria-label="Hero"
       initial={{ opacity: 0 }}
       animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Background Text Layer (VERSE) */}
+      {/* ── Layer 1 (bottom): VERSE text sits BEHIND image ── */}
       <motion.div
-        className="absolute inset-0 z-0 flex items-center justify-center text-center pointer-events-none"
+        className="absolute inset-0 z-[1] flex items-center justify-between px-[8vw] pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
-        <div className="flex items-center tracking-tighter text-[clamp(36px,11vw,140px)]" style={wordStyle}>
-           <motion.span 
-            className="opacity-0"
-            initial={{ opacity: 0, y: 20 }}
-            animate={playAnimations ? { opacity: 0, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.4, ease }}
-           >STEEZA</motion.span>
-           <motion.span 
-            className="text-[var(--red)]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.4, ease }}
-           >VERSE</motion.span>
-        </div>
+        <span
+          className="opacity-0 select-none"
+          style={{
+            ...wordStyle,
+            fontSize: "clamp(40px, 11vw, 160px)",
+          }}
+        >
+          STEEZA
+        </span>
+        <span
+          className="text-[var(--red)] select-none"
+          style={{
+            ...wordStyle,
+            fontSize: "clamp(40px, 11vw, 160px)",
+          }}
+        >
+          VERSE
+        </span>
       </motion.div>
 
-      {/* Middle Image Layer */}
+      {/* ── Layer 2 (middle): The photo — mix-blend-multiply reveals text through studio grey bg ── */}
       <motion.div
         ref={bgRef}
-        className="absolute inset-0 w-full h-full z-10 pointer-events-none mix-blend-multiply"
+        className="absolute inset-0 z-[2] pointer-events-none mix-blend-multiply"
         style={{ x: bgX, y: bgY }}
       >
         <Image
@@ -174,38 +177,45 @@ export default function HeroSection() {
           alt="Steezaverse Models"
           fill
           priority
-          className="object-cover md:object-center select-none"
+          className="object-cover object-[center_20%] select-none"
           draggable={false}
         />
-        {/* Subtle overlay removed to keep colors bright, add if needed */}
       </motion.div>
 
-      {/* Foreground Text Layer (STEEZA) */}
+      {/* ── Layer 3 (top): STEEZA sits IN FRONT of image ── */}
       <motion.div
-        ref={contentRef}
-        className="relative z-20 w-full h-full flex flex-col items-center justify-center text-center px-4 pointer-events-none"
+        className="absolute inset-0 z-[3] flex items-center justify-between px-[8vw] pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
-        <div className="flex flex-col items-center w-full px-2">
-          <div className="flex items-center tracking-tighter text-[clamp(36px,11vw,140px)]" style={wordStyle}>
-            <motion.span 
-              className="text-black"
-              initial={{ opacity: 0, y: 20 }}
-              animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.4, ease }}
-            >STEEZA</motion.span>
-            <motion.span 
-              className="opacity-0"
-              initial={{ opacity: 0, y: 20 }}
-              animate={playAnimations ? { opacity: 0, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.4, ease }}
-            >VERSE</motion.span>
-          </div>
-        </div>
+        <span
+          className="text-black select-none"
+          style={{
+            ...wordStyle,
+            fontSize: "clamp(40px, 11vw, 160px)",
+          }}
+        >
+          STEEZA
+        </span>
+        <span
+          className="opacity-0 select-none"
+          style={{
+            ...wordStyle,
+            fontSize: "clamp(40px, 11vw, 160px)",
+          }}
+        >
+          VERSE
+        </span>
+      </motion.div>
 
+      {/* ── UI Layer: typewriter + CTA button, interactable ── */}
+      <motion.div
+        ref={contentRef}
+        className="absolute inset-0 z-[4] flex flex-col items-center justify-end pb-20 text-center px-4"
+        style={{ x: contentX, y: contentY }}
+      >
         <motion.p
-          className="mt-6 mb-10 text-black/80 uppercase tracking-widest min-h-[1.5rem]"
-          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "12px", fontWeight: 600 }}
+          className="mb-6 text-black/70 uppercase tracking-widest min-h-[1.5rem]"
+          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "11px", fontWeight: 600 }}
           initial={{ opacity: 0 }}
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease }}
@@ -214,7 +224,7 @@ export default function HeroSection() {
         </motion.p>
 
         <motion.button
-          className="group flex items-center justify-center bg-black px-10 py-3 transition-colors duration-300 hover:bg-[var(--red)]"
+          className="flex items-center justify-center bg-black px-10 py-3 transition-colors duration-300 hover:bg-[var(--red)]"
           initial={{ opacity: 0, y: 10 }}
           animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.8, delay: 0.9, ease }}
@@ -232,11 +242,8 @@ export default function HeroSection() {
           data-cuelume-hover="tick"
         >
           <span
-            className="text-white font-semibold uppercase tracking-[0.2em] transition-colors duration-300"
-            style={{
-              fontFamily: "'Chillax', sans-serif",
-              fontSize: "13px",
-            }}
+            className="text-white font-semibold uppercase tracking-[0.2em]"
+            style={{ fontFamily: "'Chillax', sans-serif", fontSize: "13px" }}
           >
             SHOP THE DROP
           </span>
