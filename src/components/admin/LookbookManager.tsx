@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import ImageUploader from '@/components/admin/ImageUploader';
 import { ArrowUp, ArrowDown, Trash2, Link as LinkIcon, Edit2, ChevronDown } from 'lucide-react';
@@ -29,6 +30,11 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [imageToDelete, setImageToDelete] = useState<LookbookImage | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   async function api(
     path: string,
@@ -244,7 +250,7 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
       {uploading && <p className="text-sm text-gray-500 mt-4">Adding images…</p>}
 
       {/* Deletion Modal */}
-      {imageToDelete && (
+      {mounted && imageToDelete && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-[#080808] border border-white/10 rounded-xl p-8 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
             <h3 className="text-white text-lg font-bold font-chillax uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -271,7 +277,8 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

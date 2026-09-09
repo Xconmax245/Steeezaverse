@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { deleteProduct } from "@/app/actions/product-actions";
 import { useRouter } from "next/navigation";
 
 export default function DeleteProductButton({ productId }: { productId: string }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -32,7 +38,7 @@ export default function DeleteProductButton({ productId }: { productId: string }
         {isDeleting ? "Deleting..." : "Delete"}
       </button>
 
-      {showModal && (
+      {mounted && showModal && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-[#080808] border border-white/10 rounded-xl p-8 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
             <h3 className="text-white text-lg font-bold font-chillax uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -59,7 +65,8 @@ export default function DeleteProductButton({ productId }: { productId: string }
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
