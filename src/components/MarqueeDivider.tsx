@@ -2,19 +2,19 @@ import React from "react";
 
 export default function MarqueeDivider() {
   const wordsRow1 = [
-    { text: "Island Adventure", num: "01" },
-    { text: "Boho Chic", num: "02" },
-    { text: "Urban Utility", num: "03" },
-    { text: "Neo Tokyo", num: "04" },
-    { text: "Core Aesthetics", num: "05" },
+    { text: "HEAVYWEIGHT COTTON", num: "01" },
+    { text: "OVERSIZED SILHOUETTES", num: "02" },
+    { text: "LIMITED RUN", num: "03" },
+    { text: "NO RESTOCKS", num: "04" },
+    { text: "ARCHIVE PIECES", num: "05" },
   ];
 
   const wordsRow2 = [
-    { text: "Neon Lights", num: "06" },
-    { text: "Knight Riders", num: "07" },
-    { text: "Heavy Metal", num: "08" },
-    { text: "Acid Wash", num: "09" },
-    { text: "Stealth Tech", num: "10" },
+    { text: "DROP 001", num: "06" },
+    { text: "DISTRESSED WASH", num: "07" },
+    { text: "HIDDEN DETAILS", num: "08" },
+    { text: "UTILITY WEAR", num: "09" },
+    { text: "STEEZAVERSE EXCLUSIVE", num: "10" },
   ];
 
   // Helper to render a continuous track of items
@@ -23,12 +23,12 @@ export default function MarqueeDivider() {
     const repeated = [...words, ...words, ...words, ...words];
     return repeated.map((item, index) => (
       <div key={index} className="flex items-center gap-8 md:gap-16 mx-4 md:mx-8">
-        <span className="text-[var(--red)] font-light text-[clamp(40px,6vw,90px)] leading-none">/</span>
+        <span className="text-[var(--red)] font-black italic text-[clamp(40px,6vw,90px)] leading-none">/</span>
         <div className="relative flex items-start">
-          <span className="font-zodiak text-[clamp(40px,6vw,90px)] tracking-wide text-white leading-none">
+          <span className="font-chillax italic font-black text-[clamp(40px,6vw,90px)] tracking-wide text-white leading-none">
             {item.text}
           </span>
-          <span className="text-[var(--red)] text-[10px] md:text-[14px] font-bold tracking-widest absolute -top-2 md:-top-4 -right-6 md:-right-8">
+          <span className="text-[var(--blue)] text-[12px] md:text-[16px] font-bold tracking-widest absolute -top-4 md:-top-6 -right-6 md:-right-8">
             {item.num}
           </span>
         </div>
@@ -64,9 +64,6 @@ export default function MarqueeDivider() {
         .marquee-container:hover .marquee-track-left,
         .marquee-container:hover .marquee-track-right {
           animation-play-state: paused;
-        }
-        .font-zodiak {
-          font-family: 'Zodiak', serif;
         }
       `}} />
 
