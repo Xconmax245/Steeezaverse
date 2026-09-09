@@ -5,6 +5,8 @@ import ManifestoSection from "@/components/ManifestoSection";
 import MiniShopSection from "@/components/MiniShopSection";
 import LookbookSection from "@/components/LookbookSection";
 import HomeTransitionWrapper from "@/components/HomeTransitionWrapper";
+import DropSection from "@/components/DropSection";
+import SilenceSection from "@/components/SilenceSection";
 
 export default function HomePage() {
   return (
@@ -24,6 +26,12 @@ export default function HomePage() {
         {/* ── Lookbook Section (admin-managed) ── */}
         <LookbookSection />
       </HomeTransitionWrapper>
+
+      {/* ── Drop Section ── */}
+      <DropSection />
+
+      {/* ── Silence Section ── */}
+      <SilenceSection />
     </main>
   );
 }

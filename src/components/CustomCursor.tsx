@@ -71,7 +71,7 @@ export default function CustomCursor() {
           translateY: "-50%",
           width: 5,
           height: 5,
-          backgroundColor: "var(--red)",
+          backgroundColor: "var(--ink-2)",
         }}
       />
 

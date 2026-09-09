@@ -30,6 +30,7 @@ interface CartLine {
       base_price: number;
       status: string;
       is_drop: boolean;
+      drop_starts_at: string | null;
     };
   };
 }
@@ -72,7 +73,7 @@ export async function POST(request: Request) {
         `quantity,
          product_variants(
            id, sku, size, color, stock_quantity, price_override,
-           products(id, name, slug, base_price, status, is_drop)
+           products(id, name, slug, base_price, status, is_drop, drop_starts_at)
          )`
       )
       .eq('cart_id', cartId);
@@ -104,6 +105,14 @@ export async function POST(request: Request) {
           { success: false, error: `${p.name} is not available for purchase` },
           { status: 400 }
         );
+      }
+      if (p.is_drop && p.drop_starts_at) {
+        if (new Date() < new Date(p.drop_starts_at)) {
+          return NextResponse.json(
+            { success: false, error: `${p.name} is not yet available for purchase` },
+            { status: 400 }
+          );
+        }
       }
       if (line.variant.stock_quantity < line.quantity) {
         return NextResponse.json(
