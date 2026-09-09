@@ -4,10 +4,10 @@ import Link from "next/link";
 
 // 4-item repeating bento pattern mapped to a dense 3-column grid
 const PATTERN: { variant: "full" | "inset"; spanClass: string; aspectClass: string }[] = [
-  { variant: "full", spanClass: "col-span-1 row-span-2", aspectClass: "aspect-[3/4]" },
-  { variant: "full", spanClass: "col-span-1 row-span-1", aspectClass: "aspect-square" },
-  { variant: "full", spanClass: "col-span-1 row-span-2", aspectClass: "aspect-[3/4]" },
-  { variant: "full", spanClass: "col-span-1 row-span-1", aspectClass: "aspect-square" }
+  { variant: "full", spanClass: "col-span-2 md:col-span-1 md:row-span-2", aspectClass: "aspect-[4/3] md:aspect-[3/4]" },
+  { variant: "full", spanClass: "col-span-1 md:col-span-1 md:row-span-1", aspectClass: "aspect-[3/4] md:aspect-square" },
+  { variant: "full", spanClass: "col-span-1 md:col-span-1 md:row-span-2", aspectClass: "aspect-[3/4] md:aspect-[3/4]" },
+  { variant: "full", spanClass: "col-span-2 md:col-span-1 md:row-span-1", aspectClass: "aspect-[2/1] md:aspect-square" }
 ];
 
 export default async function LookbookSection() {
@@ -34,8 +34,8 @@ export default async function LookbookSection() {
           </Link>
         </div>
 
-        {/* 3-Column Dense Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 grid-flow-row-dense auto-rows-min gap-2 md:gap-4">
+        {/* Responsive Dense Bento Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 grid-flow-row-dense auto-rows-min gap-2 md:gap-4">
           {items.map((item, index) => {
             const config = PATTERN[index % PATTERN.length];
             return (
