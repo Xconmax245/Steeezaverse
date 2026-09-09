@@ -127,12 +127,13 @@ export default function Footer() {
             © {new Date().getFullYear()} Steezaverse. All rights reserved.
           </p>
           
-          {/* Optional 2nd Loop Layer: Static Tiny Wordmark */}
-          <div 
-            className="text-white/20 text-xs md:text-sm uppercase tracking-[0.2em] select-none"
-            style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900 }}
-          >
-            STEEZAVERSE
+          {/* Optional 2nd Loop Layer: Static Tiny Wordmark / Logo */}
+          <div className="opacity-20 select-none">
+            <img 
+              src="/STV_mini_logo-removebg-preview.png" 
+              alt="Steezaverse" 
+              className="h-8 w-auto object-contain"
+            />
           </div>
         </div>
       </div>

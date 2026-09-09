@@ -215,7 +215,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.4, ease }}
             className="text-[clamp(45px,7.5vw,130px)] font-extrabold md:ml-[4%] text-[var(--red)]"
           >
-            WITH STEEZAVERSE
+            WITH <span style={{ fontFamily: "'Nunito', sans-serif" }}>STEEZAVERSE</span>
           </motion.div>
         </div>
 
