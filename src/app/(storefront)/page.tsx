@@ -8,6 +8,7 @@ import HomeTransitionWrapper from "@/components/HomeTransitionWrapper";
 import DropSection from "@/components/DropSection";
 import SilenceSection from "@/components/SilenceSection";
 import SocialProofStrip from "@/components/SocialProofStrip";
+import FinalCTA from "@/components/FinalCTA";
 
 export default function HomePage() {
   return (
@@ -36,6 +37,9 @@ export default function HomePage() {
 
       {/* ── Social Proof / Press Strip ── */}
       <SocialProofStrip />
+
+      {/* ── Final Minimal CTA ── */}
+      <FinalCTA />
     </main>
   );
 }

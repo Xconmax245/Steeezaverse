@@ -28,6 +28,7 @@ export default function RootLayout({
         <link href="https://api.fontshare.com/v2/css?f[]=aktura@400&display=swap" rel="stylesheet" />
         <link href="https://api.fontshare.com/v2/css?f[]=bespoke-sans@800&display=swap" rel="stylesheet" />
         <link href="https://api.fontshare.com/v2/css?f[]=zodiak@400,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600&display=swap" rel="stylesheet" />
       </head>
       <body className="bg-black text-white antialiased">
         {/* Cuelume sound engine — wires all data-cuelume-* attributes */}
