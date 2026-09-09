@@ -18,11 +18,15 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [isDarkBg, setIsDarkBg] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 60);
+      setIsDarkBg(window.scrollY > window.innerHeight - 50);
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
@@ -95,8 +99,8 @@ export default function Navbar() {
                 fill
                 priority
                 sizes="(max-width: 768px) 80px, 75px"
-                className="object-contain"
-                style={{ filter: "invert(1) brightness(2)" }}
+                className="object-contain transition-all duration-500"
+                style={{ filter: isDarkBg ? "brightness(2)" : "invert(1) brightness(2)" }}
               />
             </div>
           </Link>
@@ -156,8 +160,8 @@ export default function Navbar() {
                 fill
                 priority
                 sizes="(max-width: 768px) 80px, 75px"
-                className="object-contain"
-                style={{ filter: "invert(1) brightness(2)" }}
+                className="object-contain transition-all duration-500"
+                style={{ filter: isDarkBg ? "brightness(2)" : "invert(1) brightness(2)" }}
               />
             </div>
           </Link>
@@ -325,7 +329,7 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void }>(({
               fill 
               sizes="80px" 
               className="object-contain opacity-90" 
-              style={{ filter: "invert(1) brightness(2)" }} 
+              style={{ filter: "brightness(2)" }} 
             />
          </div>
          <motion.button onClick={onClose} whileHover={{ rotate: 90 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }} className="text-white/70 hover:text-white p-2">
@@ -344,7 +348,7 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void }>(({
               fill 
               sizes="75px" 
               className="object-contain" 
-              style={{ filter: "invert(1) brightness(2)" }}
+              style={{ filter: "brightness(2)" }}
             />
           </div>
         </div>
