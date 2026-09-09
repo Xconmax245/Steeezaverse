@@ -171,8 +171,8 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
 
   if (!drop) return null; // Or return a fallback placeholder if no drops exist
 
-  // Dynamic Background: Blue/Black (#000411) when countdown, Red/Black (#110000) when live
-  const bgColor = isLive ? "#110000" : "#000411";
+  // Dynamic Background: Sleek black (#080808) when countdown, Deep red (#0d0202) when live
+  const bgColor = isLive ? "#0d0202" : "#080808";
 
   // Pulse/shake intensity based on stock
   const isLowStock = stockRemaining !== null && stockRemaining > 0 && stockRemaining <= 5;
@@ -235,32 +235,40 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
           </p>
 
           {!isLive ? (
-            <div className="w-full bg-white/[0.03] border border-white/10 rounded-2xl p-6 backdrop-blur-md">
+            <div className="w-full mt-4">
               {waitlistState === "done" ? (
                 <p className="text-sm uppercase tracking-widest text-green-400 text-center font-bold">
                   You&apos;re on the list
                 </p>
               ) : (
-                <form onSubmit={joinWaitlist} className="flex flex-col gap-4">
-                  <p className="text-[10px] uppercase tracking-widest text-white/50 text-center">
+                <form onSubmit={joinWaitlist} className="flex flex-col gap-5">
+                  <p className="text-[11px] uppercase tracking-[0.2em] text-white/60 text-center" style={{ fontFamily: "'Chillax', sans-serif" }}>
                     Join waitlist for early access
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex flex-col sm:flex-row gap-3">
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@email.com"
-                      className="flex-1 rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-colors focus:border-[var(--red)]"
+                      className="flex-1 rounded-full border border-white/20 bg-transparent px-6 py-4 text-[13px] text-white placeholder-white/30 outline-none transition-all focus:border-white focus:bg-white/5 font-sans"
                     />
                     <button
                       type="submit"
                       disabled={waitlistState === "sending"}
                       data-cuelume-hover="tick"
-                      className="rounded-md bg-[var(--red)] px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:opacity-80 transition-opacity disabled:opacity-50 shadow-[0_0_15px_rgba(255,0,0,0.3)] hover:shadow-[0_0_20px_rgba(255,0,0,0.5)]"
+                      className="rounded-full bg-white px-8 py-4 text-[13px] font-bold uppercase tracking-[0.15em] text-black hover:bg-gray-200 transition-all disabled:opacity-50 flex items-center justify-center gap-2 group"
+                      style={{ fontFamily: "'Chillax', sans-serif" }}
                     >
-                      {waitlistState === "sending" ? "…" : "Notify me"}
+                      {waitlistState === "sending" ? "..." : (
+                        <>
+                          <span className="mt-[2px]">Notify me</span>
+                          <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </>
+                      )}
                     </button>
                   </div>
                   {waitlistError && (
