@@ -129,33 +129,15 @@ export default function HeroSection() {
         className="relative z-10 w-full h-full flex flex-col items-center justify-center text-center px-4"
         style={{ x: contentX, y: contentY }}
       >
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-full px-2">
           <motion.span
             style={wordStyle}
-            className="text-[clamp(40px,8vw,120px)] text-white"
+            className="text-[clamp(36px,11vw,140px)] text-white text-center tracking-tighter"
             initial={{ opacity: 0, y: 20 }}
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.4, ease }}
           >
-            ENTER
-          </motion.span>
-          <motion.span
-            style={wordStyle}
-            className="text-[clamp(40px,8vw,120px)] text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.5, ease }}
-          >
-            THE
-          </motion.span>
-          <motion.span
-            style={wordStyle}
-            className="text-[clamp(40px,8vw,120px)] text-white"
-            initial={{ opacity: 0, y: 20 }}
-            animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.6, ease }}
-          >
-            VERSE
+            STEEZAVERSE
           </motion.span>
         </div>
 
