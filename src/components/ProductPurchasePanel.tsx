@@ -60,9 +60,9 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
     <div className="flex flex-col gap-8">
       {/* Price */}
       <div className="flex items-baseline gap-4">
-        <p className="font-sans text-2xl font-semibold text-sz-red tracking-tight">{formatNGN(unitPrice)}</p>
+        <p className="font-chillax text-2xl font-bold text-sz-red tracking-tight">{formatNGN(unitPrice)}</p>
         {product.compare_at_price != null && product.compare_at_price > unitPrice && (
-          <p className="font-sans text-sm text-white/30 line-through">
+          <p className="font-chillax text-sm text-white/30 line-through">
             {formatNGN(product.compare_at_price)}
           </p>
         )}
@@ -71,10 +71,10 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
       {/* Variant picker */}
       {product.variants.length > 0 && (
         <div className="flex flex-col gap-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40">
+          <p className="font-chillax text-[12px] font-bold uppercase tracking-[0.2em] text-white/40">
             Select variant
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 font-chillax">
             {product.variants.map((variant) => {
               const isSelected = variant.id === selectedId;
               const out = variant.stock_quantity <= 0;
@@ -104,7 +104,7 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
           </div>
 
           {/* Stock line */}
-          <p className="mt-1 text-[11px] font-medium uppercase tracking-wider">
+          <p className="mt-1 font-chillax text-[11px] font-bold uppercase tracking-wider">
             {selected && selected.stock_quantity > 0 ? (
               selected.stock_quantity <= 5 ? (
                 <span className="text-amber-500/90">
@@ -124,7 +124,7 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
       {!soldOut && (
         <button
           type="button"
-          className="w-full rounded-full bg-white text-black py-5 mt-2 text-[13px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+          className="w-full rounded-full bg-white text-black py-5 mt-2 font-chillax text-[14px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
           data-cuelume-press
           data-cuelume-release
           onClick={() => {

@@ -76,18 +76,18 @@ export function ProductCard({
       <div className="flex justify-between items-start px-1 mt-1">
         {/* Left: Name and Color */}
         <div className="flex flex-col gap-1.5">
-          <h3 className="font-sans text-[12px] font-bold text-white/90 truncate group-hover:text-white transition-colors">
+          <h3 className="font-chillax text-[15px] font-bold tracking-wide text-white/90 truncate group-hover:text-white transition-colors">
             {product.name}
           </h3>
-          <div className="text-[10px] text-white/40 font-sans">
+          <div className="text-[12px] text-white/40 font-chillax tracking-wide">
             Steezaverse - 1 Colour
           </div>
         </div>
         
         {/* Right: Plus and Price */}
         <div className="flex flex-col items-end gap-1">
-          <span className="text-[10px] text-white/40 leading-none font-light">+</span>
-          <span className="font-sans text-[12px] text-white font-bold tracking-wide">
+          <span className="text-[12px] text-white/40 leading-none font-light">+</span>
+          <span className="font-chillax text-[14px] text-white font-bold tracking-wide">
             {formatNGN(product.base_price)}
           </span>
         </div>

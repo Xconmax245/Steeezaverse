@@ -48,18 +48,9 @@ export default async function ProductDetailPage({ params }: Props) {
 
       <section className="pt-32 pb-24">
         <div className="max-w-[95vw] mx-auto px-4 md:px-8">
-          {/* Breadcrumb */}
-          <nav data-aos="fade-in" className="mb-10 flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/30">
-            <Link href="/shop" className="hover:text-white transition-colors">
-              Shop
-            </Link>
-            <span>/</span>
-            <span className="text-white/60">{product.name}</span>
-          </nav>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            {/* ── Gallery (Apple-aesthetic padded frame) ── */}
-            <div className="flex flex-col gap-6" data-aos="fade-up" data-aos-duration="900">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
+            {/* ── Gallery ── */}
+            <div className="lg:col-span-5 flex flex-col gap-6" data-aos="fade-up" data-aos-duration="900">
               {gallery ? (
                 <>
                   <div className="relative w-full aspect-[4/5] bg-[#0a0a0a] border border-white/[0.04] rounded-[32px] p-4 md:p-8 flex items-center justify-center overflow-hidden group">
@@ -69,14 +60,9 @@ export default async function ProductDetailPage({ params }: Props) {
                         alt={gallery[0].alt_text ?? product.name}
                         fill
                         priority
-                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        sizes="(max-width: 1024px) 100vw, 40vw"
                         className="object-cover transition-transform duration-1000 group-hover:scale-[1.02]"
                       />
-                      {product.is_drop && (
-                        <div className="absolute top-4 left-4 bg-sz-red/90 backdrop-blur-md text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest shadow-lg">
-                          Drop{dropLabel ? ` · ${dropLabel}` : ""}
-                        </div>
-                      )}
                     </div>
                   </div>
                   {gallery.length > 1 && (
@@ -108,13 +94,27 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
 
             {/* ── Details ── */}
-            <div className="flex flex-col gap-10 lg:sticky lg:top-32 py-4" data-aos="fade-up" data-aos-delay="120" data-aos-duration="900">
-              <header className="flex flex-col gap-4">
-                <h1 className="font-chillax text-4xl md:text-5xl font-medium tracking-wide text-white/90 leading-tight">
+            <div className="lg:col-span-7 flex flex-col gap-8 lg:sticky lg:top-32 py-4" data-aos="fade-up" data-aos-delay="120" data-aos-duration="900">
+              {/* Breadcrumb */}
+              <nav className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-white/40 font-chillax">
+                <Link href="/shop" className="hover:text-white transition-colors">
+                  Shop
+                </Link>
+                <span>/</span>
+                <span className="text-white/80">{product.name}</span>
+              </nav>
+
+              <header className="flex flex-col gap-3">
+                {product.is_drop && (
+                  <div className="text-[12px] font-chillax font-bold uppercase tracking-widest text-sz-red">
+                    Drop{dropLabel ? ` · ${dropLabel}` : ""}
+                  </div>
+                )}
+                <h1 className="font-chillax text-4xl md:text-5xl font-bold tracking-wide text-white leading-tight">
                   {product.name}
                 </h1>
                 {product.description && (
-                  <p className="font-sans text-[15px] leading-relaxed text-white/50 max-w-xl">
+                  <p className="font-chillax text-[15px] leading-relaxed text-white/50 max-w-xl">
                     {product.description}
                   </p>
                 )}
@@ -124,21 +124,21 @@ export default async function ProductDetailPage({ params }: Props) {
 
               {/* Materials / care */}
               {(product.materials || product.care_instructions) && (
-                <div className="border-t border-white/[0.05] pt-8 flex flex-col gap-6">
+                <div className="border-t border-white/[0.05] pt-8 flex flex-col gap-6 font-chillax">
                   {product.materials && (
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30 mb-2">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-2">
                         Materials
                       </p>
-                      <p className="text-sm font-medium text-white/70">{product.materials}</p>
+                      <p className="text-[14px] font-medium text-white/80">{product.materials}</p>
                     </div>
                   )}
                   {product.care_instructions && (
                     <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/30 mb-2">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/40 mb-2">
                         Care
                       </p>
-                      <p className="text-sm font-medium text-white/70">{product.care_instructions}</p>
+                      <p className="text-[14px] font-medium text-white/80">{product.care_instructions}</p>
                     </div>
                   )}
                   {product.compare_at_price != null && product.compare_at_price > product.base_price && (
