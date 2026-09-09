@@ -286,6 +286,33 @@ export default function ProductForm({ mode, productId, initial }: ProductFormPro
               <input type="checkbox" checked={isDrop} onChange={(e) => setIsDrop(e.target.checked)} className="hidden" />
               Time-gated Drop
             </label>
+            
+            {isDrop && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }} 
+                animate={{ height: "auto", opacity: 1 }}
+                className="flex flex-col gap-3 pl-8 mt-2"
+              >
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-white/40 mb-1">Drop Starts At</label>
+                  <input 
+                    type="datetime-local" 
+                    className="w-full bg-white/[0.05] border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-sz-red transition-colors"
+                    value={dropStartsAt} 
+                    onChange={(e) => setDropStartsAt(e.target.value)} 
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-wider text-white/40 mb-1">Drop Ends At (Optional)</label>
+                  <input 
+                    type="datetime-local" 
+                    className="w-full bg-white/[0.05] border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:outline-none focus:border-sz-red transition-colors"
+                    value={dropEndsAt} 
+                    onChange={(e) => setDropEndsAt(e.target.value)} 
+                  />
+                </div>
+              </motion.div>
+            )}
           </div>
 
           {isDrop && (
