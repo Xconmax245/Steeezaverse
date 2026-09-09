@@ -100,7 +100,7 @@ export default function IntroSplash() {
           {/* ── CONTENT LAYER — lifts away first ── */}
           <motion.div
             className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden select-none"
-            style={{ backgroundColor: "#0a0a0a", cursor: "pointer" }}
+            style={{ backgroundColor: "#0a0a0a", cursor: "pointer", zIndex: 9999 }}
             exit={{ y: "-6%", opacity: 0, scale: 0.985 }}
             transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
             onClick={dismiss}
