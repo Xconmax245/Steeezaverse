@@ -38,7 +38,13 @@ export default function Footer() {
           
           {/* Column 1: Store/Contact Info */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-white/80 font-bold uppercase tracking-widest text-xs mb-2">Steezaverse</h4>
+            <div className="mb-4">
+              <img 
+                src="/STV_mini_logo-removebg-preview.png" 
+                alt="Steezaverse" 
+                className="h-6 w-auto object-contain"
+              />
+            </div>
             <p className="text-white/60 text-sm leading-relaxed max-w-xs">
               Curated heavyweight garments. Limited runs. Shaping the future of streetwear from Los Angeles to the world.
             </p>
