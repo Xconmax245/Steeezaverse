@@ -189,7 +189,7 @@ function SplashContent() {
               alt="Steezaverse"
               fill
               priority
-              className="object-contain"
+              className="object-contain brightness-0 invert"
             />
           </motion.div>
 
