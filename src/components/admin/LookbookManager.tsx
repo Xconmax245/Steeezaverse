@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ImageUploader from '@/components/admin/ImageUploader';
+import { ArrowUp, ArrowDown, Trash2, Link as LinkIcon, Edit2, ChevronDown } from 'lucide-react';
 
 export interface LookbookImage {
   id: string;
@@ -20,7 +21,7 @@ interface LookbookManagerProps {
 }
 
 const inputClass =
-  'w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-sz-red';
+  'w-full bg-white/[0.02] border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/40 transition-colors';
 
 export default function LookbookManager({ images, products }: LookbookManagerProps) {
   const router = useRouter();
@@ -122,93 +123,110 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {images.map((image, index) => (
-            <div key={image.id} className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
-              <div className="relative aspect-[3/4] bg-black">
+            <div key={image.id} className="group flex flex-col bg-[#0a0a0a] border border-white/[0.04] hover:border-white/[0.08] transition-colors rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative aspect-[3/4] bg-black overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={image.image_url} alt={image.caption ?? `Lookbook image ${index + 1}`} className="w-full h-full object-cover" />
+                <img src={image.image_url} alt={image.caption ?? `Lookbook image ${index + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-50" />
                 {image.is_published && (
-                  <span className="absolute top-3 left-3 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-900/80 text-green-300 border border-green-700">
-                    Published
-                  </span>
+                  <div className="absolute top-4 left-4 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-widest uppercase bg-green-500/20 text-green-400 border border-green-500/30 backdrop-blur-md shadow-lg">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
+                    Live
+                  </div>
                 )}
               </div>
 
-              <div className="p-4 space-y-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Caption</label>
-                  <input
-                    className={inputClass}
-                    defaultValue={image.caption ?? ''}
-                    placeholder="No caption"
-                    disabled={busyId === image.id}
-                    onBlur={(e) => {
-                      if ((e.target.value.trim() || null) !== image.caption) {
-                        saveCaption(image.id, e.target.value);
-                      }
-                    }}
-                  />
+              <div className="flex flex-col flex-1 p-5 space-y-5">
+                <div className="space-y-4 flex-1">
+                  {/* Caption */}
+                  <div className="relative">
+                    <label className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase text-white/40 mb-2">
+                      <Edit2 size={12} /> Caption
+                    </label>
+                    <input
+                      className="w-full bg-transparent border-b border-white/10 focus:border-white/40 pb-2 px-0 text-sm text-white placeholder-white/20 focus:outline-none transition-colors"
+                      defaultValue={image.caption ?? ''}
+                      placeholder="Add an editorial caption..."
+                      disabled={busyId === image.id}
+                      onBlur={(e) => {
+                        if ((e.target.value.trim() || null) !== image.caption) {
+                          saveCaption(image.id, e.target.value);
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* Linked Product */}
+                  <div className="relative">
+                    <label className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider uppercase text-white/40 mb-2">
+                      <LinkIcon size={12} /> Linked Product
+                    </label>
+                    <div className="relative">
+                      <select
+                        className="w-full appearance-none bg-white/[0.02] hover:bg-white/[0.04] border border-white/10 rounded-lg pl-3 pr-10 py-2.5 text-sm text-white focus:outline-none focus:border-white/30 transition-colors cursor-pointer"
+                        value={image.linked_product_id ?? ''}
+                        disabled={busyId === image.id}
+                        onChange={(e) => patch(image.id, { linked_product_id: e.target.value || null })}
+                      >
+                        <option value="">— No product linked —</option>
+                        {products.map((product) => (
+                          <option key={product.id} value={product.id}>
+                            {product.name}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">
+                        <ChevronDown size={14} />
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Linked product</label>
-                  <select
-                    className={inputClass}
-                    value={image.linked_product_id ?? ''}
-                    disabled={busyId === image.id}
-                    onChange={(e) => patch(image.id, { linked_product_id: e.target.value || null })}
-                  >
-                    <option value="">— None —</option>
-                    {products.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-gray-800">
-                  <div className="flex items-center gap-1">
+                {/* Footer Controls */}
+                <div className="flex items-center justify-between pt-4 border-t border-white/[0.05]">
+                  <div className="flex items-center gap-1 bg-white/[0.02] border border-white/[0.05] rounded-lg p-1">
                     <button
                       type="button"
                       disabled={index === 0 || busyId === image.id}
                       onClick={() => moveImage(index, -1)}
-                      className="text-gray-400 hover:text-white disabled:opacity-30 px-2 py-1 text-sm"
+                      className="text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent rounded px-1.5 py-1 transition-colors"
                       title="Move up"
                     >
-                      ↑
+                      <ArrowUp size={14} />
                     </button>
+                    <span className="text-[10px] font-mono text-white/30 px-1">{(index + 1).toString().padStart(2, '0')}</span>
                     <button
                       type="button"
                       disabled={index === images.length - 1 || busyId === image.id}
                       onClick={() => moveImage(index, 1)}
-                      className="text-gray-400 hover:text-white disabled:opacity-30 px-2 py-1 text-sm"
+                      className="text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent rounded px-1.5 py-1 transition-colors"
                       title="Move down"
                     >
-                      ↓
+                      <ArrowDown size={14} />
                     </button>
-                    <span className="text-xs text-gray-600 ml-1">#{index + 1}</span>
                   </div>
+
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       disabled={busyId === image.id}
                       onClick={() => patch(image.id, { is_published: !image.is_published })}
-                      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium border transition-colors disabled:opacity-50 ${
+                      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-all disabled:opacity-50 ${
                         image.is_published
-                          ? 'bg-green-900/40 text-green-400 border-green-800 hover:bg-green-900/60'
-                          : 'bg-gray-800 text-gray-400 border-gray-700 hover:bg-gray-700'
+                          ? 'bg-transparent text-white/50 border border-white/10 hover:border-white/30 hover:text-white'
+                          : 'bg-white text-black hover:bg-gray-200'
                       }`}
                     >
-                      {image.is_published ? 'Published' : 'Unpublished'}
+                      {image.is_published ? 'Unpublish' : 'Publish'}
                     </button>
                     <button
                       type="button"
                       disabled={busyId === image.id}
                       onClick={() => removeImage(image)}
-                      className="text-red-400 hover:text-red-300 text-sm px-2 py-1 disabled:opacity-50"
+                      className="text-sz-red hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors disabled:opacity-50"
                       title="Delete image"
                     >
-                      ✕
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
