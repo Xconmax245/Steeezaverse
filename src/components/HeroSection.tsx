@@ -10,6 +10,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+const typewriterTexts = [
+  "CURATED HEAVYWEIGHT GARMENTS.",
+  "LIMITED RUNS. NO RESTOCKS.",
+  "SHAPING THE FUTURE OF STREETWEAR.",
+  "THE NEW STANDARD IN PREMIUM ESSENTIALS."
+];
+
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -20,13 +27,6 @@ export default function HeroSection() {
   const [typewriterText, setTypewriterText] = useState("");
   const [textIndex, setTextIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const typewriterTexts = [
-    "CURATED HEAVYWEIGHT GARMENTS.",
-    "LIMITED RUNS. NO RESTOCKS.",
-    "SHAPING THE FUTURE OF STREETWEAR.",
-    "THE NEW STANDARD IN PREMIUM ESSENTIALS."
-  ];
 
   useEffect(() => {
     if (!playAnimations) return;

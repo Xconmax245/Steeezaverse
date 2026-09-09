@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
@@ -115,7 +116,7 @@ export default function Footer() {
             {/* Form Status Messages */}
             {status === "success" && (
               <p className="text-green-500 text-xs uppercase tracking-wider mt-1 animate-in fade-in">
-                You're in the loop.
+                You&apos;re in the loop.
               </p>
             )}
             {status === "error" && (
