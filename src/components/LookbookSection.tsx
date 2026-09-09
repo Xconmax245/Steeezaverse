@@ -4,10 +4,10 @@ import Link from "next/link";
 
 // 4-item repeating bento pattern mapped to a dense 3-column grid
 const PATTERN: { variant: "full" | "inset"; spanClass: string; aspectClass: string }[] = [
-  { variant: "full", spanClass: "col-span-1 row-span-2", aspectClass: "aspect-[3/4] md:aspect-[3/4]" },
-  { variant: "inset", spanClass: "col-span-1 row-span-1", aspectClass: "aspect-square md:aspect-square" },
-  { variant: "full", spanClass: "col-span-1 row-span-2", aspectClass: "aspect-[3/4] md:aspect-[3/4]" },
-  { variant: "full", spanClass: "col-span-1 row-span-1", aspectClass: "aspect-[4/3] md:aspect-[4/3]" }
+  { variant: "full", spanClass: "col-span-1 row-span-2", aspectClass: "aspect-[3/4]" },
+  { variant: "full", spanClass: "col-span-1 row-span-1", aspectClass: "aspect-square" },
+  { variant: "full", spanClass: "col-span-1 row-span-2", aspectClass: "aspect-[3/4]" },
+  { variant: "full", spanClass: "col-span-1 row-span-1", aspectClass: "aspect-square" }
 ];
 
 export default async function LookbookSection() {
@@ -35,7 +35,7 @@ export default async function LookbookSection() {
         </div>
 
         {/* 3-Column Dense Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 grid-flow-row-dense auto-rows-min gap-4 md:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-flow-row-dense auto-rows-min gap-2 md:gap-4">
           {items.map((item, index) => {
             const config = PATTERN[index % PATTERN.length];
             return (

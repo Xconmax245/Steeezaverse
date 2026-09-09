@@ -51,7 +51,7 @@ export default function LookbookTile({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       data-cuelume-hover={hasMask ? "pulse" : "tick"}
-      style={{ borderRadius: "24px", cursor: hasMask ? "none" : "auto", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}
+      style={{ borderRadius: "0px", cursor: hasMask ? "none" : "auto", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}
     >
       {variant === "inset" ? (
         // --- INSET VARIANT (Text Top, Image Floating Inside) ---
