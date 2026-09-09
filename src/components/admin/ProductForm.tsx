@@ -73,6 +73,15 @@ function slugify(name: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+function generateSkuPlaceholder(name: string, size: string, color: string): string {
+  const prefix = name
+    ? name.split(/[\s-]+/).map(w => w[0]).join('').substring(0, 3).toUpperCase()
+    : 'SZ';
+  const s = size ? size.toUpperCase().replace(/\s+/g, '') : 'SIZE';
+  const c = color ? color.toUpperCase().replace(/[AEIOU\s]+/g, '').substring(0, 3) : 'CLR';
+  return `${prefix || 'SZ'}-${s}-${c}`;
+}
+
 const inputClass =
   'w-full bg-white/[0.02] border border-white/10 rounded-md px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-sz-red focus:bg-white/[0.05] transition-all duration-300';
 const labelClass = 'block text-[10px] uppercase tracking-wider text-white/50 mb-2';
@@ -335,7 +344,7 @@ export default function ProductForm({ mode, productId, initial }: ProductFormPro
               </div>
               <div className="md:col-span-2">
                 <label className={labelClass}>SKU</label>
-                <input className={inputClass} value={v.sku} onChange={(e) => updateVariant(index, { sku: e.target.value })} placeholder="SZ-M-BLK" />
+                <input className={inputClass} value={v.sku} onChange={(e) => updateVariant(index, { sku: e.target.value })} placeholder={generateSkuPlaceholder(name, v.size, v.color)} />
               </div>
               <div>
                 <label className={labelClass}>Stock</label>

@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import MarqueeDivider from "@/components/MarqueeDivider";
 import ManifestoSection from "@/components/ManifestoSection";
 import MiniShopSection from "@/components/MiniShopSection";
+import LookbookSection from "@/components/LookbookSection";
 
 export default function HomePage() {
   return (
@@ -17,6 +18,9 @@ export default function HomePage() {
 
       {/* ── Mini-Shop Section ── */}
       <MiniShopSection />
+
+      {/* ── Lookbook Section (admin-managed) ── */}
+      <LookbookSection />
     </main>
   );
 }

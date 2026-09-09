@@ -3,7 +3,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { getAdminUser } from '@/lib/admin-auth';
-import { MINI_SHOP_TAG } from '@/lib/cache-tags';
+import { MINI_SHOP_TAG, PRODUCTS_TAG } from '@/lib/cache-tags';
 
 // Admin product management server actions. All mutations revalidate the
 // mini-shop cache tag so homepage changes (featured toggles, publish flips,
@@ -208,6 +208,7 @@ export async function createProduct(input: ProductFormInput): Promise<ActionResu
   }
 
   revalidateTag(MINI_SHOP_TAG);
+  revalidateTag(PRODUCTS_TAG);
   revalidatePath('/');
   return { success: true, productId };
 }
@@ -329,6 +330,7 @@ export async function updateProduct(productId: string, input: ProductFormInput):
   }
 
   revalidateTag(MINI_SHOP_TAG);
+  revalidateTag(PRODUCTS_TAG);
   revalidatePath('/');
   return { success: true, productId };
 }

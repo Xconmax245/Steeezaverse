@@ -1,6 +1,6 @@
 import { unstable_cache } from 'next/cache';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
-import { MINI_SHOP_TAG } from '@/lib/cache-tags';
+import { MINI_SHOP_TAG, PRODUCTS_TAG } from '@/lib/cache-tags';
 
 export interface MiniShopItem {
   id: string;
@@ -62,4 +62,120 @@ export const getFeaturedProducts = unstable_cache(
   },
   [MINI_SHOP_TAG],
   { revalidate: 300, tags: [MINI_SHOP_TAG] } // 5-minute revalidation + on-demand purge
+);
+
+// ─── Shop / Drops / Product detail getters (public storefront) ──────────────
+
+function toCard(row: any): MiniShopItem {
+  const images: any[] = row.product_images ?? [];
+  const sortedImages = [...images].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description,
+    base_price: Number(row.base_price),
+    compare_at_price: row.compare_at_price != null ? Number(row.compare_at_price) : null,
+    is_drop: row.is_drop,
+    drop_starts_at: row.drop_starts_at,
+    drop_ends_at: row.drop_ends_at,
+    image: sortedImages[0]?.url ?? null,
+    hover_image: sortedImages[1]?.url ?? null,
+    updated_at: row.updated_at,
+  };
+}
+
+const CARD_SELECT = `id, name, slug, description, base_price, compare_at_price,
+  is_drop, drop_starts_at, drop_ends_at, updated_at,
+  product_images(url, alt_text, sort_order)`;
+
+/** All published products for /shop — newest first. */
+export const getAllProducts = unstable_cache(
+  async (): Promise<MiniShopItem[]> => {
+    const { data, error } = await (getSupabaseAdmin() as any)
+      .from('products')
+      .select(CARD_SELECT)
+      .eq('status', 'published')
+      .order('updated_at', { ascending: false });
+
+    if (error) throw error;
+    return ((data as any[]) ?? []).map(toCard);
+  },
+  [PRODUCTS_TAG],
+  { revalidate: 300, tags: [PRODUCTS_TAG] }
+);
+
+/** Time-gated drop products for /drops. */
+export const getDropProducts = unstable_cache(
+  async (): Promise<MiniShopItem[]> => {
+    const { data, error } = await (getSupabaseAdmin() as any)
+      .from('products')
+      .select(CARD_SELECT)
+      .eq('status', 'published')
+      .eq('is_drop', true)
+      .order('drop_starts_at', { ascending: false, nullsFirst: false });
+
+    if (error) throw error;
+    return ((data as any[]) ?? []).map(toCard);
+  },
+  [PRODUCTS_TAG],
+  { revalidate: 300, tags: [PRODUCTS_TAG] }
+);
+
+export interface ShopProduct extends MiniShopItem {
+  materials: string | null;
+  care_instructions: string | null;
+  images: Array<{ id: string; url: string; alt_text: string | null }>;
+  variants: Array<{
+    id: string;
+    size: string | null;
+    color: string | null;
+    sku: string | null;
+    stock_quantity: number;
+    price_override: number | null;
+  }>;
+}
+
+/** Single published product with variants + full gallery, for /shop/[slug]. */
+export const getProductBySlug = unstable_cache(
+  async (slug: string): Promise<ShopProduct | null> => {
+    const { data, error } = await (getSupabaseAdmin() as any)
+      .from('products')
+      .select(
+        `id, name, slug, description, materials, care_instructions,
+         base_price, compare_at_price, is_drop, drop_starts_at, drop_ends_at, updated_at,
+         product_images(id, url, alt_text, sort_order),
+         product_variants(id, size, color, sku, stock_quantity, price_override)`
+      )
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return null;
+
+    const images = ((data.product_images as any[]) ?? [])
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map((img) => ({ id: img.id, url: img.url, alt_text: img.alt_text }));
+
+    const variants = ((data.product_variants as any[]) ?? []).map((v) => ({
+      id: v.id,
+      size: v.size,
+      color: v.color,
+      sku: v.sku,
+      stock_quantity: v.stock_quantity ?? 0,
+      price_override: v.price_override != null ? Number(v.price_override) : null,
+    }));
+
+    const card = toCard(data);
+    return {
+      ...card,
+      materials: data.materials,
+      care_instructions: data.care_instructions,
+      images,
+      variants,
+    };
+  },
+  [PRODUCTS_TAG],
+  { revalidate: 300, tags: [PRODUCTS_TAG] }
 );
