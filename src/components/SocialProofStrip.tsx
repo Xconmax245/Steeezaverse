@@ -58,7 +58,7 @@ export default function SocialProofStrip() {
   return (
     <section 
       ref={sectionRef}
-      className="w-full relative z-10 bg-[#0a0a0a] py-10 md:py-12 overflow-hidden"
+      className="w-full relative z-10 bg-[#0a0a0a] py-6 md:py-8 overflow-hidden"
     >
       <div ref={contentRef}>
       <style dangerouslySetInnerHTML={{ __html: `

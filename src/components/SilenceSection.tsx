@@ -41,7 +41,7 @@ export default function SilenceSection() {
   return (
     <section 
       ref={sectionRef} 
-      className="relative w-full h-[50vh] min-h-[400px] bg-black flex flex-col items-center justify-center overflow-hidden"
+      className="relative w-full h-[25vh] min-h-[200px] bg-black flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Viewport-wide thin horizontal line motif */}
       <div 
