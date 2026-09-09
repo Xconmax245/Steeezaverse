@@ -7,34 +7,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 
 
-function LoaderBar({ delay = 900, duration = 1700 }: { delay?: number; duration?: number }) {
-  const [width, setWidth] = useState(0);
-  const [label, setLabel] = useState("LOADING DROP 001");
-
-  useEffect(() => {
-    const t1 = setTimeout(() => {
-      setWidth(100);
-      const t2 = setTimeout(() => setLabel("READY  ✓"), Math.floor(duration * 0.68));
-      return () => clearTimeout(t2);
-    }, delay);
-    return () => clearTimeout(t1);
-  }, [delay, duration]);
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-      <div style={{ width: "min(220px, 34vw)", height: 1, background: "rgba(255,255,255,0.08)", borderRadius: 9999, overflow: "hidden" }}>
-        <div className="bg-gradient-to-r from-[var(--red)] to-[var(--blue)]" style={{
-          height: "100%", width: `${width}%`,
-          borderRadius: 9999,
-          transition: `width ${duration}ms cubic-bezier(0.4,0,0.2,1)`,
-        }} />
-      </div>
-      <span style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 600, fontSize: "8px", letterSpacing: "0.28em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)" }}>
-        {label}
-      </span>
-    </div>
-  );
-}
 
 export default function IntroSplash() {
   const pathname = usePathname();
@@ -134,158 +106,23 @@ export default function IntroSplash() {
   );
 }
 
-/** All visual content of the splash, split out so the exit choreography stays readable. */
-function SplashContent() {
-  const reduced =
-    typeof window !== "undefined" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // Ghost counter — a loader-style percentage readout that races to 100
-  // alongside the bar, then flips to READY. Purely decorative.
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (reduced) return;
-    const start = performance.now();
-    const DURATION = 2250;
-    let raf: number;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / DURATION);
-      // ease-out so it flies up fast, then crawls — classic loader feel
-      const eased = 1 - Math.pow(1 - t, 3);
-      setCount(Math.round(eased * 100));
-      if (t < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [reduced]);
-
   return (
     <>
-      {/* Soft ambient bloom — warm, not harsh */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: "radial-gradient(ellipse 60% 48% at 50% 52%, rgba(124,10,10,0.25) 0%, transparent 72%)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2.0, ease: "easeOut" }}
-          />
-
-          {/* Subtle vignette */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,0.55) 100%)" }}
-          />
-
-          {/* ── BIG BRAND LOGO ── */}
-          <motion.div
-            style={{ position: "relative", width: "clamp(200px, 60vw, 800px)", height: "clamp(80px, 20vw, 250px)", marginBottom: "clamp(10px, 2vw, 30px)" }}
-            initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <Image
-              src="/STV_mini_logo-removebg-preview.png"
-              alt="Steezaverse"
-              fill
-              priority
-              className="object-contain brightness-0 invert"
-            />
-          </motion.div>
-
-          {/* ── TAGLINE ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 0.9, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.85, ease: "easeOut" }}
-            style={{
-              fontFamily: "'Bespoke Sans', sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(12px, 1.5vw, 16px)",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "white",
-              marginTop: "clamp(10px, 1.5vw, 18px)",
-              textAlign: "center",
-              lineHeight: 1.4
-            }}
-          >
-            BUILDING THE FOUNDATION <br className="hidden md:block" />
-            FOR A NEW ERA OF <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.3em", letterSpacing: "0", fontWeight: 400, textTransform: "none" }}>creation</span>
-          </motion.div>
-
-          {/* Thin divider */}
-          <motion.div
-            initial={{ scaleX: 0, opacity: 0 }}
-            animate={{ scaleX: 1, opacity: 1 }}
-            transition={{ duration: 0.9, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
-            style={{
-              width: "clamp(40px, 6vw, 80px)",
-              height: 1,
-              background: "rgba(255,255,255,0.2)",
-              marginTop: "clamp(18px, 3vw, 32px)",
-              transformOrigin: "center",
-            }}
-          />
-
-          {/* ── LOADER (goofy bit) ── */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 1.2 }}
-            style={{ marginTop: "clamp(18px, 2.5vw, 28px)", display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}
-          >
-            <LoaderBar delay={850} duration={1800} />
-            <span
-              style={{
-                fontFamily: "'Chillax', sans-serif",
-                fontWeight: 700,
-                fontSize: "12px",
-                letterSpacing: "0.3em",
-                color: "rgba(255,255,255,0.5)",
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              {String(count).padStart(3, "0")}%
-            </span>
-          </motion.div>
-
-          {/* Bottom edition stamp */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.2 }}
-            transition={{ duration: 0.5, delay: 2.4 }}
-            style={{
-              fontFamily: "'Chillax', sans-serif",
-              fontWeight: 600,
-              fontSize: "9px",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.5)",
-              position: "absolute",
-              bottom: "36px",
-            }}
-          >
-            Est. 2024 — Drop 001 — FW26 — Steezaverse
-          </motion.p>
-
-          {/* Skip hint */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.25 }}
-            transition={{ duration: 0.4, delay: 1.7 }}
-            style={{
-              fontFamily: "'Chillax', sans-serif",
-              fontWeight: 600,
-              fontSize: "9px",
-              letterSpacing: "0.25em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.4)",
-              position: "absolute",
-              bottom: "18px",
-            }}
-          >
-            Tap anywhere to skip →
-          </motion.p>
+      {/* ── BIG BRAND LOGO ── */}
+      <motion.div
+        style={{ position: "relative", width: "clamp(200px, 60vw, 800px)", height: "clamp(80px, 20vw, 250px)" }}
+        initial={{ opacity: 0, scale: 0.95, filter: "blur(10px)" }}
+        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <Image
+          src="/STV_mini_logo-removebg-preview.png"
+          alt="Steezaverse"
+          fill
+          priority
+          className="object-contain brightness-0 invert"
+        />
+      </motion.div>
     </>
   );
 }
