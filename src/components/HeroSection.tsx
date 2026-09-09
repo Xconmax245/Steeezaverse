@@ -142,40 +142,65 @@ export default function HeroSection() {
       animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Background Image with Gyro Parallax */}
+      {/* Background Text Layer (VERSE) */}
       <motion.div
-        ref={bgRef}
-        className="absolute inset-[-5%] w-[110%] h-[110%] z-0"
-        style={{ x: bgX, y: bgY }}
-      >
-        <Image
-          src="/fashionable-man-woman-posing-with-copy-space.jpg"
-          alt="Steezaverse Models"
-          fill
-          priority
-          className="object-cover object-[15%_center] md:object-center select-none"
-          draggable={false}
-        />
-        {/* Subtle overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-black/40 pointer-events-none" />
-      </motion.div>
-
-      {/* Foreground Content */}
-      <motion.div
-        ref={contentRef}
-        className="relative z-10 w-full h-full flex flex-col items-center justify-center text-center px-4"
+        className="absolute inset-0 z-0 flex items-center justify-center text-center pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
-        <div className="flex flex-col items-center w-full px-2">
-          <motion.span
-            style={wordStyle}
-            className="text-[clamp(36px,11vw,140px)] text-white text-center tracking-tighter"
+        <div className="flex items-center tracking-tighter text-[clamp(36px,11vw,140px)]" style={wordStyle}>
+           <motion.span 
+            className="opacity-0"
+            initial={{ opacity: 0, y: 20 }}
+            animate={playAnimations ? { opacity: 0, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.8, delay: 0.4, ease }}
+           >STEEZA</motion.span>
+           <motion.span 
+            className="text-[var(--red)]"
             initial={{ opacity: 0, y: 20 }}
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.4, ease }}
-          >
-            STEEZA<span className="text-[var(--red)]">VERSE</span>
-          </motion.span>
+           >VERSE</motion.span>
+        </div>
+      </motion.div>
+
+      {/* Middle Image Layer */}
+      <motion.div
+        ref={bgRef}
+        className="absolute inset-[-5%] w-[110%] h-[110%] z-10 pointer-events-none"
+        style={{ x: bgX, y: bgY }}
+      >
+        <Image
+          src="/photo_2026-09-09_21-08-39.jpg"
+          alt="Steezaverse Models"
+          fill
+          priority
+          className="object-cover md:object-center select-none"
+          draggable={false}
+        />
+        {/* Subtle overlay removed to keep colors bright, add if needed */}
+      </motion.div>
+
+      {/* Foreground Text Layer (STEEZA) */}
+      <motion.div
+        ref={contentRef}
+        className="relative z-20 w-full h-full flex flex-col items-center justify-center text-center px-4 pointer-events-none"
+        style={{ x: contentX, y: contentY }}
+      >
+        <div className="flex flex-col items-center w-full px-2">
+          <div className="flex items-center tracking-tighter text-[clamp(36px,11vw,140px)]" style={wordStyle}>
+            <motion.span 
+              className="text-white"
+              initial={{ opacity: 0, y: 20 }}
+              animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 0.4, ease }}
+            >STEEZA</motion.span>
+            <motion.span 
+              className="opacity-0"
+              initial={{ opacity: 0, y: 20 }}
+              animate={playAnimations ? { opacity: 0, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.8, delay: 0.4, ease }}
+            >VERSE</motion.span>
+          </div>
         </div>
 
         <motion.p
