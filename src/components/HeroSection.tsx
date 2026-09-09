@@ -26,8 +26,8 @@ const ease = [0.22, 1, 0.36, 1] as const;
  *             nx/ny  = small offsets in em (relative to font size) or px
  * ────────────────────────────────────────────────────────────────────────────
  */
-const STEEZA_ANCHOR = { fx: 0.135, fy: 0.63, nx: "-0.60em", ny: "0.55em" };
-const VERSE_ANCHOR = { fx: 0.728, fy: 0.63, nx: "0px", ny: "0.55em" };
+const STEEZA_ANCHOR = { fx: 0.280, fy: 0.63, nx: "-0.60em", ny: "0.55em" };
+const VERSE_ANCHOR = { fx: 0.620, fy: 0.63, nx: "0px", ny: "0.55em" };
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -234,8 +234,6 @@ export default function HeroSection() {
             style={{
               ...wordStyle,
               ...anchorStyle(STEEZA_ANCHOR),
-              "--shift-x": "calc(var(--render-w) * 0.157)",
-              "--nx": "var(--shift-x)",
             } as React.CSSProperties}
           >
             STEEZA
