@@ -136,7 +136,7 @@ export default function HeroSection() {
   return (
     <motion.section
       ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden bg-black"
+      className="relative w-full h-screen overflow-hidden bg-[#e6e6e6]"
       aria-label="Hero"
       initial={{ opacity: 0 }}
       animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
@@ -166,7 +166,7 @@ export default function HeroSection() {
       {/* Middle Image Layer */}
       <motion.div
         ref={bgRef}
-        className="absolute inset-[-5%] w-[110%] h-[110%] z-10 pointer-events-none"
+        className="absolute inset-0 w-full h-full z-10 pointer-events-none mix-blend-multiply"
         style={{ x: bgX, y: bgY }}
       >
         <Image
@@ -189,7 +189,7 @@ export default function HeroSection() {
         <div className="flex flex-col items-center w-full px-2">
           <div className="flex items-center tracking-tighter text-[clamp(36px,11vw,140px)]" style={wordStyle}>
             <motion.span 
-              className="text-white"
+              className="text-black"
               initial={{ opacity: 0, y: 20 }}
               animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.8, delay: 0.4, ease }}
@@ -204,7 +204,7 @@ export default function HeroSection() {
         </div>
 
         <motion.p
-          className="mt-6 mb-10 text-white/80 uppercase tracking-widest min-h-[1.5rem]"
+          className="mt-6 mb-10 text-black/80 uppercase tracking-widest min-h-[1.5rem]"
           style={{ fontFamily: "'Chillax', sans-serif", fontSize: "12px", fontWeight: 600 }}
           initial={{ opacity: 0 }}
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
@@ -214,7 +214,7 @@ export default function HeroSection() {
         </motion.p>
 
         <motion.button
-          className="group flex items-center justify-center bg-white px-10 py-3 transition-colors duration-300 hover:bg-[var(--red)]"
+          className="group flex items-center justify-center bg-black px-10 py-3 transition-colors duration-300 hover:bg-[var(--red)]"
           initial={{ opacity: 0, y: 10 }}
           animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ duration: 0.8, delay: 0.9, ease }}
@@ -232,7 +232,7 @@ export default function HeroSection() {
           data-cuelume-hover="tick"
         >
           <span
-            className="text-black font-semibold uppercase tracking-[0.2em] group-hover:text-white transition-colors duration-300"
+            className="text-white font-semibold uppercase tracking-[0.2em] transition-colors duration-300"
             style={{
               fontFamily: "'Chillax', sans-serif",
               fontSize: "13px",
