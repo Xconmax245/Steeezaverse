@@ -213,13 +213,13 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@email.com"
-                      className="flex-1 rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-colors focus:border-[var(--blue)]"
+                      className="flex-1 rounded-md border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-colors focus:border-[var(--red)]"
                     />
                     <button
                       type="submit"
                       disabled={waitlistState === "sending"}
                       data-cuelume-hover="tick"
-                      className="rounded-md bg-[var(--blue)] px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-[var(--blue-dim)] transition-colors disabled:opacity-50"
+                      className="rounded-md bg-[var(--red)] px-6 py-3 text-xs font-bold uppercase tracking-widest text-white hover:opacity-80 transition-opacity disabled:opacity-50 shadow-[0_0_15px_rgba(255,0,0,0.3)] hover:shadow-[0_0_20px_rgba(255,0,0,0.5)]"
                     >
                       {waitlistState === "sending" ? "…" : "Notify me"}
                     </button>
