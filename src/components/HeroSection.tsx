@@ -44,7 +44,6 @@ export default function HeroSection() {
   const centerRef = useRef<HTMLSpanElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
   const [playAnimations, setPlayAnimations] = useState(false);
 
   // Parallax Gyroscope values
