@@ -5,29 +5,46 @@ import { useRef, useState } from 'react';
 interface ImageUploaderProps {
   /** Storage bucket to upload into. Both flows use this same component. */
   bucket?: 'product-images' | 'lookbook';
-  /** Called with the public storage URL after a successful upload. */
-  onUploaded: (url: string) => void;
+  /** Called with the public storage URL after a successful single upload. */
+  onUploaded?: (url: string) => void;
+  /** Whether to allow multiple file selection. */
+  multiple?: boolean;
+  /** Called with an array of public storage URLs after successful mass upload. */
+  onUploadedMultiple?: (urls: string[]) => void;
 }
 
-export default function ImageUploader({ bucket = 'product-images', onUploaded }: ImageUploaderProps) {
+export default function ImageUploader({ bucket = 'product-images', onUploaded, multiple, onUploadedMultiple }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function handleFile(file: File) {
+  async function handleFiles(files: FileList) {
     setUploading(true);
     setError(null);
-    const formData = new FormData();
-    formData.append('file', file);
+    const uploadedUrls: string[] = [];
 
     try {
-      const res = await fetch(`/api/admin/upload?bucket=${bucket}`, {
-        method: 'POST',
-        body: formData,
-      });
-      const json = await res.json();
-      if (!json.success) throw new Error(json.error || 'Upload failed');
-      onUploaded(json.url as string);
+      // Upload sequentially so we don't spam the connection/server
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch(`/api/admin/upload?bucket=${bucket}`, {
+          method: 'POST',
+          body: formData,
+        });
+        const json = await res.json();
+        if (!json.success) throw new Error(json.error || `Upload failed for ${file.name}`);
+        
+        const url = json.url as string;
+        uploadedUrls.push(url);
+        if (onUploaded && !multiple) onUploaded(url); // Legacy callback for single upload
+      }
+      
+      if (multiple && onUploadedMultiple) {
+        onUploadedMultiple(uploadedUrls);
+      }
     } catch (err: any) {
       setError(err.message || 'Upload failed');
     } finally {
@@ -45,10 +62,11 @@ export default function ImageUploader({ bucket = 'product-images', onUploaded }:
           type="file"
           accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
           className="hidden"
+          multiple={multiple}
           disabled={uploading}
           onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleFile(file);
+            const files = e.target.files;
+            if (files && files.length > 0) handleFiles(files);
           }}
         />
       </label>

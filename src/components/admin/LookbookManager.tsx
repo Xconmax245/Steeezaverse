@@ -28,6 +28,7 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
   const [uploading, setUploading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [imageToDelete, setImageToDelete] = useState<LookbookImage | null>(null);
 
   async function api(
     path: string,
@@ -38,19 +39,22 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
     return json as { success: boolean; error?: string };
   }
 
-  async function handleUploaded(url: string) {
+  async function handleUploadedMultiple(urls: string[]) {
     setUploading(true);
     setError(null);
     try {
-      const result = await api('/api/admin/lookbook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_url: url, sort_order: images.length }),
-      });
-      if (!result.success) throw new Error(result.error || 'Failed to add image');
+      for (let i = 0; i < urls.length; i++) {
+        const url = urls[i];
+        const result = await api('/api/admin/lookbook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image_url: url, sort_order: images.length + i }),
+        });
+        if (!result.success) throw new Error(result.error || 'Failed to add image');
+      }
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Failed to add image');
+      setError(err.message || 'Failed to add images');
     } finally {
       setUploading(false);
     }
@@ -89,13 +93,14 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
     router.refresh();
   }
 
-  async function removeImage(image: LookbookImage) {
-    if (!window.confirm(`Delete this lookbook image${image.caption ? ` (“${image.caption}”)` : ''}?`)) return;
-    setBusyId(image.id);
+  async function confirmRemoveImage() {
+    if (!imageToDelete) return;
+    setBusyId(imageToDelete.id);
     setError(null);
     try {
-      const result = await api(`/api/admin/lookbook?id=${image.id}`, { method: 'DELETE' });
+      const result = await api(`/api/admin/lookbook?id=${imageToDelete.id}`, { method: 'DELETE' });
       if (!result.success) throw new Error(result.error || 'Delete failed');
+      setImageToDelete(null);
       router.refresh();
     } catch (err: any) {
       setError(err.message || 'Delete failed');
@@ -108,8 +113,8 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
     <div>
       {/* Upload */}
       <div className="flex items-center justify-between mb-6 p-4 bg-gray-800/50 border border-gray-800 rounded-lg">
-        <p className="text-sm text-gray-400">Add a new image to the lookbook.</p>
-        <ImageUploader bucket="lookbook" onUploaded={handleUploaded} />
+        <p className="text-sm text-gray-400">Add new images to the lookbook. You can select multiple files.</p>
+        <ImageUploader bucket="lookbook" multiple={true} onUploadedMultiple={handleUploadedMultiple} />
       </div>
 
       {error && (
@@ -222,7 +227,7 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
                     <button
                       type="button"
                       disabled={busyId === image.id}
-                      onClick={() => removeImage(image)}
+                      onClick={() => setImageToDelete(image)}
                       className="text-sz-red hover:text-red-400 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors disabled:opacity-50"
                       title="Delete image"
                     >
@@ -236,7 +241,38 @@ export default function LookbookManager({ images, products }: LookbookManagerPro
         </div>
       )}
 
-      {uploading && <p className="text-sm text-gray-500 mt-4">Adding image…</p>}
+      {uploading && <p className="text-sm text-gray-500 mt-4">Adding images…</p>}
+
+      {/* Deletion Modal */}
+      {imageToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#080808] border border-white/10 rounded-xl p-8 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-white text-lg font-bold font-chillax uppercase tracking-widest mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 bg-[var(--red)] rounded-full inline-block" />
+              Confirm Deletion
+            </h3>
+            <p className="text-white/60 text-sm mb-8 leading-relaxed">
+              Are you sure you want to delete this lookbook image{imageToDelete.caption ? ` ("${imageToDelete.caption}")` : ''}? This action cannot be undone.
+            </p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => setImageToDelete(null)}
+                disabled={busyId === imageToDelete.id}
+                className="px-5 py-3 rounded text-[11px] font-bold uppercase tracking-widest text-white/70 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmRemoveImage}
+                disabled={busyId === imageToDelete.id}
+                className="px-5 py-3 rounded bg-[var(--red)] text-white text-[11px] font-bold uppercase tracking-widest hover:opacity-80 transition-opacity disabled:opacity-50 shadow-[0_0_15px_rgba(255,0,0,0.3)]"
+              >
+                {busyId === imageToDelete.id ? "Deleting..." : "Yes, Delete Image"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
