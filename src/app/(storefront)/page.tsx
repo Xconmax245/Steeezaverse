@@ -9,6 +9,7 @@ import DropSection from "@/components/DropSection";
 import SilenceSection from "@/components/SilenceSection";
 import SocialProofStrip from "@/components/SocialProofStrip";
 import FinalCTA from "@/components/FinalCTA";
+import Footer from "@/components/Footer";
 
 export default function HomePage() {
   return (
@@ -40,6 +41,9 @@ export default function HomePage() {
 
       {/* ── Final Minimal CTA ── */}
       <FinalCTA />
+
+      {/* ── Footer / Loop ── */}
+      <Footer />
     </main>
   );
 }
