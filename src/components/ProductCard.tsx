@@ -20,17 +20,11 @@ export function ProductCard({
   className = "",
   enableEntrance = true,
 }: ProductCardProps) {
-  const isSale = product.compare_at_price != null && product.compare_at_price > product.base_price;
-  
-  let discountPercent = 0;
-  if (isSale && product.compare_at_price) {
-    discountPercent = Math.round(((product.compare_at_price - product.base_price) / product.compare_at_price) * 100);
-  }
 
   return (
     <motion.a
       href={`/shop/${product.slug}`}
-      className={`group relative flex flex-col gap-4 cursor-pointer ${className}`}
+      className={`group relative flex flex-col gap-5 cursor-pointer ${className}`}
       {...(enableEntrance
         ? {
             initial: { opacity: 0, y: 30 },
@@ -42,74 +36,65 @@ export function ProductCard({
       data-cuelume-hover="tick"
       draggable={false}
     >
-      {/* Image Container */}
-      <div className="w-full aspect-[4/5] bg-[#f4f4f4] relative overflow-hidden flex items-center justify-center transition-colors group-hover:bg-[#ebebeb]">
-        {/* SALE Badge (Top Right) */}
-        {isSale && (
-          <div className="absolute top-4 right-4 z-20 text-[9px] uppercase tracking-widest text-black/40 font-medium">
-            Sale
-          </div>
-        )}
+      {/* Image Container (Polaroid-style frame) */}
+      <div className="w-full aspect-[4/5] bg-[#f4f4f4] p-4 relative transition-transform duration-700 ease-out group-hover:scale-[1.02]">
+        
+        {/* Inner Image Wrapper */}
+        <div className="relative w-full h-full overflow-hidden bg-black/5">
+          {product.image ? (
+            <Image
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className={`object-cover transition-transform duration-700 ease-out group-hover:scale-105 ${
+                product.hover_image ? "group-hover:opacity-0" : ""
+              }`}
+              draggable={false}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-black/20 text-[10px] uppercase tracking-widest">
+              No image
+            </div>
+          )}
 
-        {/* Primary Image */}
-        {product.image ? (
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className={`object-contain p-8 transition-transform duration-700 ease-out group-hover:scale-105 ${
-              product.hover_image ? "group-hover:opacity-0" : ""
-            }`}
-            draggable={false}
-          />
-        ) : (
-          <div className="text-black/20 text-[10px] uppercase tracking-widest">
-            No image
-          </div>
-        )}
+          {/* Hover Image */}
+          {product.hover_image && (
+            <Image
+              src={product.hover_image}
+              alt={`${product.name} alternate view`}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-105 absolute inset-0"
+              draggable={false}
+            />
+          )}
+        </div>
 
-        {/* Hover Image */}
-        {product.hover_image && (
-          <Image
-            src={product.hover_image}
-            alt={`${product.name} alternate view`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-contain p-8 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-105 absolute inset-0"
-            draggable={false}
-          />
-        )}
+        {/* Floating White Circle (Bottom Right) */}
+        <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+          {/* A tiny arrow can go here if desired, but left blank to match screenshot perfectly */}
+        </div>
       </div>
 
       {/* Content Container */}
-      <div className="flex flex-col gap-1.5 px-1">
-        {/* Row 1: Discount & Plus Icon */}
-        <div className="flex justify-between items-center text-[10px] text-white/50 font-medium uppercase tracking-widest">
-          <span>{isSale ? `${discountPercent}% OFF` : ""}</span>
-          <span className="text-lg leading-none font-light">+</span>
-        </div>
-        
-        {/* Row 2: Product Name & Prices */}
-        <div className="flex justify-between items-start gap-4">
-          <h3 className="font-sans text-[13px] font-medium text-white/90 truncate group-hover:text-white transition-colors">
+      <div className="flex justify-between items-start px-1 mt-1">
+        {/* Left: Name and Color */}
+        <div className="flex flex-col gap-1.5">
+          <h3 className="font-sans text-[12px] font-bold text-white/90 truncate group-hover:text-white transition-colors">
             {product.name}
           </h3>
-          <div className="flex items-center gap-2 shrink-0">
-            {isSale && product.compare_at_price && (
-              <span className="font-sans text-[11px] text-white/40 line-through">
-                {formatNGN(product.compare_at_price)}
-              </span>
-            )}
-            <span className="font-sans text-[13px] text-white font-medium">
-              {formatNGN(product.base_price)}
-            </span>
+          <div className="text-[10px] text-white/40 font-sans">
+            Steezaverse - 1 Colour
           </div>
         </div>
-
-        {/* Row 3: Colors (Static Placeholder to match design) */}
-        <div className="text-[11px] text-white/40 font-sans mt-0.5">
-          Steezaverse • 1 Colour
+        
+        {/* Right: Plus and Price */}
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-[10px] text-white/40 leading-none font-light">+</span>
+          <span className="font-sans text-[12px] text-white font-bold tracking-wide">
+            {formatNGN(product.base_price)}
+          </span>
         </div>
       </div>
     </motion.a>
