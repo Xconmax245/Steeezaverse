@@ -161,12 +161,22 @@ export default function HeroSection() {
         className="absolute inset-0 z-0 pointer-events-none"
         style={{ x: bgX, y: bgY, scale: 1.05 }}
       >
+        {/* Desktop Image */}
         <Image
           src="/photo_2026-09-09_21-08-39.jpg"
           alt="Steezaverse Models"
           fill
           priority
-          className="object-cover object-[center_20%] select-none"
+          className="object-cover object-[center_20%] select-none hidden md:block"
+          draggable={false}
+        />
+        {/* Mobile Image */}
+        <Image
+          src="/fashionable-man-woman-posing-with-copy-space.jpg"
+          alt="Steezaverse Models Mobile"
+          fill
+          priority
+          className="object-cover object-[center_20%] select-none block md:hidden"
           draggable={false}
         />
         {/* Gradients to darken edges for text legibility */}
