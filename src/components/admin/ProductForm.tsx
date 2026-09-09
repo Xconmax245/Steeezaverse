@@ -9,6 +9,7 @@ import {
 } from '@/app/actions/product-actions';
 import ImageUploader from '@/components/admin/ImageUploader';
 import { motion } from 'framer-motion';
+import DateTimePicker from '@/components/admin/DateTimePicker';
 
 interface InitialProduct {
   product: {
@@ -291,14 +292,17 @@ export default function ProductForm({ mode, productId, initial }: ProductFormPro
 
           {isDrop && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 bg-sz-red/5 border border-sz-red/10 p-5 rounded-md mt-[-10px]">
-              <div>
-                <label className={labelClass} htmlFor="drop_starts_at">Drop Starts At</label>
-                <input id="drop_starts_at" type="datetime-local" className={inputClass} value={dropStartsAt} onChange={(e) => setDropStartsAt(e.target.value)} />
-              </div>
-              <div>
-                <label className={labelClass} htmlFor="drop_ends_at">Drop Ends At</label>
-                <input id="drop_ends_at" type="datetime-local" className={inputClass} value={dropEndsAt} onChange={(e) => setDropEndsAt(e.target.value)} />
-              </div>
+              <DateTimePicker 
+                label="Drop Starts At" 
+                value={dropStartsAt} 
+                onChange={(val) => setDropStartsAt(val)} 
+              />
+              <DateTimePicker 
+                label="Drop Ends At" 
+                placeholder="Optional End Time"
+                value={dropEndsAt} 
+                onChange={(val) => setDropEndsAt(val)} 
+              />
             </motion.div>
           )}
         </div>
