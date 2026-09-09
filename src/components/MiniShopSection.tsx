@@ -1,4 +1,4 @@
-import { getFeaturedProducts } from "@/app/api/homepage/mini-shop/route";
+import { getFeaturedProducts } from "@/lib/products";
 import MiniShopCarousel from "./MiniShopCarousel";
 
 export default async function MiniShopSection() {

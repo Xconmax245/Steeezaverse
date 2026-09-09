@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { MiniShopItem } from "@/app/api/homepage/mini-shop/route";
+import { MiniShopItem } from "@/lib/products";
 
 export default function MiniShopCarousel({ products }: { products: MiniShopItem[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
