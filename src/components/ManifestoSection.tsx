@@ -109,7 +109,7 @@ export default function ManifestoSection() {
           {"FOR A NEW ERA OF".split(" ").map((word, i) => (
             <span key={i} className="word inline-block">{word}</span>
           ))}
-          <span className="word inline-block font-zodiak italic lowercase text-[var(--blue)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>creation</span>
+          <span className="word inline-block font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>creation</span>
         </div>
 
         {/* Line 3 */}
