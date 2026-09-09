@@ -16,6 +16,43 @@ export default function HeroSection() {
   const contentRef = useRef<HTMLDivElement>(null);
   const [playAnimations, setPlayAnimations] = useState(false);
 
+  // Typewriter state
+  const [typewriterText, setTypewriterText] = useState("");
+  const [textIndex, setTextIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const typewriterTexts = [
+    "CURATED HEAVYWEIGHT GARMENTS.",
+    "LIMITED RUNS. NO RESTOCKS.",
+    "SHAPING THE FUTURE OF STREETWEAR.",
+    "THE NEW STANDARD IN PREMIUM ESSENTIALS."
+  ];
+
+  useEffect(() => {
+    if (!playAnimations) return;
+    let timer: NodeJS.Timeout;
+    const currentFullText = typewriterTexts[textIndex];
+    
+    if (isDeleting) {
+      timer = setTimeout(() => {
+        setTypewriterText(currentFullText.substring(0, typewriterText.length - 1));
+        if (typewriterText.length === 0) {
+          setIsDeleting(false);
+          setTextIndex((prev) => (prev + 1) % typewriterTexts.length);
+        }
+      }, 30); // deleting speed
+    } else {
+      timer = setTimeout(() => {
+        setTypewriterText(currentFullText.substring(0, typewriterText.length + 1));
+        if (typewriterText.length === currentFullText.length) {
+          timer = setTimeout(() => setIsDeleting(true), 2500); // pause before deleting
+        }
+      }, 60); // typing speed
+    }
+
+    return () => clearTimeout(timer);
+  }, [typewriterText, isDeleting, textIndex, playAnimations]);
+
   // Parallax Gyroscope values
   const gyroX = useMotionValue(0);
   const gyroY = useMotionValue(0);
@@ -116,7 +153,7 @@ export default function HeroSection() {
           alt="Steezaverse Models"
           fill
           priority
-          className="object-cover object-center select-none"
+          className="object-cover object-[70%_top] md:object-center select-none"
           draggable={false}
         />
         {/* Subtle overlay to ensure text readability */}
@@ -137,18 +174,18 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.4, ease }}
           >
-            STEEZAVERSE
+            STEEZA<span className="text-[var(--red)]">VERSE</span>
           </motion.span>
         </div>
 
         <motion.p
-          className="mt-6 mb-10 text-white/80 uppercase tracking-widest"
+          className="mt-6 mb-10 text-white/80 uppercase tracking-widest min-h-[1.5rem]"
           style={{ fontFamily: "'Chillax', sans-serif", fontSize: "12px", fontWeight: 600 }}
           initial={{ opacity: 0 }}
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease }}
         >
-          CURATED HEAVYWEIGHT GARMENTS. LIMITED RUNS. NO RESTOCKS.
+          {typewriterText}<span className="animate-pulse">|</span>
         </motion.p>
 
         <motion.button
