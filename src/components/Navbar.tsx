@@ -25,12 +25,12 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 60);
-      setIsDarkBg(window.scrollY > window.innerHeight - 50);
+      setIsDarkBg(pathname !== '/' || window.scrollY > window.innerHeight - 50);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
