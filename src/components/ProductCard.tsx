@@ -36,8 +36,8 @@ export function ProductCard({
       data-cuelume-hover="tick"
       draggable={false}
     >
-      {/* Image Container (Polaroid-style frame) */}
-      <div className="w-full aspect-[4/5] bg-[#f4f4f4] p-4 relative transition-transform duration-700 ease-out group-hover:scale-[1.02]">
+      {/* Image Container */}
+      <div className="w-full aspect-[4/5] bg-[#f4f4f4] relative transition-transform duration-700 ease-out group-hover:scale-[1.02]">
         
         {/* Inner Image Wrapper */}
         <div className="relative w-full h-full overflow-hidden bg-black/5">
@@ -69,11 +69,6 @@ export function ProductCard({
               draggable={false}
             />
           )}
-        </div>
-
-        {/* Floating White Circle (Bottom Right) */}
-        <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
-          {/* A tiny arrow can go here if desired, but left blank to match screenshot perfectly */}
         </div>
       </div>
 
