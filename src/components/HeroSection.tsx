@@ -137,7 +137,7 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.4, ease }}
           >
-            STYLE
+            ENTER
           </motion.span>
           <motion.span
             style={wordStyle}
@@ -146,7 +146,7 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.5, ease }}
           >
-            VIBE
+            THE
           </motion.span>
           <motion.span
             style={wordStyle}
@@ -155,7 +155,7 @@ export default function HeroSection() {
             animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.8, delay: 0.6, ease }}
           >
-            REFLECT
+            VERSE
           </motion.span>
         </div>
 
@@ -166,7 +166,7 @@ export default function HeroSection() {
           animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease }}
         >
-          Add a little bit of body text
+          CURATED HEAVYWEIGHT GARMENTS. LIMITED RUNS. NO RESTOCKS.
         </motion.p>
 
         <motion.button
@@ -188,16 +188,13 @@ export default function HeroSection() {
           data-cuelume-hover="tick"
         >
           <span
+            className="text-black font-semibold uppercase tracking-[0.2em] group-hover:text-white transition-colors duration-300"
             style={{
               fontFamily: "'Chillax', sans-serif",
-              fontWeight: 600,
-              fontSize: "12px",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
+              fontSize: "13px",
             }}
-            className="text-black transition-colors duration-300 group-hover:text-white"
           >
-            Shop Now
+            SHOP THE DROP
           </span>
         </motion.button>
       </motion.div>
