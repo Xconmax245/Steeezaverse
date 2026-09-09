@@ -13,17 +13,17 @@ export default function SocialProofStrip() {
     // Duplicate for seamless loop
     const repeated = [...pressMentions, ...pressMentions, ...pressMentions, ...pressMentions];
     return repeated.map((text, index) => (
-      <div key={index} className="flex items-center gap-8 md:gap-16 mx-4 md:mx-8">
-        <span className="font-chillax font-medium text-[clamp(16px,2vw,24px)] tracking-[0.15em] text-white/40 uppercase">
+      <div key={index} className="flex items-center gap-10 md:gap-20 mx-5 md:mx-10">
+        <span className="font-chillax font-semibold text-[clamp(12px,1.2vw,16px)] tracking-[0.25em] text-white/60 uppercase">
           {text}
         </span>
-        <span className="text-white/10 text-[clamp(16px,2vw,24px)] leading-none">/</span>
+        <div className="w-1 h-1 bg-white/20 rounded-full" />
       </div>
     ));
   };
 
   return (
-    <section className="w-full relative z-10 bg-[#0a0a0a] py-16 md:py-24 overflow-hidden border-y border-white/5">
+    <section className="w-full relative z-10 bg-[#0a0a0a] py-10 md:py-12 overflow-hidden">
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes social-scroll-left {
           0% { transform: translateX(0); }
