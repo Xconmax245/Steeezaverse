@@ -446,7 +446,7 @@ export default function ProductForm({ mode, productId, initial }: ProductFormPro
           data-cuelume-hover="tick"
           data-cuelume-press
         >
-          {submitting ? 'Authenticating...' : mode === 'edit' ? 'Save Changes' : 'Initialize Product'}
+          {submitting ? 'Saving…' : mode === 'edit' ? 'Save Changes' : 'Initialize Product'}
         </button>
       </div>
     </form>
