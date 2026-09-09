@@ -8,6 +8,7 @@ import { X } from 'lucide-react';
 import ShoppingCartIcon from './ShoppingCartIcon';
 import { usePathname } from 'next/navigation';
 import MuteToggle from './MuteToggle';
+import { useCart } from './CartContext';
 
 const NAV_LINKS = [
   { label: 'HOME', href: '/' },
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [isDarkBg, setIsDarkBg] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { cartCount, setIsOpen } = useCart();
 
   useEffect(() => {
     const onScroll = () => {
@@ -114,6 +116,7 @@ export default function Navbar() {
             <MuteToggle />
             <button
               id="navbar-cart-btn"
+              onClick={() => setIsOpen(true)}
               className="relative text-white/70 hover:text-white transition-colors duration-200"
               aria-label="Cart"
               data-cursor="navbar"
@@ -121,6 +124,11 @@ export default function Navbar() {
               data-cuelume-release
             >
               <ShoppingCartIcon size={15} strokeWidth={2} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-sz-red text-white text-[9px] font-bold px-1 min-w-[14px] h-[14px] rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </button>
             <motion.button
               onClick={() => setIsMenuOpen(true)}
@@ -170,12 +178,18 @@ export default function Navbar() {
             <MuteToggle />
             <button
               id="navbar-cart-btn-mobile"
+              onClick={() => setIsOpen(true)}
               className="relative text-white/70 hover:text-white transition-colors duration-200"
               aria-label="Cart"
               data-cuelume-press
               data-cuelume-release
             >
               <ShoppingCartIcon size={16} strokeWidth={2} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-sz-red text-white text-[9px] font-bold px-1 min-w-[14px] h-[14px] rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </button>
             <motion.button
               onClick={() => setIsMenuOpen(true)}

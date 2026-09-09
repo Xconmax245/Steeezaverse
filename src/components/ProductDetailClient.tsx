@@ -8,6 +8,7 @@ import MiniShopCarousel from "@/components/MiniShopCarousel";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import StitchedLine from "@/components/StitchedLine";
 import { createPortal } from "react-dom";
+import { useCart } from "@/components/CartContext";
 
 function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
@@ -20,6 +21,7 @@ export default function ProductDetailClient({
   product: ShopProduct;
   relatedProducts: MiniShopItem[];
 }) {
+  const { addItem } = useCart();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   
@@ -85,8 +87,8 @@ export default function ProductDetailClient({
     setMousePos({ x, y });
   };
 
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!isReadyToCart()) return;
+  const handleAddToCart = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isReadyToCart() || !activeVariant) return;
     
     // Trigger animation
     setShowStitchedLine(false);
@@ -96,7 +98,7 @@ export default function ProductDetailClient({
       setTimeout(() => setShowStitchedLine(false), 2000);
     }, 50);
 
-    // TODO: Add to cart state logic
+    await addItem(activeVariant.id, 1);
   };
 
   const activeImageUrl = product.images[activeImageIndex]?.url || product.image;
