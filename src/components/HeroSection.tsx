@@ -143,23 +143,29 @@ export default function HeroSection() {
     >
       {/* ── Layer 1 (bottom): VERSE text sits BEHIND image ── */}
       <motion.div
-        className="absolute inset-0 z-[1] flex items-center justify-between px-[8vw] pointer-events-none"
+        className="absolute inset-0 z-[1] pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
         <span
-          className="opacity-0 select-none"
+          className="absolute opacity-0 select-none"
           style={{
             ...wordStyle,
             fontSize: "clamp(40px, 11vw, 160px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            left: "8%",
           }}
         >
           STEEZA
         </span>
         <span
-          className="text-[var(--red)] select-none"
+          className="absolute text-[var(--red)] select-none"
           style={{
             ...wordStyle,
             fontSize: "clamp(40px, 11vw, 160px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            left: "62%",
           }}
         >
           VERSE
@@ -184,23 +190,29 @@ export default function HeroSection() {
 
       {/* ── Layer 3 (top): STEEZA sits IN FRONT of image ── */}
       <motion.div
-        className="absolute inset-0 z-[3] flex items-center justify-between px-[8vw] pointer-events-none"
+        className="absolute inset-0 z-[3] pointer-events-none"
         style={{ x: contentX, y: contentY }}
       >
         <span
-          className="text-black select-none"
+          className="absolute text-black select-none"
           style={{
             ...wordStyle,
             fontSize: "clamp(40px, 11vw, 160px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            left: "8%",
           }}
         >
           STEEZA
         </span>
         <span
-          className="opacity-0 select-none"
+          className="absolute opacity-0 select-none"
           style={{
             ...wordStyle,
             fontSize: "clamp(40px, 11vw, 160px)",
+            top: "50%",
+            transform: "translateY(-50%)",
+            left: "62%",
           }}
         >
           VERSE
