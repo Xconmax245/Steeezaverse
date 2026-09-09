@@ -4,6 +4,7 @@ import MarqueeDivider from "@/components/MarqueeDivider";
 import ManifestoSection from "@/components/ManifestoSection";
 import MiniShopSection from "@/components/MiniShopSection";
 import LookbookSection from "@/components/LookbookSection";
+import HomeTransitionWrapper from "@/components/HomeTransitionWrapper";
 
 export default function HomePage() {
   return (
@@ -16,11 +17,13 @@ export default function HomePage() {
 
       <ManifestoSection />
 
-      {/* ── Mini-Shop Section ── */}
-      <MiniShopSection />
+      <HomeTransitionWrapper>
+        {/* ── Mini-Shop Section ── */}
+        <MiniShopSection />
 
-      {/* ── Lookbook Section (admin-managed) ── */}
-      <LookbookSection />
+        {/* ── Lookbook Section (admin-managed) ── */}
+        <LookbookSection />
+      </HomeTransitionWrapper>
     </main>
   );
 }

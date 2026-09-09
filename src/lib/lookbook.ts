@@ -11,14 +11,31 @@ export interface LookbookItem {
   image_url: string;
   caption: string | null;
   sort_order: number;
-  linked_product: { id: string; name: string; slug: string } | null;
+  linked_product: {
+    id: string;
+    name: string;
+    slug: string;
+    images: { id: string; url: string; sort_order: number }[];
+  } | null;
 }
 
 export const getPublishedLookbook = unstable_cache(
   async (): Promise<LookbookItem[]> => {
     const { data, error } = await (getSupabaseAdmin() as any)
       .from('lookbook_images')
-      .select(`id, image_url, caption, sort_order, linked_product_id, products(name, slug)`)
+      .select(`
+        id, 
+        image_url, 
+        caption, 
+        sort_order, 
+        linked_product_id, 
+        products(
+          id,
+          name, 
+          slug,
+          product_images(id, url, sort_order)
+        )
+      `)
       .eq('is_published', true)
       .order('sort_order', { ascending: true });
 
@@ -27,15 +44,27 @@ export const getPublishedLookbook = unstable_cache(
     const images = data as any[] | null;
     if (!images) return [];
 
-    return images.map((img) => ({
-      id: img.id,
-      image_url: img.image_url,
-      caption: img.caption,
-      sort_order: img.sort_order,
-      linked_product: img.products
-        ? { id: img.products.id, name: img.products.name, slug: img.products.slug }
-        : null,
-    }));
+    return images.map((img) => {
+      // Sort product images to ensure we get the correct secondary image
+      const productImages = img.products?.product_images
+        ? [...img.products.product_images].sort((a, b) => a.sort_order - b.sort_order)
+        : [];
+
+      return {
+        id: img.id,
+        image_url: img.image_url,
+        caption: img.caption,
+        sort_order: img.sort_order,
+        linked_product: img.products
+          ? {
+              id: img.products.id,
+              name: img.products.name,
+              slug: img.products.slug,
+              images: productImages,
+            }
+          : null,
+      };
+    });
   },
   [LOOKBOOK_TAG],
   { revalidate: 300, tags: [LOOKBOOK_TAG] } // 5-minute revalidation + on-demand purge

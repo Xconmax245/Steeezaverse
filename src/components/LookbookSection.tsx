@@ -1,18 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
 import { getPublishedLookbook, type LookbookItem } from "@/lib/lookbook";
+import LookbookTile from "./LookbookTile";
 
-// Editorial lookbook grid — content managed entirely from the admin Lookbook
-// page (upload, caption, product link, ordering, publish toggle). Admin
-// mutations purge the LOOKBOOK_TAG cache so this updates immediately.
-
-// Size pattern by position in a 3-column grid — creates an editorial rhythm
-// rather than uniform tiles: tall, wide, tall, wide ...
-function spanFor(index: number): string {
-  const cycle = index % 4;
-  if (cycle === 1) return "md:col-span-2";
-  return "";
-}
+// The mosaic layout pattern repeats every 5 items.
+// We map indices to size profiles which dictact their span and aspect ratio.
+const PATTERN: { size: "large" | "medium" | "small"; spanClass: string; aspectClass: string }[] = [
+  { size: "large", spanClass: "col-span-2 md:col-span-3 row-span-2", aspectClass: "aspect-[4/5] md:aspect-[3/4]" },
+  { size: "small", spanClass: "col-span-1 md:col-span-1 row-span-1", aspectClass: "aspect-[3/4] md:aspect-square" },
+  { size: "medium", spanClass: "col-span-1 md:col-span-2 row-span-1", aspectClass: "aspect-[3/4] md:aspect-[4/3]" },
+  { size: "medium", spanClass: "col-span-1 md:col-span-2 row-span-1", aspectClass: "aspect-[3/4] md:aspect-[4/3]" },
+  { size: "small", spanClass: "col-span-1 md:col-span-1 row-span-1", aspectClass: "aspect-[3/4] md:aspect-square" }
+];
 
 export default async function LookbookSection() {
   let items: LookbookItem[] = [];
@@ -28,7 +25,7 @@ export default async function LookbookSection() {
   return (
     <section className="relative w-full bg-black py-24 overflow-hidden z-20">
       <div className="max-w-[95vw] mx-auto px-4 md:px-8">
-        {/* Section heading — mirrors MiniShopSection */}
+        {/* Section heading */}
         <div className="flex items-end justify-between mb-12" data-aos="fade-up" data-aos-duration="800">
           <h2 className="font-chillax text-xs md:text-sm uppercase tracking-[0.3em] text-white/50">
             Lookbook
@@ -38,62 +35,23 @@ export default async function LookbookSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
-          {items.map((item, index) => (
-            <LookbookTile key={item.id} item={item} span={spanFor(index)} index={index} />
-          ))}
+        {/* 6-Column Scattered Mosaic Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-6 auto-rows-min gap-4 md:gap-6">
+          {items.map((item, index) => {
+            const config = PATTERN[index % PATTERN.length];
+            return (
+              <LookbookTile 
+                key={item.id} 
+                item={item} 
+                index={index} 
+                size={config.size} 
+                spanClass={config.spanClass} 
+                aspectClass={config.aspectClass} 
+              />
+            );
+          })}
         </div>
       </div>
     </section>
   );
-}
-
-function LookbookTile({ item, span, index }: { item: LookbookItem; span: string; index: number }) {
-  const aspect = span.includes("col-span-2") ? "aspect-[2/1]" : "aspect-[3/4]";
-
-  const tile = (
-    <div
-      className={`group relative ${span} ${aspect} w-full bg-[#111] rounded-lg overflow-hidden`}
-      style={{ perspective: "1000px" }}
-      data-cuelume-hover="tick"
-      data-aos="zoom-in-up"
-      data-aos-delay={(index % 3) * 90}
-      data-aos-duration="850"
-    >
-      {item.image_url && (
-        <Image
-          src={item.image_url}
-          alt={item.caption ?? `Lookbook image ${index + 1}`}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-          draggable={false}
-        />
-      )}
-
-      {/* Subtle top gradient for legibility of overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
-
-      {item.caption && (
-        <p className="absolute bottom-4 left-4 right-4 font-sans text-xs uppercase tracking-[0.2em] text-white/85 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-          {item.caption}
-        </p>
-      )}
-    </div>
-  );
-
-  // Admin-linked product: whole tile routes to the product page.
-  if (item.linked_product?.slug) {
-    return (
-      <Link
-        href={`/shop/${item.linked_product.slug}`}
-        className="block"
-        aria-label={item.linked_product.name}
-      >
-        {tile}
-      </Link>
-    );
-  }
-
-  return tile;
 }
