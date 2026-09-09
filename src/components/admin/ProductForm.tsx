@@ -86,7 +86,7 @@ function generateSkuPlaceholder(name: string, size: string, color: string): stri
 const inputClass =
   'w-full bg-white/[0.02] border border-white/10 rounded-md px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-sz-red focus:bg-white/[0.05] transition-all duration-300';
 const labelClass = 'block text-[10px] uppercase tracking-wider text-white/50 mb-2';
-const sectionClass = 'bg-white/[0.01] border border-white/5 p-8 rounded-xl relative overflow-hidden';
+const sectionClass = 'bg-white/[0.01] border border-white/5 p-8 rounded-xl relative';
 const sectionHeaderClass = 'font-chillax uppercase tracking-widest text-lg font-bold mb-8 text-white flex items-center gap-4';
 
 export default function ProductForm({ mode, productId, initial }: ProductFormProps) {
