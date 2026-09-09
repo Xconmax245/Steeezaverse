@@ -185,11 +185,11 @@ function SplashContent() {
             transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           >
             <Image
-              src="/STV_logo_black-removebg-preview.png"
+              src="/STV_mini_logo-removebg-preview.png"
               alt="Steezaverse"
               fill
               priority
-              className="object-contain brightness-0 invert"
+              className="object-contain"
             />
           </motion.div>
 
