@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 import type { MiniShopItem } from "@/lib/products";
 
 // A single digit component with flip/glitch animation
@@ -43,6 +49,9 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
+  // Refs for GSAP animation targets
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
+
   // Initialize and check Arrive-After-Live
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -56,14 +65,30 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
     }
   }, [drop]);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"]
-  });
+  useEffect(() => {
+    if (reducedMotion) return;
 
-  // Fade in from bottom, stay visible in middle, fade out to top
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
-  const sectionScale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.85, 1, 1, 0.85]);
+    const ctx = gsap.context(() => {
+      if (!sectionRef.current || !contentWrapperRef.current) return;
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Scale from 0.85 to 1 at 30% scroll, stay at 1 until 70%, then scale to 0.85
+      // Opacity from 0 to 1 at 30%, stay at 1 until 70%, then opacity 0
+      tl.fromTo(contentWrapperRef.current, { opacity: 0, scale: 0.85, y: 50 }, { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power1.out" })
+        .to(contentWrapperRef.current, { opacity: 0, scale: 0.85, y: -50, duration: 0.3, ease: "power1.in" }, 0.7);
+
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [reducedMotion]);
 
   // Countdown timer
   useEffect(() => {
@@ -159,13 +184,13 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
       className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-0"
       style={{ backgroundColor: bgColor, "--ink-2": "var(--blue)" } as React.CSSProperties}
     >
-      <div className="z-10 flex flex-col items-center gap-12 w-full max-w-4xl px-4 py-24">
+      <div ref={contentWrapperRef} className="z-10 flex flex-col items-center gap-12 w-full max-w-4xl px-4 py-24">
         
         {/* Kinetic Countdown */}
         {!isLive && timeLeft && (
-          <motion.div 
+          <div 
             className="flex gap-4 md:gap-8 text-white font-black text-6xl md:text-9xl tracking-tighter" 
-            style={{ fontFamily: "Archivo, sans-serif", opacity: sectionOpacity, scale: sectionScale }}
+            style={{ fontFamily: "Archivo, sans-serif" }}
           >
             <div className="flex">
               <GlitchDigit digit={timeLeft.d[0]} isLive={isLive} reducedMotion={reducedMotion} />
@@ -186,7 +211,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
               <GlitchDigit digit={timeLeft.s[0]} isLive={isLive} reducedMotion={reducedMotion} />
               <GlitchDigit digit={timeLeft.s[1]} isLive={isLive} reducedMotion={reducedMotion} />
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Live State Header */}
@@ -196,15 +221,14 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-white font-black text-7xl md:text-9xl tracking-tighter uppercase text-center"
-            style={{ fontFamily: "Archivo, sans-serif", opacity: sectionOpacity, scale: sectionScale }}
+            style={{ fontFamily: "Archivo, sans-serif" }}
           >
             DROP IS LIVE
           </motion.h2>
         )}
 
-        <motion.div 
+        <div 
           className="flex flex-col items-center gap-6 mt-8 w-full max-w-md"
-          style={{ opacity: sectionOpacity, y: useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [50, 0, 0, -50]) }}
         >
           <p className="text-white/60 font-semibold tracking-[0.2em] uppercase text-xs text-center">
             {drop.name}
@@ -265,7 +289,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
               )}
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

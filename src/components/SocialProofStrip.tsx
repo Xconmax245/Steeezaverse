@@ -1,9 +1,39 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function SocialProofStrip() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isReduced) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        }
+      });
+
+      // Fade in/up as it enters, fade out/up as it leaves
+      tl.fromTo(contentRef.current, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.3, ease: "power1.out" })
+        .to(contentRef.current, { opacity: 0, y: -40, duration: 0.3, ease: "power1.in" }, 0.7);
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const pressMentions = [
     "HYPEBEAST — THE NEW UNIFORM",
     "COMPLEX — A HEAVYWEIGHT STAPLE",
@@ -26,13 +56,11 @@ export default function SocialProofStrip() {
   };
 
   return (
-    <motion.section 
+    <section 
+      ref={sectionRef}
       className="w-full relative z-10 bg-[#0a0a0a] py-10 md:py-12 overflow-hidden"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10% 0px" }}
-      transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
     >
+      <div ref={contentRef}>
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes social-scroll-left {
           0% { transform: translateX(0); }
@@ -58,6 +86,6 @@ export default function SocialProofStrip() {
           {renderTrack()}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
