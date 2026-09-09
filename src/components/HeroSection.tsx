@@ -153,7 +153,7 @@ export default function HeroSection() {
           alt="Steezaverse Models"
           fill
           priority
-          className="object-cover object-[70%_top] md:object-center select-none"
+          className="object-cover object-[15%_center] md:object-center select-none"
           draggable={false}
         />
         {/* Subtle overlay to ensure text readability */}
