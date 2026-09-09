@@ -10,25 +10,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-/**
- * ─── Cover-lock typography calibration ──────────────────────────────────────
- * Fractions are in IMAGE SPACE (0..1 across the full 1280x719 photo), NOT
- * viewport %. Because object-position is `center 20%`, horizontal subject
- * fractions are rock solid; vertical fractions shift a little on very wide
- * screens (the photo crops top/bottom around the 20% line).
- *
- * Calibrated against public/photo_2026-09-09_21-08-39.jpg:
- *   blue guy   torso ≈ x 0.055 → 0.215, chest centroid ≈ x 0.135, y 0.63
- *   yellow guy torso ≈ x 0.400 → 0.570, chest centroid ≈ x 0.490, y 0.63
- *   red guy    torso ≈ x 0.680 → 0.905, chest centroid ≈ x 0.790, y 0.63
- *
- * Tune with:  fx/fy  = anchor point in the photo (0..1)
- *             nx/ny  = small offsets in em (relative to font size) or px
- * ────────────────────────────────────────────────────────────────────────────
- */
-const STEEZA_ANCHOR = { fx: 0.280, fy: 0.50, nx: "-0.60em", ny: "0.55em" };
-const VERSE_ANCHOR = { fx: 0.720, fy: 0.50, nx: "0px", ny: "0.55em" };
-
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -143,72 +124,20 @@ export default function HeroSection() {
     return () => ctx.revert();
   }, []);
 
-  const wordStyle: React.CSSProperties = {
-    fontFamily: "'Bespoke Sans', sans-serif",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    lineHeight: 1,
-    letterSpacing: "-0.02em",
-  };
-
-  const heroFrameStyle = {
-    "--img-ar": 1.7803,
-    "--render-w": "max(100vw, calc(var(--img-ar) * 100vh))",
-    "--render-h": "max(100vh, calc(100vw / var(--img-ar)))",
-    "--crop-x": "calc((var(--render-w) - 100vw) / 2)",
-    "--crop-y": "calc((var(--render-h) - 100vh) * 0.2)",
-  } as React.CSSProperties;
-
-  // Full uncropped photo box, expressed relative to the section. The photo
-  // paints exactly inside this box (object-cover center 20%), so anything
-  // placed in image-space coordinates lines up with the models 1:1.
-  const photoBoxStyle = {
-    left: "calc(-1 * var(--crop-x))",
-    top: "calc(-1 * var(--crop-y))",
-    width: "var(--render-w)",
-    height: "var(--render-h)",
-  } as React.CSSProperties;
-
-  const anchorStyle = (a: { fx: number; fy: number; nx: string; ny: string }) =>
-    ({
-      "--fx": a.fx,
-      "--fy": a.fy,
-      "--nx": a.nx,
-      "--ny": a.ny,
-    }) as React.CSSProperties;
-
   return (
     <motion.section
       ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden bg-[#e8e8e8]"
-      style={heroFrameStyle}
+      className="relative w-full h-screen overflow-hidden bg-black"
       aria-label="Hero"
       initial={{ opacity: 0 }}
       animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* ── Layer 1 (bottom): VERSE sits BEHIND the image ──
-          Anchored in image space; the full-photo extent div guarantees the
-          word is never clipped when the render box exceeds the viewport. */}
-      <motion.div
-        className="absolute inset-0 z-[1] pointer-events-none"
-        style={{ x: contentX, y: contentY }}
-      >
-        <div className="absolute" style={photoBoxStyle}>
-          <span
-            className="hero-word text-[var(--red)] select-none"
-            style={{ ...wordStyle, ...anchorStyle(VERSE_ANCHOR) }}
-          >
-            VERSE
-          </span>
-        </div>
-      </motion.div>
-
-      {/* ── Layer 2 (middle): The photo — mix-blend-multiply reveals text through studio grey bg ── */}
+      {/* ── Background Photo & Gradient ── */}
       <motion.div
         ref={bgRef}
-        className="absolute inset-0 z-[2] pointer-events-none mix-blend-multiply"
-        style={{ x: bgX, y: bgY }}
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{ x: bgX, y: bgY, scale: 1.05 }}
       >
         <Image
           src="/photo_2026-09-09_21-08-39.jpg"
@@ -218,70 +147,102 @@ export default function HeroSection() {
           className="object-cover object-[center_20%] select-none"
           draggable={false}
         />
+        {/* Gradients to darken edges for text legibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-transparent md:w-2/3" />
+        <div className="absolute inset-0 bg-gradient-to-l from-black/60 via-transparent to-transparent md:w-1/3 right-0" />
       </motion.div>
 
-      {/* ── Layer 3 (top): STEEZA sits IN FRONT of the image ──
-          --shift-x pushes the word off the blue guy by exactly 15.7% of the
-          photo's width — the same fraction of pixels the photo's render box
-          moves, so the word tracks the photo crop instead of the viewport. */}
-      <motion.div
-        className="absolute inset-0 z-[3] pointer-events-none"
-        style={{ x: contentX, y: contentY }}
-      >
-        <div className="absolute" style={photoBoxStyle}>
-          <span
-            className="hero-word text-black select-none"
-            style={{
-              ...wordStyle,
-              ...anchorStyle(STEEZA_ANCHOR),
-            } as React.CSSProperties}
-          >
-            STEEZA
-          </span>
-        </div>
-      </motion.div>
-
-      {/* ── UI Layer: typewriter + CTA button, interactable ── */}
+      {/* ── Foreground Layout ── */}
       <motion.div
         ref={contentRef}
-        className="absolute inset-0 z-[4] flex flex-col items-center justify-end pb-20 text-center px-4"
+        className="relative z-10 w-full h-full flex flex-col justify-end md:justify-between md:flex-row md:items-end px-6 md:px-16 pb-20 md:pb-32 pt-32"
         style={{ x: contentX, y: contentY }}
       >
-        <motion.p
-          className="mb-6 text-black/70 uppercase tracking-widest min-h-[1.5rem]"
-          style={{ fontFamily: "'Chillax', sans-serif", fontSize: "11px", fontWeight: 600 }}
-          initial={{ opacity: 0 }}
-          animate={playAnimations ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8, delay: 0.8, ease }}
-        >
-          {typewriterText}<span className="animate-pulse">|</span>
-        </motion.p>
-
-        <motion.button
-          className="flex items-center justify-center bg-black px-10 py-3 transition-colors duration-300 hover:bg-[var(--red)]"
-          initial={{ opacity: 0, y: 10 }}
-          animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          transition={{ duration: 0.8, delay: 0.9, ease }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() =>
-            window.scrollBy({
-              top: window.innerHeight * 1.5,
-              behavior: "smooth",
-            })
-          }
-          data-cursor="pointer"
-          data-cuelume-press
-          data-cuelume-release
-          data-cuelume-hover="tick"
-        >
-          <span
-            className="text-white font-semibold uppercase tracking-[0.2em]"
-            style={{ fontFamily: "'Chillax', sans-serif", fontSize: "13px" }}
+        {/* Left Side: Staggered Large Typography */}
+        <div className="flex flex-col text-white uppercase tracking-tighter leading-[0.85] mb-12 md:mb-0" style={{ fontFamily: "'Bespoke Sans', sans-serif" }}>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.2, ease }}
+            className="text-[clamp(45px,7.5vw,130px)] font-extrabold"
           >
-            SHOP THE DROP
-          </span>
-        </motion.button>
+            OWN YOUR
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.3, ease }}
+            className="text-[clamp(45px,7.5vw,130px)] font-extrabold md:ml-[12%]"
+          >
+            MODERN LOOK
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={playAnimations ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.4, ease }}
+            className="text-[clamp(45px,7.5vw,130px)] font-extrabold md:ml-[4%] text-[var(--red)]"
+          >
+            WITH STEEZAVERSE
+          </motion.div>
+        </div>
+
+        {/* Right Side: Typewriter Box & CTA */}
+        <motion.div
+          className="flex flex-col items-start md:items-end w-full md:w-auto md:max-w-xs"
+          initial={{ opacity: 0, y: 50 }}
+          animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, delay: 0.6, ease }}
+        >
+          {/* Bracketed Typewriter Box */}
+          <div className="relative p-6 mb-8 border border-transparent w-full">
+            {/* Corner Brackets */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t border-l border-white/60" />
+            <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-white/60" />
+            <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-white/60" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-white/60" />
+            
+            <p
+              className="text-white/90 uppercase tracking-widest md:text-right leading-relaxed text-[12px] md:text-[13px] min-h-[3.5rem]"
+              style={{ fontFamily: "'Chillax', sans-serif", fontWeight: 500 }}
+            >
+              {typewriterText}<span className="animate-pulse font-bold text-white">|</span>
+            </p>
+          </div>
+
+          {/* Pill CTA Button */}
+          <motion.button
+            className="flex items-center justify-center gap-3 bg-white text-black px-10 py-4 rounded-full transition-all duration-300 hover:bg-black hover:text-white group border border-white"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() =>
+              window.scrollBy({
+                top: window.innerHeight * 1.5,
+                behavior: "smooth",
+              })
+            }
+            data-cursor="pointer"
+            data-cuelume-press
+            data-cuelume-release
+            data-cuelume-hover="tick"
+          >
+            <span
+              className="font-bold uppercase tracking-[0.15em] mt-[2px]"
+              style={{ fontFamily: "'Chillax', sans-serif", fontSize: "14px" }}
+            >
+              SHOP THE DROP
+            </span>
+            <svg 
+              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor" 
+              strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 7L7 17M17 7v9m0-9H8" />
+            </svg>
+          </motion.button>
+        </motion.div>
       </motion.div>
     </motion.section>
   );
