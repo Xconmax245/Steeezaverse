@@ -32,7 +32,7 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
   const [waitlistState, setWaitlistState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
   
-  const { addItem } = useCart();
+  const { addItem, setIsOpen } = useCart();
   const [showStitchedLine, setShowStitchedLine] = useState(false);
 
   const unitPrice = selected?.price_override ?? product.base_price;
@@ -136,11 +136,22 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
           onClick={async () => {
             if (!selected) return;
             setShowStitchedLine(false);
+            
+            // Add item to cart without opening drawer
+            await addItem(selected.id, 1, false);
+
+            // Start line animation and open drawer when it completes (approx 1s)
             setTimeout(() => {
               setShowStitchedLine(true);
+              
+              // Let animation run for ~1200ms before opening drawer
+              setTimeout(() => {
+                setIsOpen(true);
+              }, 1200);
+
+              // Hide line after it's done
               setTimeout(() => setShowStitchedLine(false), 2000);
             }, 50);
-            await addItem(selected.id, 1);
           }}
         >
           Add to cart — {formatNGN(unitPrice)}

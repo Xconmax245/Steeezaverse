@@ -43,6 +43,7 @@ export async function POST(request: Request) {
       customerId,
       email,
       shippingAddressId,
+      shippingAddress,
       gateway,
       discountCode,
     } = body;
@@ -64,6 +65,56 @@ export async function POST(request: Request) {
         { success: false, error: "gateway must be 'paystack' or 'flutterwave'" },
         { status: 400 }
       );
+    }
+
+    let finalShippingAddressId = shippingAddressId;
+
+    if (!finalShippingAddressId) {
+      if (!shippingAddress || typeof shippingAddress !== 'object') {
+        return NextResponse.json({ success: false, error: 'shippingAddress or shippingAddressId is required' }, { status: 400 });
+      }
+      
+      const { full_name, line1, line2, city, state, phone } = shippingAddress;
+      if (!full_name || typeof full_name !== 'string' || full_name.trim().length === 0 || full_name.length > 100) return NextResponse.json({ success: false, error: 'Invalid full_name' }, { status: 400 });
+      if (!line1 || typeof line1 !== 'string' || line1.trim().length === 0 || line1.length > 255) return NextResponse.json({ success: false, error: 'Invalid line1' }, { status: 400 });
+      if (line2 && (typeof line2 !== 'string' || line2.length > 255)) return NextResponse.json({ success: false, error: 'Invalid line2' }, { status: 400 });
+      if (!city || typeof city !== 'string' || city.trim().length === 0 || city.length > 100) return NextResponse.json({ success: false, error: 'Invalid city' }, { status: 400 });
+      if (!state || typeof state !== 'string' || state.trim().length === 0 || state.length > 100) return NextResponse.json({ success: false, error: 'Invalid state' }, { status: 400 });
+      if (!phone || typeof phone !== 'string' || phone.trim().length === 0 || phone.length > 50) return NextResponse.json({ success: false, error: 'Invalid phone' }, { status: 400 });
+
+      // Insert address securely via server role
+      const { data: newAddr, error: addrError } = await (getSupabaseAdmin() as any)
+        .from('addresses')
+        .insert({
+          customer_id: customerId || null,
+          full_name: full_name.trim(),
+          line1: line1.trim(),
+          line2: line2 ? line2.trim() : null,
+          city: city.trim(),
+          state: state.trim(),
+          phone: phone.trim(),
+          is_default: false
+        })
+        .select('id')
+        .single();
+        
+      if (addrError || !newAddr) {
+        return NextResponse.json({ success: false, error: 'Failed to save address' }, { status: 500 });
+      }
+      finalShippingAddressId = newAddr.id;
+    } else {
+      // Validate saved address if customer is logged in
+      if (customerId) {
+        const { data: existingAddr } = await (getSupabaseAdmin() as any)
+           .from('addresses')
+           .select('id')
+           .eq('id', finalShippingAddressId)
+           .eq('customer_id', customerId)
+           .single();
+        if (!existingAddr) {
+           return NextResponse.json({ success: false, error: 'Invalid shippingAddressId' }, { status: 400 });
+        }
+      }
     }
 
     // 1. Fetch cart lines with variant + product data (single nested query).
@@ -219,7 +270,7 @@ export async function POST(request: Request) {
           payment_status: 'pending',
           payment_reference: paymentReference,
           payment_gateway: gateway,
-          shipping_address_id: shippingAddressId || null,
+          shipping_address_id: finalShippingAddressId || null,
           discount_code: discountCode || null,
         },
       ])

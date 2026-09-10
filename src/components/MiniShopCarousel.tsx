@@ -26,7 +26,7 @@ export default function MiniShopCarousel({ products }: { products: MiniShopItem[
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-10%" }}
-      className="w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide py-10"
+      className="w-full overflow-x-auto snap-x snap-mandatory scrollbar-hide py-4 md:py-6"
     >
       <motion.div
         drag="x"

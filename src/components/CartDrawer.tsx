@@ -102,6 +102,7 @@ export default function CartDrawer() {
                   {items.map((item) => {
                     const product = item.variant?.product;
                     const primaryImage = product?.product_images?.[0]?.url;
+                    console.log("CART PRODUCT:", product);
                     
                     if (!product) return null;
 

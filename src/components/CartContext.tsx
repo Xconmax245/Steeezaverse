@@ -12,6 +12,7 @@ export interface CartItem {
     id: string;
     size: string | null;
     color: string | null;
+    price_override?: number | null;
     product: {
       id: string;
       name: string;
@@ -27,7 +28,7 @@ interface CartContextType {
   items: CartItem[];
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  addItem: (variantId: string, quantity?: number) => Promise<void>;
+  addItem: (variantId: string, quantity?: number, openDrawer?: boolean) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   cartCount: number;
@@ -48,63 +49,71 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let active = true;
 
     async function initCart() {
-      setIsLoading(true);
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      const customerId = session?.user?.id;
-      
-      // Get or create cart
-      let currentCartId = localStorage.getItem("stz_cart_id");
-      
-      // If logged in, fetch customer cart
-      if (customerId) {
-        const { data: customerCarts } = await (supabase as any)
-          .from("carts")
-          .select("id")
-          .eq("customer_id", customerId)
-          .order("created_at", { ascending: false })
-          .limit(1);
+      try {
+        // Check auth state via session (skip for SSR)
+        if (typeof window === "undefined") return;
 
-        if (customerCarts && customerCarts.length > 0) {
-          const userCartId = customerCarts[0].id;
-          
-          // Merge logic if guest cart exists and is different
-          if (currentCartId && currentCartId !== userCartId) {
-            await mergeGuestCart(currentCartId as string, userCartId);
-            localStorage.removeItem("stz_cart_id");
-          }
-          
-          currentCartId = userCartId;
-        } else {
-          // Create customer cart
-          const { data: newCart } = await (supabase as any)
+        const { data: { session } } = await supabase.auth.getSession();
+        const customerId = session?.user?.id;
+        
+        let currentCartId = localStorage.getItem("stz_cart_id");
+        
+        // If logged in, fetch customer cart
+        if (customerId) {
+          const { data: customerCarts } = await (supabase as any)
             .from("carts")
-            .insert({ customer_id: customerId })
+            .select("id")
+            .eq("customer_id", customerId)
+            .limit(1);
+
+          if (customerCarts && customerCarts.length > 0) {
+            const userCartId = customerCarts[0].id;
+            
+            // Merge logic if guest cart exists and is different
+            if (currentCartId && currentCartId !== userCartId) {
+              await mergeGuestCart(currentCartId as string, userCartId);
+              localStorage.removeItem("stz_cart_id");
+            }
+            
+            currentCartId = userCartId;
+          } else {
+            // Create customer cart
+            const { data: newCart } = await (supabase as any)
+              .from("carts")
+              .insert({ customer_id: customerId })
+              .select("id")
+              .single();
+              
+            if (newCart) currentCartId = newCart.id;
+          }
+        } else if (!currentCartId) {
+          // Create guest cart
+          const sessionId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
+          const { data: newCart, error } = await (supabase as any)
+            .from("carts")
+            .insert({ session_id: sessionId })
             .select("id")
             .single();
             
-          if (newCart) currentCartId = newCart.id;
+          if (error) {
+            console.error("Cart creation failed:", error);
+          }
+            
+          if (newCart) {
+            currentCartId = newCart.id;
+            localStorage.setItem("stz_cart_id", currentCartId as string);
+          }
         }
-      } else if (!currentCartId) {
-        // Create guest cart
-        const sessionId = crypto.randomUUID();
-        const { data: newCart } = await (supabase as any)
-          .from("carts")
-          .insert({ session_id: sessionId })
-          .select("id")
-          .single();
-          
-        if (newCart) {
-          currentCartId = newCart.id;
-          localStorage.setItem("stz_cart_id", currentCartId as string);
-        }
-      }
 
-      if (active && currentCartId) {
-        setCartId(currentCartId);
-        await fetchItems(currentCartId);
+        if (active && currentCartId) {
+          setCartId(currentCartId);
+          await fetchItems(currentCartId);
+        }
+      } catch (err) {
+        console.error("Cart init error:", err);
+      } finally {
+        if (active) setIsLoading(false);
       }
-      if (active) setIsLoading(false);
     }
 
     initCart();
@@ -185,19 +194,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function addItem(variantId: string, quantity: number = 1) {
+  async function addItem(variantId: string, quantity: number = 1, openDrawer: boolean = true) {
     if (!cartId) return;
 
-    // Optimistic UI could be added here
-    setIsOpen(true); // Open drawer on add
+    if (openDrawer) setIsOpen(true); // Open drawer on add
 
     const existingItem = items.find(i => i.variant_id === variantId);
     if (existingItem) {
       await updateQuantity(existingItem.id, existingItem.quantity + quantity);
     } else {
-      await (supabase as any)
+      const { error } = await (supabase as any)
         .from("cart_items")
         .insert({ cart_id: cartId, variant_id: variantId, quantity });
+      if (error) {
+        console.error("Failed to add item:", error);
+        alert("Failed to add to cart: " + error.message);
+      }
       await fetchItems(cartId);
     }
   }
