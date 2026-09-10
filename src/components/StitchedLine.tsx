@@ -31,16 +31,17 @@ export default function StitchedLine({
     // We allow passing a fallback end ID since mobile vs desktop navbar might have different IDs
     const startEl = document.getElementById(startId);
     let endEl = document.getElementById(endId);
+    let endRect = endEl?.getBoundingClientRect();
     
-    // Fallback for mobile cart button if desktop is not visible
-    if (endId === "navbar-cart-btn" && (!endEl || window.getComputedStyle(endEl).display === "none")) {
+    // Fallback for mobile cart button if desktop is not visible (width/height will be 0 if hidden by parent)
+    if (endId === "navbar-cart-btn" && (!endEl || (endRect && endRect.width === 0 && endRect.height === 0))) {
       endEl = document.getElementById("navbar-cart-btn-mobile");
+      if (endEl) endRect = endEl.getBoundingClientRect();
     }
 
-    if (!startEl || !endEl) return;
+    if (!startEl || !endEl || !endRect) return;
 
     const startRect = startEl.getBoundingClientRect();
-    const endRect = endEl.getBoundingClientRect();
 
     // Center points of the elements
     const start = {
