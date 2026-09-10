@@ -107,9 +107,9 @@ export default function CartDrawer() {
                     if (!product) return null;
 
                     return (
-                      <div key={item.id} className="flex gap-4">
+                      <div key={item.id} className="flex gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.03] transition-colors">
                         {/* Image */}
-                        <div className="w-24 h-32 bg-[#111] relative flex-shrink-0">
+                        <div className="w-20 h-28 bg-black/50 relative flex-shrink-0 rounded-xl overflow-hidden border border-white/5">
                           {primaryImage && (
                             <Image src={primaryImage} alt={product.name} fill className="object-cover" />
                           )}
@@ -119,7 +119,7 @@ export default function CartDrawer() {
                         <div className="flex flex-col flex-1 py-1 justify-between">
                           <div className="flex justify-between items-start gap-4">
                             <div>
-                              <h3 className="text-sm font-bold tracking-wide uppercase text-white/90 leading-tight">
+                              <h3 className="text-sm font-chillax font-bold tracking-wide uppercase text-white leading-tight">
                                 {product.name}
                               </h3>
                               <div className="text-xs text-white/50 tracking-wider mt-1 uppercase">
@@ -130,32 +130,32 @@ export default function CartDrawer() {
                             </div>
                             <button
                               onClick={() => removeItem(item.id)}
-                              className="text-white/30 hover:text-sz-red transition-colors"
+                              className="w-8 h-8 flex items-center justify-center text-white/40 hover:text-sz-red hover:bg-sz-red/10 rounded-full transition-all shrink-0"
                               data-cuelume-hover="tick"
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={14} />
                             </button>
                           </div>
                           
-                          <div className="flex items-end justify-between mt-4">
-                            <div className="flex items-center border border-white/20">
+                          <div className="flex items-center justify-between mt-4">
+                            <div className="flex items-center bg-black/50 border border-white/10 rounded-full overflow-hidden">
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+                                className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-colors"
                                 data-cuelume-press
                               >
-                                <Minus size={14} />
+                                <Minus size={12} />
                               </button>
-                              <div className="w-8 text-center text-sm">{item.quantity}</div>
+                              <div className="w-6 text-center text-xs font-medium">{item.quantity}</div>
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white transition-colors"
+                                className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/5 transition-colors"
                                 data-cuelume-press
                               >
-                                <Plus size={14} />
+                                <Plus size={12} />
                               </button>
                             </div>
-                            <div className="text-sm font-bold tracking-widest">
+                            <div className="text-sm font-bold font-chillax tracking-widest text-sz-red">
                               {formatNGN(product.base_price * item.quantity)}
                             </div>
                           </div>
@@ -172,20 +172,20 @@ export default function CartDrawer() {
               <div className="p-6 border-t border-white/10 bg-[#050101]">
                 {/* Promo */}
                 <form onSubmit={handleApplyPromo} className="flex mb-6 relative">
-                  <input
-                    type="text"
-                    placeholder="PROMO CODE"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="flex-1 bg-transparent border-b border-white/20 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white uppercase tracking-widest"
-                  />
-                  <button
-                    type="submit"
-                    disabled={!promoCode || promoStatus === "loading" || promoStatus === "success"}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors disabled:opacity-50"
-                  >
-                    <ArrowRight size={16} />
-                  </button>
+                    <input
+                      type="text"
+                      placeholder="PROMO CODE"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      className="flex-1 bg-white/[0.02] border border-white/10 rounded-full px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white uppercase tracking-widest pr-12"
+                    />
+                    <button
+                      type="submit"
+                      disabled={!promoCode || promoStatus === "loading" || promoStatus === "success"}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white text-white hover:text-black rounded-full transition-colors disabled:opacity-50"
+                    >
+                      <ArrowRight size={14} />
+                    </button>
                 </form>
                 {promoStatus === "success" && <p className="text-green-500 text-xs mb-4 uppercase tracking-widest">Promo code applied</p>}
                 {promoStatus === "error" && <p className="text-sz-red text-xs mb-4 uppercase tracking-widest">Invalid or expired code</p>}
@@ -199,7 +199,7 @@ export default function CartDrawer() {
                 {/* Checkout CTA */}
                 <button
                   onClick={handleCheckout}
-                  className="w-full bg-sz-red hover:bg-sz-red-dim text-white font-bold tracking-widest uppercase py-4 text-sm transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-sz-red hover:bg-sz-red/90 text-white font-chillax font-bold tracking-widest uppercase py-4 rounded-full text-sm transition-colors flex items-center justify-center gap-2"
                   data-cuelume-press
                 >
                   Checkout

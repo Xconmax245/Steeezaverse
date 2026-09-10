@@ -14,9 +14,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const product = await getProductBySlug(params.slug);
     if (!product) return { title: "Not found — Steezaverse" };
+    
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://steezaverse.com';
+    const primaryImage = product.images?.[0]?.url || `${baseUrl}/og-fallback.png`;
+    const title = `${product.name} — Steezaverse`;
+    const description = product.description || `Available now at Steezaverse. ${product.is_drop ? 'Limited release.' : ''}`;
+
     return {
-      title: `${product.name} — Steezaverse`,
-      description: product.description ?? undefined,
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url: `${baseUrl}/product/${product.slug}`,
+        siteName: 'Steezaverse',
+        images: [
+          {
+            url: primaryImage,
+            width: 1200,
+            height: 630,
+            alt: product.name,
+          }
+        ],
+        type: 'website', // using 'website' for generic sharing, but we can add custom product tags
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [primaryImage],
+      },
+      other: {
+        'product:price:amount': product.base_price.toString(),
+        'product:price:currency': 'NGN',
+      }
     };
   } catch {
     return { title: "Steezaverse" };

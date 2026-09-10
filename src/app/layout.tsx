@@ -8,14 +8,33 @@ import IntroSplash from "@/components/IntroSplash";
 import CuelumeProvider from "@/components/CuelumeProvider";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://steezaverse.com';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Steezaverse — Streetwear",
   description: "Steezaverse. Drops, limited-run streetwear, and nothing else.",
   openGraph: {
     title: "Steezaverse",
     description: "Drops, limited-run streetwear, and nothing else.",
+    url: baseUrl,
+    siteName: "Steezaverse",
     type: "website",
+    images: [
+      {
+        url: "/og-fallback.png",
+        width: 1200,
+        height: 630,
+        alt: "Steezaverse",
+      }
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Steezaverse",
+    description: "Drops, limited-run streetwear, and nothing else.",
+    images: ["/og-fallback.png"],
+  }
 };
 
 export default function RootLayout({
