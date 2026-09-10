@@ -105,6 +105,93 @@ export const getAllProducts = unstable_cache(
   { revalidate: 300, tags: [PRODUCTS_TAG] }
 );
 
+export interface ShopFilterParams {
+  categorySlug?: string;
+  sizes?: string[];
+  colors?: string[];
+  sort?: "featured" | "newest" | "price-asc" | "price-desc";
+  cursorId?: string;
+  cursorValue?: string | number;
+  limit?: number;
+}
+
+export async function getFilteredProducts(params: ShopFilterParams): Promise<MiniShopItem[]> {
+  const limit = params.limit ?? 12;
+  const sort = params.sort ?? "featured";
+  
+  let query = (getSupabaseAdmin() as any)
+    .from('products')
+    .select(`
+      id, name, slug, description, base_price, compare_at_price,
+      is_drop, drop_starts_at, drop_ends_at, updated_at,
+      product_images(url, alt_text, sort_order)
+      ${params.categorySlug ? ', categories!inner(slug)' : ''}
+      ${params.sizes?.length || params.colors?.length ? ', product_variants!inner(size, color)' : ''}
+    `)
+    .eq('status', 'published');
+
+  // Filters
+  if (params.categorySlug) {
+    query = query.eq('categories.slug', params.categorySlug);
+  }
+  if (params.sizes && params.sizes.length > 0) {
+    query = query.in('product_variants.size', params.sizes);
+  }
+  if (params.colors && params.colors.length > 0) {
+    query = query.in('product_variants.color', params.colors);
+  }
+
+  // Sorting & Cursor logic
+  if (sort === "price-asc") {
+    query = query.order('base_price', { ascending: true }).order('id', { ascending: true });
+    if (params.cursorId && params.cursorValue !== undefined) {
+      query = query.or(`base_price.gt.${params.cursorValue},and(base_price.eq.${params.cursorValue},id.gt.${params.cursorId})`);
+    }
+  } else if (sort === "price-desc") {
+    query = query.order('base_price', { ascending: false }).order('id', { ascending: false });
+    if (params.cursorId && params.cursorValue !== undefined) {
+      query = query.or(`base_price.lt.${params.cursorValue},and(base_price.eq.${params.cursorValue},id.lt.${params.cursorId})`);
+    }
+  } else {
+    // newest / featured
+    query = query.order('updated_at', { ascending: false }).order('id', { ascending: false });
+    if (params.cursorId && params.cursorValue !== undefined) {
+      query = query.or(`updated_at.lt.${params.cursorValue},and(updated_at.eq.${params.cursorValue},id.lt.${params.cursorId})`);
+    }
+  }
+
+  const { data, error } = await query.limit(limit);
+  if (error) throw error;
+  return ((data as any[]) ?? []).map(toCard);
+}
+
+export const getShopFacets = unstable_cache(
+  async () => {
+    const { data: sizes } = await (getSupabaseAdmin() as any)
+      .from('product_variants')
+      .select('size')
+      .not('size', 'is', null);
+    
+    const { data: colors } = await (getSupabaseAdmin() as any)
+      .from('product_variants')
+      .select('color')
+      .not('color', 'is', null);
+
+    const sizeSet = new Set<string>();
+    const colorSet = new Set<string>();
+    
+    sizes?.forEach((v: any) => v.size && sizeSet.add(v.size));
+    colors?.forEach((v: any) => v.color && colorSet.add(v.color));
+
+    return {
+      sizes: Array.from(sizeSet).sort(),
+      colors: Array.from(colorSet).sort()
+    };
+  },
+  ['SHOP_FACETS'],
+  { revalidate: 3600, tags: ['SHOP_FACETS'] } // Cache for 1 hour
+);
+
 /** Time-gated drop products for /drops. */
 export const getDropProducts = unstable_cache(
   async (): Promise<MiniShopItem[]> => {

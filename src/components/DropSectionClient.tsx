@@ -280,7 +280,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
           ) : (
             <div className="w-full flex flex-col gap-4 items-center">
               <a
-                href={`/shop/${drop.slug}`}
+                href={`/product/${drop.slug}`}
                 data-cuelume-hover="tick"
                 className="w-full text-center rounded-full bg-white text-black py-4 text-[13px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(255,255,255,0.2)]"
               >

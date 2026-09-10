@@ -65,7 +65,7 @@ export default async function OrderConfirmationPage({
               </div>
               <h1 className="font-chillax text-4xl font-bold uppercase tracking-widest">Order Confirmed</h1>
               <p className="text-white/60 max-w-md">
-                Thank you for your order. We've received your details and are preparing your limited pieces.
+                Thank you for your order. We&apos;ve received your details and are preparing your limited pieces.
                 {order.payment_status === "pending" && " (Awaiting payment confirmation via webhook)."}
               </p>
             </>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import ShopBrowser from "@/components/ShopBrowser";
 import { EmptyState } from "@/components/ProductGrid";
-import { getAllProducts } from "@/lib/products";
+import { getAllProducts, getFilteredProducts, getShopFacets } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Shop — Steezaverse",
@@ -13,14 +13,40 @@ function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
 }
 
-export default async function ShopPage() {
-  let products: Awaited<ReturnType<typeof getAllProducts>> = [];
+interface Props {
+  params: { category?: string[] };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default async function ShopPage({ params, searchParams }: Props) {
+  const categorySlug = params.category?.[0];
+  const hasFilters = Object.keys(searchParams).length > 0;
+  
+  let products: any[] = [];
   let failed = false;
+
   try {
-    products = await getAllProducts();
-  } catch {
+    if (!hasFilters && !categorySlug) {
+      // ISR Cached default view
+      products = await getAllProducts();
+    } else {
+      // Dynamic filtered view
+      const sizes = searchParams.size ? (Array.isArray(searchParams.size) ? searchParams.size : [searchParams.size]) : undefined;
+      const colors = searchParams.color ? (Array.isArray(searchParams.color) ? searchParams.color : [searchParams.color]) : undefined;
+      const sort = (searchParams.sort as any) || "featured";
+      
+      products = await getFilteredProducts({ categorySlug, sizes, colors, sort });
+    }
+  } catch (err) {
+    console.error(err);
     failed = true;
   }
+
+  // Fetch facets (sizes and colors) for the filter sidebar. ISR cached.
+  let facets = { sizes: [] as string[], colors: [] as string[] };
+  try {
+    facets = await getShopFacets();
+  } catch (err) {}
 
   // ── Header stats ──
   const dropCount = products.filter((p) => p.is_drop).length;
@@ -65,7 +91,7 @@ export default async function ShopPage() {
                 className="font-chillax font-medium tracking-wide text-white text-4xl md:text-5xl"
                 style={{ animation: "fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both" }}
               >
-                THE <span className="text-sz-red italic">SHOP</span>
+                THE <span className="text-sz-red italic">{categorySlug ? categorySlug.toUpperCase() : "SHOP"}</span>
               </h1>
               <p 
                 className="mt-3 text-xs uppercase tracking-[0.2em] text-white/40 font-medium"
@@ -96,13 +122,8 @@ export default async function ShopPage() {
 
           {failed ? (
             <EmptyState title="Couldn't load the catalog" hint="Check back in a moment" />
-          ) : products.length === 0 ? (
-            <EmptyState
-              title="Nothing on the racks yet"
-              hint="Products published in the admin panel land here instantly"
-            />
           ) : (
-            <ShopBrowser products={products} />
+            <ShopBrowser initialProducts={products} facets={facets} />
           )}
         </div>
       </section>

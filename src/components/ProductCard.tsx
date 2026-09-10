@@ -23,7 +23,7 @@ export function ProductCard({
 
   return (
     <motion.a
-      href={`/shop/${product.slug}`}
+      href={`/product/${product.slug}`}
       className={`group relative flex flex-col gap-5 cursor-pointer ${className}`}
       {...(enableEntrance
         ? {

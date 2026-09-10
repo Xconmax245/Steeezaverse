@@ -185,7 +185,7 @@ export default function LookbookTile({
       data-aos-duration="900"
     >
       {item.linked_product?.slug ? (
-        <Link href={`/shop/${item.linked_product.slug}`} className="block w-full">
+        <Link href={`/product/${item.linked_product.slug}`} className="block w-full">
           {tileInner}
         </Link>
       ) : (
