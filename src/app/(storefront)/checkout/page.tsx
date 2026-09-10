@@ -301,7 +301,7 @@ export default function CheckoutPage() {
           <div className="sticky top-32 bg-[#0a0505] border border-white/10 p-8 flex flex-col gap-8">
             <h2 className="font-chillax text-xl font-bold uppercase tracking-widest border-b border-white/10 pb-4">Order Summary</h2>
             
-            <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto scrollbar-hide pr-2">
+            <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto scrollbar-hide pt-2 pr-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4">
                   <div className="relative w-16 h-20 bg-white/5 flex-shrink-0">
