@@ -80,11 +80,11 @@ export default function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-4 w-80 bg-black border border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
+        <div className="absolute right-0 mt-4 w-80 bg-black/95 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 transform origin-top-right transition-all">
           <div className="p-4 border-b border-white/10 flex items-center justify-between">
-            <h3 className="font-chillax font-bold uppercase tracking-widest text-sm">Notifications</h3>
+            <h3 className="font-chillax font-bold uppercase tracking-widest text-sm text-white">Notifications</h3>
             {unreadCount > 0 && (
-              <span className="text-[10px] text-sz-red font-bold uppercase tracking-widest">{unreadCount} unread</span>
+              <span className="text-[10px] text-sz-red font-bold uppercase tracking-widest bg-sz-red/10 px-2 py-1 rounded-full">{unreadCount} new</span>
             )}
           </div>
           
@@ -100,14 +100,14 @@ export default function NotificationBell() {
                     href="/account/notifications" 
                     key={n.id}
                     onClick={() => setIsOpen(false)}
-                    className={`p-4 border-b border-white/5 hover:bg-white/5 transition-colors block ${!n.is_read ? 'bg-white/[0.02]' : ''}`}
+                    className={`p-4 border-b border-white/5 hover:bg-white/5 transition-colors block ${!n.is_read ? 'bg-white/[0.03]' : ''}`}
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <h4 className={`text-sm ${!n.is_read ? 'font-bold text-white' : 'text-white/80'}`}>{n.title}</h4>
-                      {!n.is_read && <span className="w-2 h-2 bg-sz-red rounded-full mt-1"></span>}
+                      <h4 className={`text-sm font-chillax uppercase tracking-widest ${!n.is_read ? 'font-bold text-white' : 'text-white/70'}`}>{n.title}</h4>
+                      {!n.is_read && <span className="w-2 h-2 bg-sz-red rounded-full mt-1 shrink-0"></span>}
                     </div>
-                    <p className="text-xs text-white/60 line-clamp-2">{n.message}</p>
-                    <span className="text-[10px] text-white/40 mt-2 block uppercase tracking-widest">
+                    <p className="text-xs text-white/50 leading-relaxed line-clamp-2 mt-1">{n.message}</p>
+                    <span className="text-[10px] text-white/30 mt-3 block uppercase tracking-widest font-medium">
                       {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
                     </span>
                   </Link>
@@ -116,11 +116,11 @@ export default function NotificationBell() {
             )}
           </div>
           
-          <div className="p-3 bg-white/[0.02] border-t border-white/10 text-center">
+          <div className="p-4 bg-white/[0.02] border-t border-white/10 text-center hover:bg-white/[0.04] transition-colors">
             <Link 
               href="/account/notifications" 
               onClick={() => setIsOpen(false)}
-              className="text-[11px] font-bold text-white/60 hover:text-white uppercase tracking-widest"
+              className="text-xs font-chillax font-bold text-white/70 hover:text-white uppercase tracking-widest"
             >
               View All Notifications
             </Link>

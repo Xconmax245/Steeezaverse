@@ -103,10 +103,24 @@ export async function POST(request: Request) {
         });
         
         if (authError || !authData.user) {
-          return NextResponse.json({ success: false, error: 'Failed to process customer account' }, { status: 500 });
+          // If the user already exists in auth.users (but was missing from customers table), fetch their ID
+          if (authError?.status === 422 || authError?.message?.toLowerCase().includes('already registered')) {
+            const { data: searchData, error: searchError } = await getSupabaseAdmin().auth.admin.listUsers();
+            const existingAuthUser = searchData?.users?.find(u => u.email === normalizedEmail);
+            
+            if (existingAuthUser) {
+              customerId = existingAuthUser.id;
+            } else {
+              console.error("Auth creation error (and not found in search):", authError, searchError);
+              return NextResponse.json({ success: false, error: `Failed to process customer account: ${authError?.message || 'Unknown error'}` }, { status: 500 });
+            }
+          } else {
+            console.error("Auth creation error:", authError);
+            return NextResponse.json({ success: false, error: `Failed to process customer account: ${authError?.message || 'Unknown error'}` }, { status: 500 });
+          }
+        } else {
+          customerId = authData.user.id;
         }
-        
-        customerId = authData.user.id;
         
         await (getSupabaseAdmin() as any)
           .from('customers')
