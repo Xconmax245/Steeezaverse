@@ -139,7 +139,7 @@ export default function CheckoutPage() {
         <p className="text-white/60 max-w-md mb-8">You cannot proceed to checkout with an empty cart.</p>
         <button
           onClick={() => router.push("/shop")}
-          className="border border-white/20 px-8 py-3 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+          className="border border-white/20 rounded-full px-8 py-3 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
         >
           Return to Shop
         </button>
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
           </div>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-500 p-4 text-sm">
+            <div className="bg-red-500/10 border border-red-500/30 text-red-500 p-4 text-sm rounded-xl">
               {error}
             </div>
           )}
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                  className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                   placeholder="your@email.com"
                 />
               </div>
@@ -193,7 +193,7 @@ export default function CheckoutPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                    className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                     placeholder="John Doe"
                   />
                 </div>
@@ -205,7 +205,7 @@ export default function CheckoutPage() {
                     required
                     value={line1}
                     onChange={(e) => setLine1(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                    className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                     placeholder="123 Street Name"
                   />
                 </div>
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
                     type="text"
                     value={line2}
                     onChange={(e) => setLine2(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                    className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                     placeholder="Apartment, suite, etc."
                   />
                 </div>
@@ -228,7 +228,7 @@ export default function CheckoutPage() {
                     required
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                    className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                     placeholder="Lagos"
                   />
                 </div>
@@ -240,7 +240,7 @@ export default function CheckoutPage() {
                     required
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                    className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                     placeholder="Lagos State"
                   />
                 </div>
@@ -252,7 +252,7 @@ export default function CheckoutPage() {
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-colors"
+                    className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                     placeholder="+234 800 000 0000"
                   />
                 </div>
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
                 {/* Paystack Card */}
                 <div 
                   onClick={() => setGateway("paystack")}
-                  className={`cursor-pointer border p-6 flex flex-col items-start gap-4 transition-all duration-300 ${gateway === "paystack" ? "border-white bg-white/5" : "border-white/10 hover:border-white/30 bg-transparent"}`}
+                  className={`cursor-pointer rounded-2xl border p-6 flex flex-col items-start gap-4 transition-all duration-300 ${gateway === "paystack" ? "border-white bg-white/5" : "border-white/10 hover:border-white/30 bg-transparent"}`}
                 >
                   <div className="flex items-center justify-between w-full">
                     <span className="font-chillax font-bold uppercase tracking-widest text-sm">Paystack</span>
@@ -281,7 +281,7 @@ export default function CheckoutPage() {
                 {/* Flutterwave Card */}
                 <div 
                   onClick={() => setGateway("flutterwave")}
-                  className={`cursor-pointer border p-6 flex flex-col items-start gap-4 transition-all duration-300 ${gateway === "flutterwave" ? "border-white bg-white/5" : "border-white/10 hover:border-white/30 bg-transparent"}`}
+                  className={`cursor-pointer rounded-2xl border p-6 flex flex-col items-start gap-4 transition-all duration-300 ${gateway === "flutterwave" ? "border-white bg-white/5" : "border-white/10 hover:border-white/30 bg-transparent"}`}
                 >
                   <div className="flex items-center justify-between w-full">
                     <span className="font-chillax font-bold uppercase tracking-widest text-sm">Flutterwave</span>
@@ -298,22 +298,22 @@ export default function CheckoutPage() {
 
         {/* Right Side - Order Summary */}
         <div className="w-full lg:w-[400px]">
-          <div className="sticky top-32 bg-[#0a0505] border border-white/10 p-8 flex flex-col gap-8">
-            <h2 className="font-chillax text-xl font-bold uppercase tracking-widest border-b border-white/10 pb-4">Order Summary</h2>
+          <div className="sticky top-32 bg-white/[0.02] backdrop-blur-xl border border-white/10 p-8 flex flex-col gap-8 rounded-3xl shadow-2xl">
+            <h2 className="font-chillax text-2xl font-bold uppercase tracking-widest border-b border-white/10 pb-4">Order Summary</h2>
             
             <div className="flex flex-col gap-4 max-h-[40vh] overflow-y-auto scrollbar-hide pt-2 pr-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-4">
-                  <div className="relative w-16 h-20 bg-white/5 flex-shrink-0">
+                  <div className="relative w-16 h-20 bg-white/5 flex-shrink-0 rounded-lg">
                     {item.variant?.product?.product_images?.[0]?.url && (
                       <Image
                         src={item.variant.product.product_images[0].url}
                         alt={item.variant.product.name}
                         fill
-                        className="object-cover opacity-80"
+                        className="object-cover opacity-80 rounded-lg"
                       />
                     )}
-                    <div className="absolute -top-2 -right-2 bg-white text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                    <div className="absolute -top-2 -right-2 bg-white text-black text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg z-10">
                       {item.quantity}
                     </div>
                   </div>
@@ -338,12 +338,12 @@ export default function CheckoutPage() {
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                 disabled={!!appliedPromo}
-                className="flex-1 bg-transparent border border-white/20 px-4 py-3 text-sm placeholder:text-white/30 focus:outline-none focus:border-white/50 uppercase"
+                className="flex-1 rounded-xl bg-white/[0.03] border border-white/20 px-4 py-3 text-sm placeholder:text-white/30 focus:outline-none focus:border-white/50 uppercase"
               />
               <button
                 type="submit"
                 disabled={!promoCode || !!appliedPromo || promoStatus === "loading"}
-                className="bg-white/10 hover:bg-white/20 text-white px-6 text-xs uppercase tracking-widest font-bold transition-colors disabled:opacity-50"
+                className="bg-white/10 hover:bg-white/20 text-white px-6 text-xs uppercase tracking-widest font-bold rounded-xl transition-all disabled:opacity-50"
               >
                 {appliedPromo ? "Applied" : "Apply"}
               </button>
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-white/10">
                 <span>Total</span>
-                <span>{formatNGN(total)}</span>
+                <span className="font-chillax text-xl">{formatNGN(total)}</span>
               </div>
             </div>
 
@@ -374,7 +374,7 @@ export default function CheckoutPage() {
               type="submit"
               form="checkout-form"
               disabled={isSubmitting}
-              className="w-full bg-white text-black py-5 font-chillax text-[14px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:scale-100 shadow-[0_0_30px_rgba(255,255,255,0.05)] flex items-center justify-center gap-2"
+              className="w-full rounded-full bg-white text-black py-5 font-chillax text-[14px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:scale-100 shadow-[0_0_40px_rgba(255,255,255,0.2)] flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
