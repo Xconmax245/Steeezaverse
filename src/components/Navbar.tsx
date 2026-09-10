@@ -10,6 +10,7 @@ import NotificationBell from './NotificationBell';
 import { usePathname } from 'next/navigation';
 import MuteToggle from './MuteToggle';
 import { useCart } from './CartContext';
+import { supabase } from '@/lib/supabase/client';
 
 const NAV_LINKS = [
   { label: 'HOME', href: '/' },
@@ -22,8 +23,28 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isDarkBg, setIsDarkBg] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [sessionUser, setSessionUser] = useState<any>(null);
   const pathname = usePathname();
   const { cartCount, setIsOpen } = useCart();
+
+  useEffect(() => {
+    // Check initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSessionUser(session?.user || null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSessionUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const DYNAMIC_NAV_LINKS = [
+    ...NAV_LINKS,
+    { label: sessionUser ? 'ACCOUNT' : 'LOGIN', href: sessionUser ? '/account/orders' : '/login' },
+  ];
 
   useEffect(() => {
     const onScroll = () => {
@@ -88,7 +109,7 @@ export default function Navbar() {
         >
           {/* Left - Navigation */}
           <div className="flex-1 flex items-center justify-start gap-5">
-            {NAV_LINKS.slice(0, 2).map((link) => (
+            {DYNAMIC_NAV_LINKS.slice(0, 3).map((link) => (
               <DesktopNavLink key={link.label} href={link.href} label={link.label} active={pathname === link.href} />
             ))}
           </div>
@@ -110,7 +131,7 @@ export default function Navbar() {
 
           {/* Right - Utility */}
           <div className="flex-1 flex items-center justify-end gap-6">
-            {NAV_LINKS.slice(2, 4).map((link) => (
+            {DYNAMIC_NAV_LINKS.slice(3).map((link) => (
               <DesktopNavLink key={link.label} href={link.href} label={link.label} active={pathname === link.href} />
             ))}
             
@@ -388,7 +409,7 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void }>(({
         
         {/* Full Width Column - Primary Links (Secondary info removed) */}
         <div className="w-full flex flex-col gap-6 items-center text-center mt-20 md:mt-0">
-          {NAV_LINKS.map((link, i) => {
+          {DYNAMIC_NAV_LINKS.map((link, i) => {
             const isHovered = hoveredIndex === i;
             const isAnyHovered = hoveredIndex !== null;
 
