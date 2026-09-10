@@ -58,7 +58,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       
       // If logged in, fetch customer cart
       if (customerId) {
-        const { data: customerCarts } = await supabase
+        const { data: customerCarts } = await (supabase as any)
           .from("carts")
           .select("id")
           .eq("customer_id", customerId)
@@ -70,14 +70,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
           
           // Merge logic if guest cart exists and is different
           if (currentCartId && currentCartId !== userCartId) {
-            await mergeGuestCart(currentCartId, userCartId);
+            await mergeGuestCart(currentCartId as string, userCartId);
             localStorage.removeItem("stz_cart_id");
           }
           
           currentCartId = userCartId;
         } else {
           // Create customer cart
-          const { data: newCart } = await supabase
+          const { data: newCart } = await (supabase as any)
             .from("carts")
             .insert({ customer_id: customerId })
             .select("id")
@@ -88,7 +88,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       } else if (!currentCartId) {
         // Create guest cart
         const sessionId = crypto.randomUUID();
-        const { data: newCart } = await supabase
+        const { data: newCart } = await (supabase as any)
           .from("carts")
           .insert({ session_id: sessionId })
           .select("id")
@@ -96,7 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           
         if (newCart) {
           currentCartId = newCart.id;
-          localStorage.setItem("stz_cart_id", currentCartId);
+          localStorage.setItem("stz_cart_id", currentCartId as string);
         }
       }
 
@@ -113,7 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   async function mergeGuestCart(guestCartId: string, userCartId: string) {
     // 1. Fetch guest items
-    const { data: guestItems } = await supabase
+    const { data: guestItems } = await (supabase as any)
       .from("cart_items")
       .select("*")
       .eq("cart_id", guestCartId);
@@ -121,23 +121,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!guestItems || guestItems.length === 0) return;
 
     // 2. Fetch user items
-    const { data: userItems } = await supabase
+    const { data: userItems } = await (supabase as any)
       .from("cart_items")
       .select("*")
       .eq("cart_id", userCartId);
       
-    const userItemsMap = new Map(userItems?.map(item => [item.variant_id, item]) || []);
+    const userItemsMap = new Map(userItems?.map((item: any) => [item.variant_id, item]) || []);
 
     // 3. Merge quantities for matching variants, insert new ones
-    for (const gItem of guestItems) {
-      const existing = userItemsMap.get(gItem.variant_id);
+    for (const gItem of guestItems as any[]) {
+      const existing = userItemsMap.get(gItem.variant_id) as any;
       if (existing) {
-        await supabase
+        await (supabase as any)
           .from("cart_items")
           .update({ quantity: existing.quantity + gItem.quantity })
           .eq("id", existing.id);
       } else {
-        await supabase
+        await (supabase as any)
           .from("cart_items")
           .insert({
             cart_id: userCartId,
@@ -148,11 +148,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
 
     // 4. Delete guest cart
-    await supabase.from("carts").delete().eq("id", guestCartId);
+    await (supabase as any).from("carts").delete().eq("id", guestCartId);
   }
 
   async function fetchItems(cId: string) {
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("cart_items")
       .select(`
         id, cart_id, variant_id, quantity,
@@ -195,7 +195,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (existingItem) {
       await updateQuantity(existingItem.id, existingItem.quantity + quantity);
     } else {
-      await supabase
+      await (supabase as any)
         .from("cart_items")
         .insert({ cart_id: cartId, variant_id: variantId, quantity });
       await fetchItems(cartId);
@@ -211,7 +211,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(items.map(i => i.id === itemId ? { ...i, quantity } : i));
 
     // Supabase update (should be debounced in a real heavy production, but for now direct is ok)
-    await supabase
+    await (supabase as any)
       .from("cart_items")
       .update({ quantity })
       .eq("id", itemId);
@@ -221,7 +221,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     // Optimistic update
     setItems(items.filter(i => i.id !== itemId));
 
-    await supabase
+    await (supabase as any)
       .from("cart_items")
       .delete()
       .eq("id", itemId);

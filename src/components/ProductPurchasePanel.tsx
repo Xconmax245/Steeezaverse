@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import type { ShopProduct } from "@/lib/products";
+import { useCart } from "@/components/CartContext";
+import StitchedLine from "@/components/StitchedLine";
 
 // Purchase-side interactivity for /shop/[slug]: variant selection, live stock
 // display, and the waitlist capture for sold-out variants (posts to
@@ -29,6 +31,9 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
   const [email, setEmail] = useState("");
   const [waitlistState, setWaitlistState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [waitlistError, setWaitlistError] = useState<string | null>(null);
+  
+  const { addItem } = useCart();
+  const [showStitchedLine, setShowStitchedLine] = useState(false);
 
   const unitPrice = selected?.price_override ?? product.base_price;
   const soldOut = totalStock === 0 || !selected;
@@ -123,12 +128,19 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
       {/* Primary CTA */}
       {!soldOut && (
         <button
+          id="add-to-cart-btn"
           type="button"
           className="w-full rounded-full bg-white text-black py-5 mt-2 font-chillax text-[14px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
           data-cuelume-press
           data-cuelume-release
-          onClick={() => {
-            alert("Checkout is coming soon — this button will start payment.");
+          onClick={async () => {
+            if (!selected) return;
+            setShowStitchedLine(false);
+            setTimeout(() => {
+              setShowStitchedLine(true);
+              setTimeout(() => setShowStitchedLine(false), 2000);
+            }, 50);
+            await addItem(selected.id, 1);
           }}
         >
           Add to cart — {formatNGN(unitPrice)}
@@ -171,6 +183,7 @@ export default function ProductPurchasePanel({ product }: { product: ShopProduct
           )}
         </div>
       )}
+      {showStitchedLine && <StitchedLine startId="add-to-cart-btn" endId="navbar-cart-btn" />}
     </div>
   );
 }
