@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { initializePayment, PaymentGateway } from '@/lib/payments';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 
 // Creates a `pending` order, atomically reserves stock, and initializes the
 // payment session. The order is only marked `paid` by the gateway webhook —
@@ -40,8 +41,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     const {
       cartId,
-      customerId,
+      customerId: providedCustomerId,
       email,
+      whatsappNumber,
       shippingAddressId,
       shippingAddress,
       gateway,
@@ -65,6 +67,61 @@ export async function POST(request: Request) {
         { success: false, error: "gateway must be 'paystack' or 'flutterwave'" },
         { status: 400 }
       );
+    }
+    if (!whatsappNumber || typeof whatsappNumber !== 'string' || !isValidPhoneNumber(whatsappNumber)) {
+      return NextResponse.json(
+        { success: false, error: 'A valid E.164 WhatsApp number is required' },
+        { status: 400 }
+      );
+    }
+
+    let customerId = providedCustomerId;
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Email-Upsert & Shadow User Logic
+    if (!customerId) {
+      const { data: existingCustomer } = await (getSupabaseAdmin() as any)
+        .from('customers')
+        .select('id')
+        .eq('email', normalizedEmail)
+        .single();
+        
+      if (existingCustomer) {
+        customerId = existingCustomer.id;
+        await (getSupabaseAdmin() as any)
+          .from('customers')
+          .update({ 
+            whatsapp_number: whatsappNumber,
+            name: shippingAddress?.full_name?.trim() || null
+          })
+          .eq('id', customerId);
+      } else {
+        const { data: authData, error: authError } = await getSupabaseAdmin().auth.admin.createUser({
+          email: normalizedEmail,
+          email_confirm: true,
+          user_metadata: { name: shippingAddress?.full_name?.trim() || '' }
+        });
+        
+        if (authError || !authData.user) {
+          return NextResponse.json({ success: false, error: 'Failed to process customer account' }, { status: 500 });
+        }
+        
+        customerId = authData.user.id;
+        
+        await (getSupabaseAdmin() as any)
+          .from('customers')
+          .insert({
+            id: customerId,
+            email: normalizedEmail,
+            name: shippingAddress?.full_name?.trim() || null,
+            whatsapp_number: whatsappNumber
+          });
+      }
+    } else {
+      await (getSupabaseAdmin() as any)
+        .from('customers')
+        .update({ whatsapp_number: whatsappNumber })
+        .eq('id', customerId);
     }
 
     let finalShippingAddressId = shippingAddressId;

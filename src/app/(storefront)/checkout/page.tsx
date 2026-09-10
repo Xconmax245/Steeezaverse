@@ -7,6 +7,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Loader2, ArrowRight, ShieldCheck, CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
@@ -18,6 +20,7 @@ export default function CheckoutPage() {
 
   // Form State
   const [email, setEmail] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState<string | undefined>();
   const [fullName, setFullName] = useState("");
   const [line1, setLine1] = useState("");
   const [line2, setLine2] = useState("");
@@ -75,8 +78,8 @@ export default function CheckoutPage() {
     setError(null);
 
     // Client validation (mirroring server requirements)
-    if (!fullName.trim() || !line1.trim() || !city.trim() || !state.trim() || !phone.trim() || !email.trim()) {
-      setError("Please fill in all required fields.");
+    if (!fullName.trim() || !line1.trim() || !city.trim() || !state.trim() || !phone.trim() || !email.trim() || !whatsappNumber) {
+      setError("Please fill in all required fields, including your WhatsApp number.");
       return;
     }
     if (!gateway) {
@@ -90,6 +93,7 @@ export default function CheckoutPage() {
         cartId,
         customerId,
         email: email.trim(),
+        whatsappNumber,
         gateway,
         discountCode: appliedPromo?.code || null,
         shippingAddress: {
@@ -178,6 +182,24 @@ export default function CheckoutPage() {
                   className="w-full rounded-xl bg-white/[0.03] border border-white/10 p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/40 transition-all focus:bg-white/[0.05]"
                   placeholder="your@email.com"
                 />
+              </div>
+              <div className="mt-2">
+                <label className="block text-[11px] font-bold tracking-widest text-white/50 uppercase mb-2">WhatsApp Number *</label>
+                <PhoneInput
+                  international
+                  defaultCountry="NG"
+                  value={whatsappNumber}
+                  onChange={setWhatsappNumber}
+                  className="w-full rounded-xl bg-white/[0.03] border border-white/10 px-4 py-3 text-white focus-within:border-white/40 transition-all focus-within:bg-white/[0.05]"
+                  style={{
+                    '--PhoneInput-color--focus': 'transparent',
+                    '--PhoneInputInternationalIconPhone-opacity': '0.8',
+                    '--PhoneInputInternationalIconGlobe-opacity': '0.65',
+                    '--PhoneInputCountrySelect-marginRight': '12px',
+                    '--PhoneInputCountryFlag-height': '18px',
+                  } as React.CSSProperties}
+                />
+                <p className="text-[10px] text-white/40 mt-3 uppercase tracking-wider">Required for order tracking and exclusive drop alerts.</p>
               </div>
             </div>
 

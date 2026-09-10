@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import ShoppingCartIcon from './ShoppingCartIcon';
+import NotificationBell from './NotificationBell';
 import { usePathname } from 'next/navigation';
 import MuteToggle from './MuteToggle';
 import { useCart } from './CartContext';
@@ -113,6 +114,7 @@ export default function Navbar() {
               <DesktopNavLink key={link.label} href={link.href} label={link.label} active={pathname === link.href} />
             ))}
             
+            <NotificationBell />
             <MuteToggle />
             <button
               id="navbar-cart-btn"
@@ -175,6 +177,7 @@ export default function Navbar() {
             </div>
           </Link>
           <div className="flex items-center gap-4">
+            <NotificationBell />
             <MuteToggle />
             <button
               id="navbar-cart-btn-mobile"

@@ -2,11 +2,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import OrderStatusSelect from '@/components/admin/OrderStatusSelect';
+import MessageCustomerForm from '@/components/admin/MessageCustomerForm';
 
 export const dynamic = 'force-dynamic';
 
 interface OrderDetail {
   id: string;
+  customer_id: string | null;
   order_number: string;
   status: string;
   payment_status: string;
@@ -53,7 +55,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
   const { data, error } = await (getSupabaseAdmin() as any)
     .from('orders')
     .select(
-      `id, order_number, status, payment_status, payment_reference, payment_gateway, discount_code,
+      `id, customer_id, order_number, status, payment_status, payment_reference, payment_gateway, discount_code,
        subtotal, discount_amount, shipping_cost, total, created_at, updated_at,
        customers(email, name, phone),
        addresses(line1, line2, city, state, phone),
@@ -196,6 +198,10 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           </div>
         </div>
       </div>
+      
+      {/* Message Customer section */}
+      <MessageCustomerForm orderId={order.id} customerId={order.customer_id || undefined} />
+
     </div>
   );
 }
