@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
-import { getServerSessionClient } from '@/lib/supabase/server-session';
-import { verifyDiscountCondition } from '@/lib/discounts';
 import { sendTelegramAlert } from '@/lib/telegram';
 import { initializePayment, PaymentGateway } from '@/lib/payments';
 import { isValidPhoneNumber } from 'libphonenumber-js';
