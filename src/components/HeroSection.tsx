@@ -124,22 +124,23 @@ export default function HeroSection() {
         }, 0);
       }
       if (content && content.children.length >= 2) {
-        // Left text block (massive text) scrolls up faster and scales down slightly
+        // Left text block (massive text) scrolls up and fades
         tl.to(content.children[0], { 
           y: "-35vh", 
           opacity: 0, 
-          scale: 0.9,
+          scale: 0.95,
           duration: 1, 
           ease: "power2.inOut" 
         }, 0);
         
-        // Right block (typewriter + button) scrolls up slower for depth separation
+        // Right block (typewriter + button) matches the primary scroll for consistency on mobile/desktop
         tl.to(content.children[1], { 
-          y: "-15vh", 
+          y: "-35vh", 
           opacity: 0, 
-          duration: 0.8, 
-          ease: "power3.in" 
-        }, 0.1);
+          scale: 0.95,
+          duration: 1, 
+          ease: "power2.inOut" 
+        }, 0);
       }
     }, sectionRef);
 
