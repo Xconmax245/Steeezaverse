@@ -231,7 +231,7 @@ export default function ProductForm({ mode, productId, initial }: ProductFormPro
             </div>
           </div>
           <div>
-            <label className={labelClass} htmlFor="compare_at_price">Compare-at Price (NGN)</label>
+            <label className={labelClass} htmlFor="compare_at_price">Compare at Price (NGN)</label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm">₦</span>
               <input id="compare_at_price" type="number" min="0" step="0.01" className={`${inputClass} pl-8`} value={compareAtPrice} onChange={(e) => setCompareAtPrice(e.target.value)} placeholder="Optional discount reference" />
@@ -277,7 +277,7 @@ export default function ProductForm({ mode, productId, initial }: ProductFormPro
                 {isFeatured && <span className="text-white text-xs">✓</span>}
               </div>
               <input type="checkbox" checked={isFeatured} onChange={(e) => setIsFeatured(e.target.checked)} className="hidden" />
-              Featured <span className="text-white/30 text-[9px]">(Homepage Mini-Shop)</span>
+              Featured <span className="text-white/30 text-[9px]">(Homepage Mini Shop)</span>
             </label>
             
             <label className="flex items-center gap-3 text-xs uppercase tracking-wider text-white/70 cursor-pointer group">

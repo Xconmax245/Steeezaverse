@@ -101,20 +101,20 @@ export default function ManifestoSection() {
         
         {/* Line 1 */}
         <div ref={line1Ref} style={textStyle}>
-          BUILDING THE <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>foundation</span>
+          TAKE <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>reeks</span>
         </div>
 
         {/* Line 2 */}
         <div ref={line2Ref} style={textStyle} className="flex gap-[0.3em] flex-wrap justify-center items-center">
-          {"FOR A NEW ERA OF".split(" ").map((word, i) => (
+          {"MOVE".split(" ").map((word, i) => (
             <span key={i} className="word inline-block">{word}</span>
           ))}
-          <span className="word inline-block font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>creation</span>
+          <span className="word inline-block font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>different</span>
         </div>
 
         {/* Line 3 */}
         <div ref={line3Ref} style={textStyle}>
-          WELCOME TO THE <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>manifesto</span>
+          FIND YOUR <span className="font-zodiak italic lowercase text-[var(--red)]" style={{ fontSize: "1.15em", fontWeight: 400, letterSpacing: "0", textTransform: "none" }}>steeze</span>
         </div>
 
       </div>

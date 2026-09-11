@@ -78,7 +78,7 @@ export default async function AdminProductsPage() {
               <tr className="text-left text-[10px] uppercase tracking-widest text-white/40 border-b border-white/5 bg-white/[0.02]">
                 <th className="px-6 py-4 font-bold">Product</th>
                 <th className="px-6 py-4 font-bold">Status</th>
-                <th className="px-6 py-4 font-bold">Mini-Shop</th>
+                <th className="px-6 py-4 font-bold">Mini Shop</th>
                 <th className="px-6 py-4 font-bold">Price</th>
                 <th className="px-6 py-4 font-bold">Stock</th>
                 <th className="px-6 py-4 font-bold">Updated</th>

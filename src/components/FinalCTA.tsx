@@ -34,7 +34,7 @@ export default function FinalCTA() {
           fontSize: "clamp(28px, 4vw, 56px)" 
         }}
       >
-        READY TO GEAR UP?
+        READY TO TAKE REEKS?
       </h2>
       
       <Link 

@@ -278,7 +278,7 @@ export default async function AdminDashboardPage() {
                 {lowStock.length === 0 ? (
                   <tr>
                     <td colSpan={3} className="px-5 py-12 text-center">
-                      <p className="text-[10px] uppercase tracking-widest text-white/30">No low-stock variants — inventory healthy</p>
+                      <p className="text-[10px] uppercase tracking-widest text-white/30">No low stock variants inventory healthy</p>
                     </td>
                   </tr>
                 ) : (

@@ -7,7 +7,7 @@ import LookbookSection from "@/components/LookbookSection";
 import HomeTransitionWrapper from "@/components/HomeTransitionWrapper";
 import DropSection from "@/components/DropSection";
 import SilenceSection from "@/components/SilenceSection";
-import SocialProofStrip from "@/components/SocialProofStrip";
+import VisionMissionSection from "@/components/VisionMissionSection";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 
@@ -36,8 +36,8 @@ export default function HomePage() {
       {/* ── Silence Section ── */}
       <SilenceSection />
 
-      {/* ── Social Proof / Press Strip ── */}
-      <SocialProofStrip />
+      {/* ── Vision & Mission Section ── */}
+      <VisionMissionSection />
 
       {/* ── Final Minimal CTA ── */}
       <FinalCTA />
