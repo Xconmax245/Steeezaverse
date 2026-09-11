@@ -224,13 +224,14 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Right Side: Typewriter Box & CTA */}
-        <motion.div
-          className="flex flex-col items-start md:items-end w-full md:w-auto md:max-w-xs"
-          initial={{ opacity: 0, y: 50 }}
-          animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.8, delay: 0.6, ease }}
-        >
+        {/* Right Side Wrapper for GSAP to avoid conflict with Framer Motion */}
+        <div className="w-full md:w-auto md:max-w-xs flex justify-end">
+          <motion.div
+            className="flex flex-col items-start md:items-end w-full"
+            initial={{ opacity: 0, y: 50 }}
+            animate={playAnimations ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, delay: 0.5, ease }}
+          >
           {/* Bracketed Typewriter Box */}
           <div className="relative p-6 mb-8 border border-transparent w-full">
             {/* Corner Brackets */}
@@ -280,6 +281,7 @@ export default function HeroSection() {
             </svg>
           </motion.button>
         </motion.div>
+        </div>
       </motion.div>
     </motion.section>
   );
