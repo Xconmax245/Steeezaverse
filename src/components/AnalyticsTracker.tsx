@@ -37,7 +37,16 @@ export default function AnalyticsTracker() {
 
     try {
       const payload = JSON.stringify({ path: pathname, visitor_id: visitorId });
-      navigator.sendBeacon('/api/analytics/track', new Blob([payload], { type: 'application/json' }));
+      fetch('/api/analytics/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {
+        // Silently ignore fetch errors
+      });
     } catch {
       // Tracking must never break the page — fire-and-forget.
     }

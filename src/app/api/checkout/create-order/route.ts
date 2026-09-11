@@ -193,9 +193,9 @@ export async function POST(request: Request) {
       .from('cart_items')
       .select(
         `quantity,
-         product_variants(
+         variant:product_variants(
            id, sku, size, color, stock_quantity, price_override,
-           products(id, name, slug, base_price, status, is_drop, drop_starts_at)
+           product:products(id, name, slug, base_price, status, is_drop, drop_starts_at)
          )`
       )
       .eq('cart_id', cartId);
@@ -210,7 +210,7 @@ export async function POST(request: Request) {
 
     const lines: CartLine[] = rawItems.map((item: any) => ({
       quantity: item.quantity,
-      variant: item.product_variants,
+      variant: item.variant,
     }));
 
     // 2. Validate every line is purchasable and in stock.
