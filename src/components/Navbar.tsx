@@ -405,10 +405,10 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void, link
       </div>
 
       {/* ── MAIN MENU CONTENT ── */}
-      <div className="relative z-10 flex-1 flex flex-col md:flex-row max-w-[1200px] w-full mx-auto px-8 md:px-16 items-center justify-center h-full">
+      <div className="relative z-10 flex-1 flex flex-col max-w-[1200px] w-full mx-auto px-8 md:px-16 items-center h-full overflow-y-auto">
         
         {/* Full Width Column - Primary Links (Secondary info removed) */}
-        <div className="w-full flex flex-col gap-4 md:gap-6 items-center text-center pt-24 md:pt-0 pb-10">
+        <div className="w-full flex flex-col gap-4 md:gap-6 items-center text-center my-auto pt-32 pb-12">
           {links.map((link, i) => {
             const isHovered = hoveredIndex === i;
             const isAnyHovered = hoveredIndex !== null;
@@ -426,7 +426,7 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void, link
                     className="block transition-all duration-500 ease-out"
                     style={{ 
                       fontFamily: "'Chillax', sans-serif",
-                      fontSize: 'clamp(3rem, 12vw, 7rem)', 
+                      fontSize: 'clamp(2.5rem, 8vmin, 5.5rem)', 
                       lineHeight: 1.2, 
                       letterSpacing: '-0.02em',
                       color: isAnyHovered ? (isHovered ? '#fff' : 'transparent') : 'rgba(255,255,255,0.8)',
