@@ -1,28 +1,32 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { getServerSessionClient } from '@/lib/supabase/server-session';
+import { cookies } from 'next/headers';
 
-// Client-side page-view beacon (see AnalyticsTracker). Public, unauthenticated
-// by design — visitors are not logged in. Input is validated and anonymous:
-// only a path + an opaque per-browser visitor id are stored.
+// Client-side visit tracker. Only tracks authenticated customers, once per session.
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { path, visitor_id } = body;
-
-    if (typeof path !== 'string' || !path.startsWith('/') || path.length > 200) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid path' },
-        { status: 400 }
-      );
+    const cookieStore = cookies();
+    if (cookieStore.get('sz_visit_counted')?.value === '1') {
+      return NextResponse.json({ success: true, cached: true });
     }
 
-    const visitor = typeof visitor_id === 'string' && visitor_id.length <= 64 ? visitor_id : null;
+    const supabaseAuth = getServerSessionClient();
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    
+    if (!user) {
+      // Anonymous traffic is no longer tracked to save on DB writes
+      return NextResponse.json({ success: true, anonymous: true });
+    }
 
-    const { error } = await (getSupabaseAdmin() as any)
-      .from('page_views')
-      .insert({ path, visitor_id: visitor });
+    const { error } = await (getSupabaseAdmin() as any).rpc('increment_customer_visit', {
+      customer_uid: user.id
+    });
 
     if (error) throw error;
+
+    // Mark as counted for this session (cookie clears when browser closes)
+    cookieStore.set('sz_visit_counted', '1');
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

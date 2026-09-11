@@ -29,7 +29,9 @@ export default async function AdminCustomersPage() {
               <thead>
                 <tr className="bg-white/[0.02] border-b border-white/5 text-xs text-white/40 uppercase tracking-widest">
                   <th className="font-medium p-4 whitespace-nowrap">Customer</th>
+                  <th className="font-medium p-4 whitespace-nowrap">Contact Info</th>
                   <th className="font-medium p-4 whitespace-nowrap">Spend & Volume</th>
+                  <th className="font-medium p-4 whitespace-nowrap">Visits</th>
                   <th className="font-medium p-4 whitespace-nowrap">Last Active</th>
                   <th className="font-medium p-4 whitespace-nowrap text-center">Status</th>
                   <th className="font-medium p-4 whitespace-nowrap text-right">Actions</th>

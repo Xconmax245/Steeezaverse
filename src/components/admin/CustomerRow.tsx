@@ -11,6 +11,7 @@ type CustomerSummary = {
   phone: string | null;
   whatsapp_number: string | null;
   is_banned: boolean;
+  visit_count: number | null;
   account_created_at: string;
   order_count: number;
   lifetime_value: number;
@@ -45,7 +46,12 @@ export default function CustomerRow({ customer }: { customer: CustomerSummary })
         <div className="font-bold text-white uppercase tracking-widest text-sm truncate max-w-[200px]" title={customer.email}>
           {customer.name || customer.email.split("@")[0]}
         </div>
-        <div className="text-white/40 text-[10px] mt-1 tracking-widest uppercase truncate max-w-[200px]">
+      </td>
+      <td className="p-4 align-middle">
+        <div className="text-white/80 text-xs font-bold tracking-widest uppercase truncate max-w-[200px]">
+          {customer.phone || customer.whatsapp_number || "—"}
+        </div>
+        <div className="text-[10px] text-white/40 mt-1 uppercase tracking-widest">
           {customer.email}
         </div>
       </td>
@@ -55,6 +61,11 @@ export default function CustomerRow({ customer }: { customer: CustomerSummary })
         </div>
         <div className="text-[10px] text-white/40 mt-1 uppercase tracking-widest">
           {customer.order_count} Orders
+        </div>
+      </td>
+      <td className="p-4 align-middle">
+        <div className="text-white/80 text-sm font-bold tracking-widest">
+          {customer.visit_count || 0}
         </div>
       </td>
       <td className="p-4 align-middle">

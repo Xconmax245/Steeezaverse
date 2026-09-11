@@ -3,12 +3,10 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-const VISITOR_KEY = 'sz_visitor_id';
-const TRACKED_PREFIX = 'sz_viewed_';
+const TRACKED_PREFIX = 'sz_session_';
 
-// Lightweight visitor tracking: records one page view per session per public
-// path via a fire-and-forget beacon. The visitor id is a random UUID kept in
-// localStorage so repeat visits count as the same visitor across sessions.
+// Lightweight visit tracking: hits the analytics endpoint once per session.
+// The backend enforces auth and sets a cookie to prevent multiple increments.
 export default function AnalyticsTracker() {
   const pathname = usePathname();
 
@@ -20,29 +18,16 @@ export default function AnalyticsTracker() {
       return;
     }
 
-    // Once per session per path (throttles multi-fire on back/forward).
-    const sessionKey = `${TRACKED_PREFIX}${pathname}`;
+    // Client-side debounce to prevent multi-fire on rapid navigation
+    const sessionKey = `${TRACKED_PREFIX}tracked`;
     if (sessionStorage.getItem(sessionKey)) return;
-
-    let visitorId = localStorage.getItem(VISITOR_KEY);
-    if (!visitorId) {
-      visitorId =
-        typeof crypto !== 'undefined' && 'randomUUID' in crypto
-          ? crypto.randomUUID()
-          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      localStorage.setItem(VISITOR_KEY, visitorId);
-    }
-
     sessionStorage.setItem(sessionKey, '1');
 
     try {
-      const payload = JSON.stringify({ path: pathname, visitor_id: visitorId });
       fetch('/api/analytics/track', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: payload,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: pathname }),
         keepalive: true,
       }).catch(() => {
         // Silently ignore fetch errors
