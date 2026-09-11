@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
 import LoginClient from "./LoginClient";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Login — Steezaverse",
@@ -55,7 +56,9 @@ export default function LoginPage() {
             Enter your email to receive a secure login link.
           </p>
 
-          <LoginClient />
+          <Suspense fallback={<div className="h-48 flex items-center justify-center"><div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div></div>}>
+            <LoginClient />
+          </Suspense>
         </div>
       </div>
     </main>
