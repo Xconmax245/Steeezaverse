@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { verifyWebhookAmount } from '@/lib/payments';
+import { sendTelegramAlert } from '@/lib/telegram';
 
 // Flutterwave webhook — confirms a `pending` order as `paid`.
 // Idempotent: the status flip is a single UPDATE gated on `payment_status =
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
       // Fetch order to verify the charged amount matches.
       const { data: orderData } = await (getSupabaseAdmin() as any)
         .from('orders')
-        .select('id, total, discount_code, status')
+        .select('id, order_number, total, discount_code, status, customers(name, email, phone), order_items(quantity, product_name_snapshot, variant_snapshot)')
         .eq('payment_reference', reference)
         .single();
 
@@ -102,6 +103,20 @@ export async function POST(request: Request) {
             status: 'sent',
           },
         ]);
+
+      // Trigger Telegram Alert
+      const adminUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://steezaverse.com';
+      const customerName = order.customers?.name || order.customers?.email || event.data.customer?.email || 'Guest';
+      const itemsList = order.order_items?.map((item: any) => {
+        const variant = item.variant_snapshot;
+        const variantText = variant ? ` (${variant.color}, ${variant.size})` : '';
+        return `${item.product_name_snapshot}${variantText} ×${item.quantity}`;
+      }).join('\n') || 'Items could not be loaded';
+
+      sendTelegramAlert({
+        type: 'telegram_order_alert',
+        text: `🔥 <b>New order #${order.order_number}</b>\n${customerName} — ₦${Number(order.total).toLocaleString()}\n\n${itemsList}\n\nAdmin: ${adminUrl}/admin/orders/${order.id}`,
+      }).catch(err => console.error('Telegram alert failed:', err));
     }
 
     return NextResponse.json({ success: true });

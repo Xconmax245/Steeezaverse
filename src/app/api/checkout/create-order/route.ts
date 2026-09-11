@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { getServerSessionClient } from '@/lib/supabase/server-session';
+import { verifyDiscountCondition } from '@/lib/discounts';
+import { sendTelegramAlert } from '@/lib/telegram';
 import { initializePayment, PaymentGateway } from '@/lib/payments';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 
@@ -324,6 +327,18 @@ export async function POST(request: Request) {
         );
       }
       reserved.push(line);
+
+      // Trigger Telegram Alert for Low Stock (Threshold = 5)
+      const previousStock = line.variant.stock_quantity;
+      const newStock = previousStock - line.quantity;
+      if (previousStock > 5 && newStock <= 5) {
+        const adminUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://steezaverse.com';
+        const variantText = `(${line.variant.color}, ${line.variant.size})`;
+        sendTelegramAlert({
+          type: 'telegram_low_stock_alert',
+          text: `⚠️ <b>Low stock:</b> ${line.variant.product.name} ${variantText} — ${newStock} left\n\nAdmin: ${adminUrl}/admin/products/${line.variant.product.id}`,
+        }).catch(err => console.error('Telegram low stock alert failed:', err));
+      }
     }
 
     // 7. Create the pending order.

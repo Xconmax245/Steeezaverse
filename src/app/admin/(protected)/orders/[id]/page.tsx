@@ -73,14 +73,14 @@ export default async function OrderDetailPage({ params }: { params: { id: string
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-4">
           <Link href="/admin/orders" className="text-gray-500 hover:text-white text-sm">
             ← Orders
           </Link>
           <h2 className="text-2xl font-bold">{order.order_number}</h2>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium border ${orderStyle.className}`}>
             {orderStyle.label}
           </span>
