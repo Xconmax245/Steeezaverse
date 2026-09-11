@@ -1,4 +1,4 @@
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getServerSessionClient } from "@/lib/supabase/server-session";
 import { Metadata } from "next";
 import { revalidatePath } from "next/cache";
 
@@ -7,21 +7,18 @@ export const metadata: Metadata = {
 };
 
 export default async function AccountProfilePage() {
-  const supabase = getSupabaseServer();
+  const supabase = getServerSessionClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) return null;
 
-  const { data: customer } = await supabase
+  const { data: customerData } = await supabase
     .from("customers")
-    .select(`
-      id, email, name, phone, whatsapp_number, default_address_id,
-      addresses (
-        id, line1, line2, city, state, phone
-      )
-    `)
+    .select(`*, addresses(*)`)
     .eq("id", session.user.id)
     .single();
+
+  const customer = customerData as any;
 
   if (!customer) return null;
 
@@ -29,14 +26,14 @@ export default async function AccountProfilePage() {
 
   async function updateProfile(formData: FormData) {
     "use server";
-    const supabaseAction = getSupabaseServer();
+    const supabaseAction = getServerSessionClient();
     const { data: { session: s } } = await supabaseAction.auth.getSession();
     if (!s) return;
 
     const name = formData.get("name") as string;
     const whatsapp_number = formData.get("whatsapp_number") as string;
     
-    await supabaseAction
+    await (supabaseAction as any)
       .from("customers")
       .update({ name, whatsapp_number })
       .eq("id", s.user.id);

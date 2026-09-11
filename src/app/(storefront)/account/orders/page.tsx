@@ -1,4 +1,4 @@
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getServerSessionClient } from "@/lib/supabase/server-session";
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AccountOrdersPage() {
-  const supabase = getSupabaseServer();
+  const supabase = getServerSessionClient();
   const { data: { session } } = await supabase.auth.getSession();
   
   if (!session) return null;

@@ -232,7 +232,7 @@ export default function Navbar() {
       <div id="menu-portal-root">
         <AnimatePresence>
           {isMenuOpen && (
-            <MenuOverlay key="menu-overlay" onClose={() => setIsMenuOpen(false)} />
+            <MenuOverlay key="menu-overlay" onClose={() => setIsMenuOpen(false)} links={DYNAMIC_NAV_LINKS} />
           )}
         </AnimatePresence>
       </div>
@@ -303,7 +303,7 @@ function GridIcon({ mobile = false }: { mobile?: boolean }) {
 /* ─────────────────────────────────────────────────────────
    MENU OVERLAY COMPONENT
 ────────────────────────────────────────────────────────── */
-const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void }>(({ onClose }, ref) => {
+const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void, links: {label: string, href: string}[] }>(({ onClose, links }, ref) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [origin, setOrigin] = useState({ x: '90%', y: '40px' });
 
@@ -409,7 +409,7 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void }>(({
         
         {/* Full Width Column - Primary Links (Secondary info removed) */}
         <div className="w-full flex flex-col gap-6 items-center text-center mt-20 md:mt-0">
-          {DYNAMIC_NAV_LINKS.map((link, i) => {
+          {links.map((link, i) => {
             const isHovered = hoveredIndex === i;
             const isAnyHovered = hoveredIndex !== null;
 

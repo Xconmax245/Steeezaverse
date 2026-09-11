@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { getServerSessionClient } from "@/lib/supabase/server-session";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { LogOut, Package, User, Bell } from "lucide-react";
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
-  const supabase = getSupabaseServer();
+  const supabase = getServerSessionClient();
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
@@ -15,11 +15,11 @@ export default async function AccountLayout({ children }: { children: React.Reac
   // Check if they are banned
   const { data: customer } = await supabase
     .from("customers")
-    .select("is_banned")
+    .select("*") // Use * to avoid TypeScript inference issues on missing columns
     .eq("id", session.user.id)
     .single();
 
-  if (customer?.is_banned) {
+  if ((customer as any)?.is_banned) {
     await supabase.auth.signOut();
     redirect("/login?error=banned");
   }
