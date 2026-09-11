@@ -1,18 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { Loader2, CheckCircle2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get("error");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [authError, setAuthError] = useState<string | null>(
+    errorParam === "invalid_link" ? "Invalid or expired link. Please try again." : null
+  );
+
+  useEffect(() => {
+    // Listen for auth state changes (crucial for Implicit Flow where the token is in the hash fragment)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        router.push("/account/orders");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
     setStatus("loading");
+    setAuthError(null);
     try {
       const { error } = await supabase.auth.signInWithOtp({
         email,
@@ -54,8 +73,8 @@ export default function LoginClient() {
           />
         </div>
         
-        {status === "error" && (
-          <p className="text-red-500 text-sm mt-1 ml-1">Failed to send link. Please try again.</p>
+        {(status === "error" || authError) && (
+          <p className="text-red-500 text-sm mt-1 ml-1">{authError || "Failed to send link. Please try again."}</p>
         )}
 
         <button
