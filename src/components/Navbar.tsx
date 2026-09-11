@@ -427,7 +427,7 @@ const MenuOverlay = React.forwardRef<HTMLDivElement, { onClose: () => void, link
                     style={{ 
                       fontFamily: "'Chillax', sans-serif",
                       fontSize: 'clamp(4rem, 10vw, 8rem)', 
-                      lineHeight: 0.85, 
+                      lineHeight: 1.1, 
                       letterSpacing: '-0.02em',
                       color: isAnyHovered ? (isHovered ? '#fff' : 'transparent') : 'rgba(255,255,255,0.8)',
                       WebkitTextStroke: isAnyHovered && !isHovered ? '1px rgba(255,255,255,0.2)' : '0px',

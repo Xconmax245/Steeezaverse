@@ -18,9 +18,16 @@ export default async function AccountProfilePage() {
     .eq("id", session.user.id)
     .single();
 
-  const customer = customerData as any;
+  let customer = customerData as any;
 
-  if (!customer) return null;
+  if (!customer) {
+    customer = {
+      email: session.user.email,
+      name: session.user.user_metadata?.name || "",
+      whatsapp_number: "",
+      addresses: []
+    };
+  }
 
   const defaultAddress = customer.addresses?.find((a: any) => a.id === customer.default_address_id) || customer.addresses?.[0];
 
@@ -35,8 +42,12 @@ export default async function AccountProfilePage() {
     
     await (supabaseAction as any)
       .from("customers")
-      .update({ name, whatsapp_number })
-      .eq("id", s.user.id);
+      .upsert({ 
+        id: s.user.id,
+        email: s.user.email,
+        name, 
+        whatsapp_number 
+      });
       
     revalidatePath("/account/profile");
   }
