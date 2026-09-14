@@ -18,7 +18,7 @@ export async function trackOrderAction(orderNumber: string, email: string) {
     }
     
     // 2. Fetch order by orderNumber and customer_id
-    const { data: order, error: orderError } = await supabase
+    const { data: order, error: orderError } = await (supabase as any)
       .from('orders')
       .select(`
         *,

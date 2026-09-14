@@ -10,7 +10,7 @@ export async function addOrderNotificationAction(orderId: string, message: strin
     // In a real app, verify that the caller is an Admin here.
     // E.g., check session user role. For now, assume authorized by admin page layout.
     
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('order_notifications')
       .insert({
         order_id: orderId,
