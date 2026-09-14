@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 export default async function CheckoutCompletePage({
   searchParams,
 }: {
-  searchParams: { reference?: string; gateway?: string };
+  searchParams: { reference?: string | string[]; gateway?: string | string[] };
 }) {
-  const reference = searchParams.reference;
+  const rawReference = searchParams.reference;
+  const reference = Array.isArray(rawReference) ? rawReference[0] : rawReference;
 
   if (!reference) {
     redirect("/");
