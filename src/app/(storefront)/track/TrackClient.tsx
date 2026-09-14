@@ -113,7 +113,7 @@ export default function TrackClient() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-bold text-sm">${item.unit_price}</div>
+                    <div className="font-bold text-sm">₦{item.unit_price}</div>
                     <div className="text-xs text-white/50">Qty: {item.quantity}</div>
                   </div>
                 </div>
@@ -128,14 +128,14 @@ export default function TrackClient() {
             <h3 className="text-sm font-bold text-white/60 mb-2 flex items-center gap-2">
               <MapPin size={14} /> Shipping Info
             </h3>
-            <p className="text-sm font-medium">{customerData.first_name} {customerData.last_name}</p>
+            <p className="text-sm font-medium">{customerData.name}</p>
             <p className="text-sm text-white/70">{customerData.email}</p>
             {/* Note: Full shipping address is on the order table but we may not have it loaded in the query. For now, this suffices to show it's their order. */}
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-white/70">
               <span>Subtotal</span>
-              <span>${orderData.total_amount}</span>
+              <span>₦{orderData.subtotal}</span>
             </div>
             <div className="flex justify-between text-white/70">
               <span>Shipping</span>
@@ -143,7 +143,7 @@ export default function TrackClient() {
             </div>
             <div className="flex justify-between font-bold text-lg pt-2 border-t border-white/10">
               <span>Total</span>
-              <span>${orderData.total_amount}</span>
+              <span>₦{orderData.total}</span>
             </div>
           </div>
         </div>

@@ -11,7 +11,7 @@ export async function trackOrderAction(orderNumber: string, email: string) {
       .from('orders')
       .select(`
         *,
-        customers ( id, first_name, last_name, email ),
+        customers ( id, name, email ),
         order_items (
           id, quantity, unit_price,
           variant:product_variants(
