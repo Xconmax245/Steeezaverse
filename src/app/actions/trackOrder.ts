@@ -7,7 +7,7 @@ export async function trackOrderAction(orderNumber: string, email: string) {
     const supabase = getServerSessionClient();
     
     // 1. Fetch customer by email
-    const { data: customer, error: customerError } = await supabase
+    const { data: customer, error: customerError } = await (supabase as any)
       .from('customers')
       .select('id, first_name, last_name, email')
       .eq('email', email.toLowerCase().trim())
