@@ -153,17 +153,17 @@ export default function TrackClient() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full bg-[#110505]/80 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8">
+    <form onSubmit={handleSubmit} className="w-full bg-transparent rounded-2xl border border-white/5 p-6 md:p-8">
       {error && (
         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm flex items-start gap-3">
           <div className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
-          {error}
+          <span className="font-chillax">{error}</span>
         </div>
       )}
 
       <div className="space-y-5">
         <div>
-          <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">
+          <label className="block text-[10px] font-chillax font-bold text-white/50 uppercase tracking-widest mb-2">
             Order Number
           </label>
           <input
@@ -171,13 +171,13 @@ export default function TrackClient() {
             value={orderNumber}
             onChange={(e) => setOrderNumber(e.target.value)}
             placeholder="e.g. STZ-123456"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors uppercase"
+            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3.5 text-white font-chillax placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors uppercase"
             required
           />
         </div>
         
         <div>
-          <label className="block text-xs font-bold text-white/50 uppercase tracking-wider mb-2">
+          <label className="block text-[10px] font-chillax font-bold text-white/50 uppercase tracking-widest mb-2">
             Email Address
           </label>
           <input
@@ -185,7 +185,7 @@ export default function TrackClient() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Used at checkout"
-            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors"
+            className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3.5 text-white font-chillax placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
             required
           />
         </div>
@@ -193,13 +193,13 @@ export default function TrackClient() {
         <button
           type="submit"
           disabled={loading || !orderNumber || !email}
-          className="w-full h-12 bg-white text-black font-bold uppercase tracking-wider rounded-xl mt-4 flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full h-12 bg-white text-black font-chillax font-bold uppercase tracking-widest text-xs rounded-xl mt-4 flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? (
-            <Loader2 size={18} className="animate-spin" />
+            <Loader2 size={16} className="animate-spin" />
           ) : (
             <>
-              <Search size={18} /> Track Order
+              <Search size={16} /> Track Order
             </>
           )}
         </button>
