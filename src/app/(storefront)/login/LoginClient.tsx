@@ -37,9 +37,6 @@ export default function LoginClient() {
       const nextUrl = searchParams.get("redirect") || searchParams.get("next") || "/account/orders";
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`,
-        },
       });
 
       if (error) throw error;
