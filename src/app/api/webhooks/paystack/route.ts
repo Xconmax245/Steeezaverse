@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       // Fetch order to verify the charged amount matches.
       const { data: orderData } = await (getSupabaseAdmin() as any)
         .from('orders')
-        .select('id, order_number, total, discount_code, status, customers(name, email, phone), order_items(quantity, product_name_snapshot, variant_snapshot)')
+        .select('id, order_number, total, discount_code, status, customer_id, customers(name, email, phone), order_items(quantity, product_name_snapshot, variant_snapshot)')
         .eq('payment_reference', reference)
         .single();
 
@@ -103,6 +103,15 @@ export async function POST(request: Request) {
             status: 'sent',
           },
         ]);
+
+      if (order.customer_id) {
+        await (getSupabaseAdmin() as any).from('customer_notifications').insert({
+          customer_id: order.customer_id,
+          order_id: order.id,
+          title: 'Order Confirmed & Paid',
+          message: `Your payment was successful. We are now processing your order #${order.order_number}. You can track its status here.`,
+        });
+      }
 
       // Trigger Telegram Alert
       const adminUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://steezaverse.com';

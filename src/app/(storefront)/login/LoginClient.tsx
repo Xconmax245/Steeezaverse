@@ -38,7 +38,7 @@ export default function LoginClient() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/confirm?next=${nextUrl}`,
+          emailRedirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(nextUrl)}`,
         },
       });
 

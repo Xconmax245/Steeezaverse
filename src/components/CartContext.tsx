@@ -78,14 +78,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
             
             currentCartId = userCartId;
           } else {
-            // Create customer cart
-            const { data: newCart } = await (supabase as any)
-              .from("carts")
-              .insert({ customer_id: customerId })
-              .select("id")
-              .single();
-              
-            if (newCart) currentCartId = newCart.id;
+            // No existing customer cart.
+            // If they have a guest cart, assign it to them.
+            if (currentCartId) {
+              await (supabase as any)
+                .from("carts")
+                .update({ customer_id: customerId, session_id: null })
+                .eq("id", currentCartId);
+            } else {
+              // Create customer cart
+              const { data: newCart } = await (supabase as any)
+                .from("carts")
+                .insert({ customer_id: customerId })
+                .select("id")
+                .single();
+                
+              if (newCart) currentCartId = newCart.id;
+            }
           }
         } else if (!currentCartId) {
           // Create guest cart
