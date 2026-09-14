@@ -10,7 +10,6 @@ import NotificationBell from './NotificationBell';
 import { usePathname } from 'next/navigation';
 import MuteToggle from './MuteToggle';
 import { useCart } from './CartContext';
-import { supabase } from '@/lib/supabase/client';
 
 const NAV_LINKS = [
   { label: 'HOME', href: '/' },
@@ -23,27 +22,12 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isDarkBg, setIsDarkBg] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [sessionUser, setSessionUser] = useState<any>(null);
   const pathname = usePathname();
   const { cartCount, setIsOpen } = useCart();
 
-  useEffect(() => {
-    // Check initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSessionUser(session?.user || null);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSessionUser(session?.user || null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   const DYNAMIC_NAV_LINKS = [
     ...NAV_LINKS,
-    { label: sessionUser ? 'ACCOUNT' : 'LOGIN', href: sessionUser ? '/account/orders' : '/login' },
+    { label: 'TRACK ORDER', href: '/track' },
   ];
 
   useEffect(() => {

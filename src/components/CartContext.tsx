@@ -51,52 +51,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     async function initCart() {
       try {
-        // Check auth state via session (skip for SSR)
         if (typeof window === "undefined") return;
-
-        const { data: { session } } = await supabase.auth.getSession();
-        const customerId = session?.user?.id;
         
         let currentCartId = localStorage.getItem("stz_cart_id");
         
-        // If logged in, fetch customer cart
-        if (customerId) {
-          const { data: customerCarts } = await (supabase as any)
-            .from("carts")
-            .select("id")
-            .eq("customer_id", customerId)
-            .limit(1);
-
-          if (customerCarts && customerCarts.length > 0) {
-            const userCartId = customerCarts[0].id;
-            
-            // Merge logic if guest cart exists and is different
-            if (currentCartId && currentCartId !== userCartId) {
-              await mergeGuestCart(currentCartId as string, userCartId);
-              localStorage.removeItem("stz_cart_id");
-            }
-            
-            currentCartId = userCartId;
-          } else {
-            // No existing customer cart.
-            // If they have a guest cart, assign it to them.
-            if (currentCartId) {
-              await (supabase as any)
-                .from("carts")
-                .update({ customer_id: customerId, session_id: null })
-                .eq("id", currentCartId);
-            } else {
-              // Create customer cart
-              const { data: newCart } = await (supabase as any)
-                .from("carts")
-                .insert({ customer_id: customerId })
-                .select("id")
-                .single();
-                
-              if (newCart) currentCartId = newCart.id;
-            }
-          }
-        } else if (!currentCartId) {
+        if (!currentCartId) {
           // Create guest cart
           const sessionId = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
           const { data: newCart, error } = await (supabase as any)
@@ -130,45 +89,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return () => { active = false; };
   }, []);
 
-  async function mergeGuestCart(guestCartId: string, userCartId: string) {
-    // 1. Fetch guest items
-    const { data: guestItems } = await (supabase as any)
-      .from("cart_items")
-      .select("*")
-      .eq("cart_id", guestCartId);
-      
-    if (!guestItems || guestItems.length === 0) return;
 
-    // 2. Fetch user items
-    const { data: userItems } = await (supabase as any)
-      .from("cart_items")
-      .select("*")
-      .eq("cart_id", userCartId);
-      
-    const userItemsMap = new Map(userItems?.map((item: any) => [item.variant_id, item]) || []);
-
-    // 3. Merge quantities for matching variants, insert new ones
-    for (const gItem of guestItems as any[]) {
-      const existing = userItemsMap.get(gItem.variant_id) as any;
-      if (existing) {
-        await (supabase as any)
-          .from("cart_items")
-          .update({ quantity: existing.quantity + gItem.quantity })
-          .eq("id", existing.id);
-      } else {
-        await (supabase as any)
-          .from("cart_items")
-          .insert({
-            cart_id: userCartId,
-            variant_id: gItem.variant_id,
-            quantity: gItem.quantity
-          });
-      }
-    }
-
-    // 4. Delete guest cart
-    await (supabase as any).from("carts").delete().eq("id", guestCartId);
-  }
 
   async function fetchItems(cId: string) {
     const { data } = await (supabase as any)

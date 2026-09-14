@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { sendCustomerMessage } from "@/app/actions/order-actions";
+import { addOrderNotificationAction } from "@/app/actions/addOrderNotification";
 import { Send, MessageSquare } from "lucide-react";
 
 export default function MessageCustomerForm({
@@ -15,24 +15,13 @@ export default function MessageCustomerForm({
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
 
-  if (!customerId) {
-    return (
-      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center gap-3">
-        <MessageSquare className="w-4 h-4 text-white/20 flex-shrink-0" />
-        <p className="text-xs text-white/30 font-chillax uppercase tracking-widest">
-          Guest order — cannot send in-app message
-        </p>
-      </div>
-    );
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
     setStatus("idle");
     startTransition(async () => {
-      const res = await sendCustomerMessage(orderId, customerId, message);
+      const res = await addOrderNotificationAction(orderId, message);
       if (res.success) {
         setStatus("success");
         setMessage("");
