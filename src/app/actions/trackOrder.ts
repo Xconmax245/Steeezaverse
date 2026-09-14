@@ -29,18 +29,30 @@ export async function trackOrderAction(orderNumber: string, email: string) {
       .eq('order_number', orderNumber.trim().toUpperCase())
       .single();
       
-    if (orderError || !order) {
-      return { error: 'Order not found or email does not match.' };
+    if (orderError) {
+      console.error('[trackOrder] DB error:', JSON.stringify(orderError));
+      return { error: `DB error: ${orderError.message} (code: ${orderError.code})` };
     }
     
-    // 2. Verify email matches (either the customer's email or fallback)
+    if (!order) {
+      return { error: 'Order not found.' };
+    }
+    
+    // 2. Verify email matches
     const customer = order.customers;
-    if (!customer || !customer.email || customer.email.toLowerCase().trim() !== email.toLowerCase().trim()) {
-      return { error: 'Order not found or email does not match.' };
+    console.log('[trackOrder] customer:', JSON.stringify(customer), 'input email:', email);
+    
+    if (!customer) {
+      return { error: 'No customer linked to this order.' };
+    }
+    
+    if (!customer.email || customer.email.toLowerCase().trim() !== email.toLowerCase().trim()) {
+      return { error: `Email mismatch. Expected: ${customer.email}, Got: ${email}` };
     }
     
     return { success: true, order, customer };
   } catch (err: any) {
-    return { error: err.message || 'An error occurred while tracking your order.' };
+    console.error('[trackOrder] Exception:', err);
+    return { error: `Exception: ${err.message}` };
   }
 }
