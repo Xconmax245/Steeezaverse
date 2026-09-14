@@ -16,16 +16,16 @@ export default function LoginClient() {
   );
 
   useEffect(() => {
-    // Listen for auth state changes (crucial for Implicit Flow where the token is in the hash fragment)
+    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         const nextUrl = searchParams.get("redirect") || searchParams.get("next") || "/account/orders";
-        router.push(nextUrl);
+        router.replace(nextUrl);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [router]);
+  }, [router, searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +38,7 @@ export default function LoginClient() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(nextUrl)}`,
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`,
         },
       });
 
