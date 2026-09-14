@@ -16,9 +16,18 @@ function AuthCallbackInner() {
 
     const next = searchParams.get("next") || searchParams.get("redirect") || "/";
 
-    // Short poll to check if session is established after page load
-    // (Supabase auto-exchanges the hash fragment on init)
     const checkSession = async () => {
+      const code = searchParams.get("code");
+      
+      if (code) {
+        // Explicitly exchange PKCE code on the client
+        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (data.session) {
+          router.replace(next);
+          return;
+        }
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         // Session established - go to destination
