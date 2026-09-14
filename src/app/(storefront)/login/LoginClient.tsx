@@ -56,12 +56,19 @@ export default function LoginClient() {
     setStatus("loading");
     setAuthError(null);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: otpCode,
-        type: 'email',
-      });
-      if (error) throw error;
+      // Supabase generates different token types depending on user state and configuration.
+      // We try the standard 'email' first, then fallback to 'magiclink' (existing users) and 'signup' (new users).
+      let res = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'email' });
+      
+      if (res.error && res.error.message.toLowerCase().includes("invalid")) {
+        res = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'magiclink' });
+      }
+      
+      if (res.error && res.error.message.toLowerCase().includes("invalid")) {
+        res = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'signup' });
+      }
+
+      if (res.error) throw res.error;
       // onAuthStateChange will handle the redirect
     } catch (err: any) {
       console.error(err);
