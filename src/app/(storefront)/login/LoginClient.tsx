@@ -50,12 +50,56 @@ export default function LoginClient() {
     }
   };
 
+  const [otpCode, setOtpCode] = useState("");
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otpCode) return;
+    
+    setStatus("loading");
+    setAuthError(null);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otpCode,
+        type: 'email',
+      });
+      if (error) throw error;
+      // onAuthStateChange will handle the redirect
+    } catch (err: any) {
+      console.error(err);
+      setStatus("error");
+      setAuthError(err.message || "Invalid code. Please try again.");
+    }
+  };
+
   if (status === "success") {
     return (
       <div className="bg-green-50 border border-green-200 rounded-3xl p-8 text-center mt-8">
         <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto mb-4" />
         <h3 className="font-chillax font-bold text-xl mb-2 text-black">Check your email</h3>
-        <p className="text-black/60 text-sm">We&apos;ve sent a magic link to {email}. Click it to access your account.</p>
+        <p className="text-black/60 text-sm mb-6">We&apos;ve sent a magic link to {email}. Click it to securely log in.</p>
+        
+        <div className="pt-6 border-t border-green-200/50">
+          <p className="text-sm font-medium text-black mb-3">Or enter the 6-digit code from the email:</p>
+          <form onSubmit={handleVerifyOtp} className="flex flex-col gap-3">
+            <input
+              type="text"
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value)}
+              placeholder="123456"
+              maxLength={6}
+              className="w-full bg-white border border-gray-300 rounded-[24px] px-6 py-4 text-center tracking-widest text-lg font-bold text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+            />
+            <button
+              type="submit"
+              disabled={otpCode.length < 6}
+              className="w-full bg-black hover:bg-black/90 text-white font-medium py-3 rounded-[24px] transition-colors disabled:opacity-50"
+            >
+              Verify Code
+            </button>
+          </form>
+        </div>
       </div>
     );
   }
