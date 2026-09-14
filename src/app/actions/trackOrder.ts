@@ -6,22 +6,12 @@ export async function trackOrderAction(orderNumber: string, email: string) {
   try {
     const supabase = getServerSessionClient();
     
-    // 1. Fetch customer by email
-    const { data: customer, error: customerError } = await (supabase as any)
-      .from('customers')
-      .select('id, first_name, last_name, email')
-      .eq('email', email.toLowerCase().trim())
-      .single();
-      
-    if (customerError || !customer) {
-      return { error: 'Order not found or email does not match.' };
-    }
-    
-    // 2. Fetch order by orderNumber and customer_id
+    // 1. Fetch order by orderNumber
     const { data: order, error: orderError } = await (supabase as any)
       .from('orders')
       .select(`
         *,
+        customers ( id, first_name, last_name, email ),
         order_items (
           id, quantity, unit_price,
           variant:product_variants(
@@ -37,10 +27,15 @@ export async function trackOrderAction(orderNumber: string, email: string) {
         )
       `)
       .eq('order_number', orderNumber.trim().toUpperCase())
-      .eq('customer_id', customer.id)
       .single();
       
     if (orderError || !order) {
+      return { error: 'Order not found or email does not match.' };
+    }
+    
+    // 2. Verify email matches (either the customer's email or fallback)
+    const customer = order.customers;
+    if (!customer || !customer.email || customer.email.toLowerCase().trim() !== email.toLowerCase().trim()) {
       return { error: 'Order not found or email does not match.' };
     }
     
