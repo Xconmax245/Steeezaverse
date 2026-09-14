@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { getSupabaseAdmin } from '@/lib/supabase/server';
+import { ArrowRight, ShoppingBag } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,107 +15,122 @@ interface OrderRow {
   order_items: Array<{ id: string; quantity: number }>;
 }
 
-const ORDER_STATUS_STYLES: Record<string, { label: string; className: string }> = {
-  pending: { label: 'Pending', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
-  processing: { label: 'Processing', className: 'bg-blue-900/40 text-blue-300 border-blue-800' },
-  shipped: { label: 'Shipped', className: 'bg-purple-900/40 text-purple-300 border-purple-800' },
-  delivered: { label: 'Delivered', className: 'bg-green-900/40 text-green-400 border-green-800' },
-  cancelled: { label: 'Cancelled', className: 'bg-gray-800 text-gray-400 border-gray-700' },
-  refunded: { label: 'Refunded', className: 'bg-red-900/40 text-red-300 border-red-800' },
+const ORDER_STATUS_STYLES: Record<string, { label: string; dot: string; text: string }> = {
+  pending:    { label: 'Pending',    dot: 'bg-yellow-400', text: 'text-yellow-300' },
+  processing: { label: 'Processing', dot: 'bg-blue-400',   text: 'text-blue-300'  },
+  shipped:    { label: 'Shipped',    dot: 'bg-purple-400', text: 'text-purple-300' },
+  delivered:  { label: 'Delivered',  dot: 'bg-green-400',  text: 'text-green-400'  },
+  cancelled:  { label: 'Cancelled',  dot: 'bg-white/20',   text: 'text-white/30'  },
+  refunded:   { label: 'Refunded',   dot: 'bg-red-400',    text: 'text-red-300'   },
 };
 
-const PAYMENT_STATUS_STYLES: Record<string, { label: string; className: string }> = {
-  paid: { label: 'Paid', className: 'bg-green-900/40 text-green-400 border-green-800' },
-  pending: { label: 'Unpaid', className: 'bg-yellow-900/40 text-yellow-300 border-yellow-800' },
-  failed: { label: 'Failed', className: 'bg-red-900/40 text-red-300 border-red-800' },
+const PAYMENT_STATUS_STYLES: Record<string, { label: string; dot: string; text: string }> = {
+  paid:    { label: 'Paid',   dot: 'bg-green-400', text: 'text-green-400' },
+  pending: { label: 'Unpaid', dot: 'bg-yellow-400', text: 'text-yellow-300' },
+  failed:  { label: 'Failed', dot: 'bg-red-400',   text: 'text-red-300'   },
 };
 
 function formatNGN(value: number): string {
-  return `₦${value.toLocaleString('en-NG', { maximumFractionDigits: 2 })}`;
+  return `₦${value.toLocaleString('en-NG', { maximumFractionDigits: 0 })}`;
 }
 
 export default async function AdminOrdersPage() {
   const { data, error } = await (getSupabaseAdmin() as any)
     .from('orders')
-    .select(
-      `id, order_number, status, payment_status, total, created_at,
-       customers(email, name), order_items(id, quantity)`
-    )
+    .select(`id, order_number, status, payment_status, total, created_at,
+             customers(email, name), order_items(id, quantity)`)
     .order('created_at', { ascending: false });
 
   if (error) {
-    return <p className="text-red-400">Failed to load orders: {error.message}</p>;
+    return (
+      <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8 text-red-400 text-sm font-mono">
+        Failed to load orders: {error.message}
+      </div>
+    );
   }
 
   const orders = (data ?? []) as OrderRow[];
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Orders</h2>
-        <span className="text-sm text-gray-500">{orders.length} total</span>
+    <div className="flex flex-col gap-8">
+      {/* Header */}
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-white/30 mb-1 font-chillax">Admin</p>
+          <h1 className="font-chillax text-3xl font-bold uppercase tracking-widest text-white">Orders</h1>
+        </div>
+        <span className="text-xs uppercase tracking-widest text-white/30 font-chillax">
+          {orders.length} total
+        </span>
       </div>
 
       {orders.length === 0 ? (
-        <div className="bg-gray-800/50 border border-gray-800 rounded p-10 text-center">
-          <p className="text-gray-400">No orders yet. Orders appear here once a checkout is started.</p>
+        <div className="border border-white/5 rounded-3xl p-20 text-center flex flex-col items-center gap-4">
+          <ShoppingBag className="w-10 h-10 text-white/10" />
+          <p className="text-white/30 text-sm uppercase tracking-widest font-chillax">No orders yet</p>
         </div>
       ) : (
-        <div className="bg-gray-900 border border-gray-800 rounded-lg overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-gray-400 border-b border-gray-800">
-                <th className="px-4 py-3 font-medium">Order</th>
-                <th className="px-4 py-3 font-medium">Customer</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Payment</th>
-                <th className="px-4 py-3 font-medium">Items</th>
-                <th className="px-4 py-3 font-medium">Total</th>
-                <th className="px-4 py-3 font-medium">Date</th>
-                <th className="px-4 py-3 font-medium"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => {
-                const orderStyle = ORDER_STATUS_STYLES[order.status] ?? ORDER_STATUS_STYLES.pending;
-                const paymentStyle = PAYMENT_STATUS_STYLES[order.payment_status] ?? PAYMENT_STATUS_STYLES.pending;
-                const itemCount = order.order_items.reduce((sum, item) => sum + (item.quantity || 0), 0);
-                return (
-                  <tr key={order.id} className="border-b border-gray-800 last:border-b-0 hover:bg-gray-800/40">
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-white">{order.order_number}</div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="text-gray-300">{order.customers?.email ?? 'Guest'}</div>
-                      {order.customers?.name && (
-                        <div className="text-xs text-gray-500">{order.customers.name}</div>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium border ${orderStyle.className}`}>
-                        {orderStyle.label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium border ${paymentStyle.className}`}>
-                        {paymentStyle.label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-300">{itemCount}</td>
-                    <td className="px-4 py-3 text-gray-300">{formatNGN(Number(order.total))}</td>
-                    <td className="px-4 py-3 text-gray-500">
-                      {new Date(order.created_at).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link href={`/admin/orders/${order.id}`} className="text-sz-red hover:underline text-sm">
-                        View
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="flex flex-col gap-2">
+          {orders.map((order) => {
+            const orderStyle = ORDER_STATUS_STYLES[order.status] ?? ORDER_STATUS_STYLES.pending;
+            const payStyle = PAYMENT_STATUS_STYLES[order.payment_status] ?? PAYMENT_STATUS_STYLES.pending;
+            const itemCount = order.order_items.reduce((s, i) => s + (i.quantity || 0), 0);
+
+            return (
+              <Link
+                key={order.id}
+                href={`/admin/orders/${order.id}`}
+                className="group flex items-center gap-4 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/10 rounded-2xl px-6 py-5 transition-all duration-200"
+              >
+                {/* Order Number */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-chillax font-bold text-sm text-white uppercase tracking-widest truncate">
+                    {order.order_number}
+                  </p>
+                  <p className="text-xs text-white/40 mt-0.5 truncate">
+                    {order.customers?.email ?? 'Guest'}
+                    {order.customers?.name && ` · ${order.customers.name}`}
+                  </p>
+                </div>
+
+                {/* Order Status */}
+                <div className="hidden sm:flex items-center gap-1.5 w-28">
+                  <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${orderStyle.dot}`} />
+                  <span className={`text-xs font-chillax font-bold uppercase tracking-widest ${orderStyle.text}`}>
+                    {orderStyle.label}
+                  </span>
+                </div>
+
+                {/* Payment Status */}
+                <div className="hidden sm:flex items-center gap-1.5 w-20">
+                  <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${payStyle.dot}`} />
+                  <span className={`text-xs font-chillax font-bold uppercase tracking-widest ${payStyle.text}`}>
+                    {payStyle.label}
+                  </span>
+                </div>
+
+                {/* Items count */}
+                <div className="hidden md:block text-xs text-white/30 w-16 font-chillax">
+                  {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                </div>
+
+                {/* Date */}
+                <div className="hidden md:block text-xs text-white/30 w-24 text-right font-chillax">
+                  {new Date(order.created_at).toLocaleDateString('en-NG', {
+                    day: 'numeric', month: 'short',
+                  })}
+                </div>
+
+                {/* Total */}
+                <div className="text-sm font-chillax font-bold text-white w-20 text-right">
+                  {formatNGN(Number(order.total))}
+                </div>
+
+                {/* Arrow */}
+                <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white/60 transition-colors flex-shrink-0" />
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

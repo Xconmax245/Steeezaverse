@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { sendCustomerMessage } from "@/app/actions/order-actions";
+import { Send, MessageSquare } from "lucide-react";
 
 export default function MessageCustomerForm({
   orderId,
@@ -16,9 +17,11 @@ export default function MessageCustomerForm({
 
   if (!customerId) {
     return (
-      <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 mt-6">
-        <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Message Customer</h3>
-        <p className="text-sm text-gray-400">Cannot message guest customers without an account.</p>
+      <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex items-center gap-3">
+        <MessageSquare className="w-4 h-4 text-white/20 flex-shrink-0" />
+        <p className="text-xs text-white/30 font-chillax uppercase tracking-widest">
+          Guest order — cannot send in-app message
+        </p>
       </div>
     );
   }
@@ -33,37 +36,43 @@ export default function MessageCustomerForm({
       if (res.success) {
         setStatus("success");
         setMessage("");
-        // Hide success message after 3 seconds
         setTimeout(() => setStatus("idle"), 3000);
       } else {
         setStatus("error");
-        console.error(res.error);
       }
     });
   };
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 mt-6">
-      <h3 className="text-xs uppercase tracking-widest text-gray-500 mb-4">Message Customer</h3>
+    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col gap-4">
+      <div className="flex items-center gap-2">
+        <MessageSquare className="w-4 h-4 text-white/30" />
+        <h3 className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-chillax font-bold">
+          Message Customer
+        </h3>
+      </div>
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           disabled={isPending}
-          placeholder="Type a custom notification message to the customer..."
-          className="w-full bg-gray-800 border border-gray-700 rounded p-3 text-sm text-white focus:outline-none focus:border-sz-red disabled:opacity-50 min-h-[80px]"
+          placeholder="Type an in-app notification to send to this customer..."
+          rows={3}
+          className="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-white/30 transition-colors disabled:opacity-50 resize-none font-sans"
         />
         <div className="flex items-center justify-between">
-          <span className="text-sm">
-            {status === "success" && <span className="text-green-400">Message sent successfully!</span>}
-            {status === "error" && <span className="text-red-400">Failed to send message.</span>}
+          <span className="text-xs font-chillax uppercase tracking-widest">
+            {status === "success" && <span className="text-green-400">✓ Sent</span>}
+            {status === "error" && <span className="text-red-400">Failed to send</span>}
           </span>
           <button
             type="submit"
             disabled={isPending || !message.trim()}
-            className="bg-sz-red hover:bg-sz-red/90 text-white text-sm font-medium px-4 py-2 rounded disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 bg-white text-black text-xs font-chillax font-bold uppercase tracking-widest px-5 py-2.5 rounded-full hover:bg-white/90 transition-all disabled:opacity-40 disabled:pointer-events-none"
           >
-            {isPending ? "Sending..." : "Send Message"}
+            <Send className="w-3 h-3" />
+            {isPending ? "Sending..." : "Send"}
           </button>
         </div>
       </form>

@@ -14,6 +14,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
     { label: 'Products', href: '/admin/products' },
     { label: 'Orders', href: '/admin/orders' },
     { label: 'Customers', href: '/admin/customers' },
+    { label: 'Waitlist', href: '/admin/waitlist' },
     { label: 'Lookbook', href: '/admin/lookbook' },
   ];
 
