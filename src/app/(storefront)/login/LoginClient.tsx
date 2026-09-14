@@ -75,26 +75,25 @@ export default function LoginClient() {
 
   if (status === "success") {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-3xl p-8 text-center mt-8">
-        <CheckCircle2 className="w-12 h-12 text-green-600 mx-auto mb-4" />
+      <div className="bg-white border border-gray-200 rounded-3xl p-8 text-center mt-8 shadow-sm">
+        <CheckCircle2 className="w-12 h-12 text-black mx-auto mb-4" />
         <h3 className="font-chillax font-bold text-xl mb-2 text-black">Check your email</h3>
-        <p className="text-black/60 text-sm mb-6">We&apos;ve sent a magic link to {email}. Click it to securely log in.</p>
+        <p className="text-black/60 text-sm mb-6">We&apos;ve sent a 6-digit security code to {email}.</p>
         
-        <div className="pt-6 border-t border-green-200/50">
-          <p className="text-sm font-medium text-black mb-3">Or enter the 6-digit code from the email:</p>
-          <form onSubmit={handleVerifyOtp} className="flex flex-col gap-3">
+        <div>
+          <form onSubmit={handleVerifyOtp} className="flex flex-col gap-4">
             <input
               type="text"
               value={otpCode}
               onChange={(e) => setOtpCode(e.target.value)}
               placeholder="123456"
               maxLength={6}
-              className="w-full bg-white border border-gray-300 rounded-[24px] px-6 py-4 text-center tracking-widest text-lg font-bold text-black placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
+              className="w-full bg-white border border-gray-300 rounded-[24px] px-6 py-4 text-center tracking-[0.5em] text-2xl font-bold text-black placeholder-gray-300 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
             />
             <button
               type="submit"
               disabled={otpCode.length < 6}
-              className="w-full bg-black hover:bg-black/90 text-white font-medium py-3 rounded-[24px] transition-colors disabled:opacity-50"
+              className="w-full bg-black hover:bg-black/90 text-white font-medium py-4 rounded-[24px] transition-colors disabled:opacity-50 mt-2 text-lg"
             >
               Verify Code
             </button>
@@ -128,7 +127,7 @@ export default function LoginClient() {
           disabled={status === "loading"}
           className="w-full bg-black hover:bg-black/90 text-white font-medium py-4 mt-4 transition-colors rounded-[24px] flex items-center justify-center disabled:opacity-50"
         >
-          {status === "loading" ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Login Link"}
+          {status === "loading" ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Login Code"}
         </button>
       </form>
       
@@ -136,7 +135,7 @@ export default function LoginClient() {
         <span className="w-4 h-4 rounded-full border border-black/20 flex items-center justify-center">
           <span className="w-2 h-2 rounded-full bg-black/20"></span>
         </span>
-        No password required. Secure magic link sent instantly.
+        No password required. Secure login code sent instantly.
       </div>
     </div>
   );

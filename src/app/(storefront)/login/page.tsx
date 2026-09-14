@@ -53,7 +53,7 @@ export default function LoginPage() {
             Welcome Back
           </h1>
           <p className="text-black/60 text-sm mb-12">
-            Enter your email to receive a secure login link.
+            Enter your email to receive a secure login code.
           </p>
 
           <Suspense fallback={<div className="h-48 flex items-center justify-center"><div className="w-6 h-6 border-2 border-black border-t-transparent rounded-full animate-spin"></div></div>}>
