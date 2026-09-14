@@ -63,9 +63,9 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    if (gateway !== 'paystack' && gateway !== 'flutterwave') {
+    if (gateway !== 'paystack') {
       return NextResponse.json(
-        { success: false, error: "gateway must be 'paystack' or 'flutterwave'" },
+        { success: false, error: "gateway must be 'paystack'" },
         { status: 400 }
       );
     }

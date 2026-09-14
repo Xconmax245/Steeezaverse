@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [phone, setPhone] = useState("");
-  const [gateway, setGateway] = useState<"paystack" | "flutterwave" | null>(null);
+  const [gateway] = useState<"paystack">("paystack");
   
   // App State
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -285,33 +285,13 @@ export default function CheckoutPage() {
             <div className="flex flex-col gap-6">
               <h2 className="font-chillax text-xl font-bold uppercase tracking-widest border-b border-white/10 pb-4">3. Payment</h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Paystack Card */}
-                <div 
-                  onClick={() => setGateway("paystack")}
-                  className={`cursor-pointer rounded-2xl border p-6 flex flex-col items-start gap-4 transition-all duration-300 ${gateway === "paystack" ? "border-white bg-white/5" : "border-white/10 hover:border-white/30 bg-transparent"}`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="font-chillax font-bold uppercase tracking-widest text-sm">Paystack</span>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${gateway === "paystack" ? "border-white" : "border-white/30"}`}>
-                      {gateway === "paystack" && <div className="w-2 h-2 bg-white rounded-full" />}
-                    </div>
-                  </div>
-                  <p className="text-white/50 text-xs">Pay securely via Cards, Bank Transfer, or USSD.</p>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 flex items-center gap-4">
+                <div className="w-4 h-4 rounded-full border border-white bg-white flex items-center justify-center flex-shrink-0">
+                  <div className="w-2 h-2 bg-black rounded-full" />
                 </div>
-
-                {/* Flutterwave Card */}
-                <div 
-                  onClick={() => setGateway("flutterwave")}
-                  className={`cursor-pointer rounded-2xl border p-6 flex flex-col items-start gap-4 transition-all duration-300 ${gateway === "flutterwave" ? "border-white bg-white/5" : "border-white/10 hover:border-white/30 bg-transparent"}`}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="font-chillax font-bold uppercase tracking-widest text-sm">Flutterwave</span>
-                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${gateway === "flutterwave" ? "border-white" : "border-white/30"}`}>
-                      {gateway === "flutterwave" && <div className="w-2 h-2 bg-white rounded-full" />}
-                    </div>
-                  </div>
-                  <p className="text-white/50 text-xs">Alternative secure gateway for African payments.</p>
+                <div>
+                  <p className="font-chillax font-bold uppercase tracking-widest text-sm">Paystack</p>
+                  <p className="text-white/50 text-xs mt-1">Pay securely via Cards, Bank Transfer, or USSD.</p>
                 </div>
               </div>
             </div>
