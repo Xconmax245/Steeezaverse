@@ -1,13 +1,13 @@
 "use server";
 
-import { getServerSessionClient } from '@/lib/supabase/server-session';
+import { getSupabaseAdmin } from '@/lib/supabase/server';
 
 export async function trackOrderAction(orderNumber: string, email: string) {
   try {
-    const supabase = getServerSessionClient();
+    const supabase = getSupabaseAdmin() as any;
     
     // 1. Fetch order by orderNumber
-    const { data: order, error: orderError } = await (supabase as any)
+    const { data: order, error: orderError } = await supabase
       .from('orders')
       .select(`
         *,
