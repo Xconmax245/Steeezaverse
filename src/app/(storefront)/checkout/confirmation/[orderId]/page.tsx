@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, Package, XCircle } from "lucide-react";
 import ClearCartOnSuccess from "./ClearCartOnSuccess";
-
+import CopyOrderNumber from "./CopyOrderNumber";
 
 function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
@@ -148,21 +148,7 @@ export default async function OrderConfirmationPage({
             </div>
             
             {/* Order Tracking Instructions */}
-            <div className="border border-white/10 bg-[#0a0505] p-6 sm:p-8 mt-4 text-center">
-              <h3 className="font-chillax font-bold uppercase tracking-widest mb-4">
-                Track Your Order
-              </h3>
-              <p className="text-sm text-white/60 max-w-md mx-auto mb-6 leading-relaxed">
-                You can monitor the status of your order at any time in your account dashboard. 
-                Any updates from our team will be sent to your Notifications tab.
-              </p>
-              <Link 
-                href="/account/orders"
-                className="inline-block bg-white text-black px-8 py-3 font-chillax font-bold uppercase tracking-widest text-xs hover:bg-white/90 transition-colors"
-              >
-                Go to My Orders
-              </Link>
-            </div>
+            <CopyOrderNumber orderNumber={order.order_number} email={order.customers?.email || ''} />
             <div className="flex justify-center mt-8">
               <Link 
                 href="/shop"
