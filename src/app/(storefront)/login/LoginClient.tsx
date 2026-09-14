@@ -58,19 +58,22 @@ export default function LoginClient() {
     try {
       const cleanOtp = otpCode.trim();
       
-      // Supabase generates different token types depending on user state and configuration.
-      // We try the standard 'email' first, then fallback to 'magiclink' (existing users) and 'signup' (new users).
-      let res = await supabase.auth.verifyOtp({ email, token: cleanOtp, type: 'email' });
+      // Determine if they are an existing customer or new user
+      // This allows us to use the EXACT token type on the first try, preventing PKCE session destruction
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('id')
+        .eq('email', email.toLowerCase())
+        .maybeSingle();
+        
+      const exactType = customer ? 'magiclink' : 'signup';
       
-      if (res.error && res.error.message.toLowerCase().includes("invalid")) {
-        res = await supabase.auth.verifyOtp({ email, token: cleanOtp, type: 'magiclink' });
-      }
-      
-      if (res.error && res.error.message.toLowerCase().includes("invalid")) {
-        res = await supabase.auth.verifyOtp({ email, token: cleanOtp, type: 'signup' });
-      }
-
-      if (res.error) throw res.error;
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: cleanOtp,
+        type: exactType,
+      });
+      if (error) throw error;
       // onAuthStateChange will handle the redirect
     } catch (err: any) {
       console.error(err);
