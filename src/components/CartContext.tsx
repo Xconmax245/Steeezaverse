@@ -31,6 +31,7 @@ interface CartContextType {
   addItem: (variantId: string, quantity?: number, openDrawer?: boolean) => Promise<void>;
   updateQuantity: (itemId: string, quantity: number) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
+  clearCart: () => Promise<void>;
   cartCount: number;
   subtotal: number;
   isLoading: boolean;
@@ -239,6 +240,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       .eq("id", itemId);
   }
 
+  async function clearCart() {
+    setItems([]); // Clear in UI immediately
+    if (cartId) {
+      await (supabase as any).from("cart_items").delete().eq("cart_id", cartId);
+      localStorage.removeItem("stz_cart_id");
+      setCartId(null);
+    }
+  }
+
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => {
     const price = item.variant?.product?.base_price || 0;
@@ -247,7 +257,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider value={{
-      cartId, items, isOpen, setIsOpen, addItem, updateQuantity, removeItem, cartCount, subtotal, isLoading
+      cartId, items, isOpen, setIsOpen, addItem, updateQuantity, removeItem, clearCart, cartCount, subtotal, isLoading
     }}>
       {children}
     </CartContext.Provider>

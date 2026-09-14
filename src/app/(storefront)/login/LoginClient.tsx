@@ -19,7 +19,8 @@ export default function LoginClient() {
     // Listen for auth state changes (crucial for Implicit Flow where the token is in the hash fragment)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        router.push("/account/orders");
+        const nextUrl = searchParams.get("redirect") || searchParams.get("next") || "/account/orders";
+        router.push(nextUrl);
       }
     });
 
@@ -33,10 +34,11 @@ export default function LoginClient() {
     setStatus("loading");
     setAuthError(null);
     try {
+      const nextUrl = searchParams.get("redirect") || searchParams.get("next") || "/account/orders";
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/api/auth/confirm?next=/account/orders`,
+          emailRedirectTo: `${window.location.origin}/api/auth/confirm?next=${nextUrl}`,
         },
       });
 

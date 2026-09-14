@@ -47,9 +47,11 @@ export default function CheckoutPage() {
       if (session?.user?.id) {
         setCustomerId(session.user.id);
         setEmail(session.user.email || "");
+      } else {
+        router.push("/login?redirect=/checkout");
       }
     });
-  }, []);
+  }, [router]);
 
   const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();

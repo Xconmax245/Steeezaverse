@@ -2,8 +2,9 @@
 
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { updateOrderStatus, ORDER_STATUSES } from '@/app/actions/order-actions';
+import { updateOrderStatus } from '@/app/actions/order-actions';
 
+const ORDER_STATUSES = ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'];
 const STATUS_COLORS: Record<string, string> = {
   pending:    'text-yellow-300',
   processing: 'text-blue-300',
