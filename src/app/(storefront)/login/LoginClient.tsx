@@ -56,16 +56,18 @@ export default function LoginClient() {
     setStatus("loading");
     setAuthError(null);
     try {
+      const cleanOtp = otpCode.trim();
+      
       // Supabase generates different token types depending on user state and configuration.
       // We try the standard 'email' first, then fallback to 'magiclink' (existing users) and 'signup' (new users).
-      let res = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'email' });
+      let res = await supabase.auth.verifyOtp({ email, token: cleanOtp, type: 'email' });
       
       if (res.error && res.error.message.toLowerCase().includes("invalid")) {
-        res = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'magiclink' });
+        res = await supabase.auth.verifyOtp({ email, token: cleanOtp, type: 'magiclink' });
       }
       
       if (res.error && res.error.message.toLowerCase().includes("invalid")) {
-        res = await supabase.auth.verifyOtp({ email, token: otpCode, type: 'signup' });
+        res = await supabase.auth.verifyOtp({ email, token: cleanOtp, type: 'signup' });
       }
 
       if (res.error) throw res.error;

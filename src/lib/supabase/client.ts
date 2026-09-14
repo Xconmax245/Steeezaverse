@@ -9,7 +9,11 @@ export function getSupabase() {
   if (!_supabase) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    _supabase = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
+    _supabase = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        flowType: 'implicit',
+      }
+    });
   }
   return _supabase;
 }
