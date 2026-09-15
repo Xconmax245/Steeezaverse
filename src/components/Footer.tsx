@@ -78,14 +78,14 @@ export default function Footer() {
           {/* Column 3: Socials */}
           <div className="flex flex-col gap-4">
             <h4 className="text-white/80 font-bold uppercase tracking-widest text-xs mb-2">Social</h4>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm w-fit" data-cuelume-hover="tick">
+            <a href="https://www.instagram.com/steezaverse" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm w-fit" data-cuelume-hover="tick">
               Instagram
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm w-fit" data-cuelume-hover="tick">
+            <a href="https://x.com/hollar_reeks" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm w-fit" data-cuelume-hover="tick">
               Twitter / X
             </a>
-            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm w-fit" data-cuelume-hover="tick">
-              TikTok
+            <a href="https://www.snapchat.com/@hollar_reeks" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white transition-colors text-sm w-fit" data-cuelume-hover="tick">
+              Snapchat
             </a>
           </div>
 
