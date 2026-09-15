@@ -5,9 +5,6 @@ export default async function DropSection() {
   const drops = await getDropProducts();
   const nextDrop = drops[0] || null;
 
-  if (!nextDrop) {
-    return null;
-  }
-
+  // Render the Store Launch drop section regardless of DB drops
   return <DropSectionClient drop={nextDrop} />;
 }

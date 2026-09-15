@@ -56,14 +56,12 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
   useEffect(() => {
     setReducedMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-    if (drop && drop.drop_starts_at) {
-      const dropTime = new Date(drop.drop_starts_at).getTime();
-      const now = Date.now();
-      if (now >= dropTime) {
-        setIsLive(true);
-      }
+    const dropTime = new Date("2026-10-01T00:00:00+01:00").getTime();
+    const now = Date.now();
+    if (now >= dropTime) {
+      setIsLive(true);
     }
-  }, [drop]);
+  }, []);
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -92,9 +90,9 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
 
   // Countdown timer
   useEffect(() => {
-    if (!drop || !drop.drop_starts_at || isLive) return;
+    if (isLive) return;
 
-    const dropTime = new Date(drop.drop_starts_at).getTime();
+    const dropTime = new Date("2026-10-01T00:00:00+01:00").getTime();
     
     const tick = () => {
       const now = Date.now();
@@ -153,23 +151,21 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productId: drop?.id,
+          productId: drop?.id || null, // Keep original product ID if available so it doesn't fail
           variantId: null,
           email,
         }),
       });
       const json = await res.json();
-      if (!json.success) throw new Error(json.error || "Failed to join waitlist");
+      if (!json.success) throw new Error(json.error || "Failed to join RSVP list");
       setWaitlistState("done");
       import("cuelume").then(({ play }) => play && play("success")).catch(console.warn);
     } catch (err: any) {
-      setWaitlistError(err.message || "Failed to join waitlist");
+      setWaitlistError(err.message || "Failed to join RSVP list");
       setWaitlistState("error");
       import("cuelume").then(({ play }) => play && play("error")).catch(console.warn);
     }
   }
-
-  if (!drop) return null; // Or return a fallback placeholder if no drops exist
 
   // Dynamic Background: Sleek black (#080808) when countdown, Deep red (#0d0202) when live
   const bgColor = isLive ? "#0d0202" : "#080808";
@@ -220,10 +216,12 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
             initial={reducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="text-white font-black text-7xl md:text-9xl tracking-tighter uppercase text-center"
+            className="text-white font-black text-6xl md:text-8xl tracking-tighter uppercase text-center leading-none"
             style={{ fontFamily: "Archivo, sans-serif" }}
           >
-            DROP IS LIVE
+            STORE IS OPEN
+            <br />
+            <span className="text-sz-red text-4xl md:text-6xl mt-2 block">OCTOBER 1 - 3</span>
           </motion.h2>
         )}
 
@@ -231,19 +229,19 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
           className="flex flex-col items-center gap-6 mt-8 w-full max-w-md"
         >
           <p className="text-white/60 font-semibold tracking-[0.2em] uppercase text-xs text-center">
-            {drop.name}
+            PHYSICAL STORE LAUNCH
           </p>
 
           {!isLive ? (
             <div className="w-full mt-4">
               {waitlistState === "done" ? (
                 <p className="text-sm uppercase tracking-widest text-green-400 text-center font-bold">
-                  You&apos;re on the list
+                  You&apos;re on the RSVP list
                 </p>
               ) : (
                 <form onSubmit={joinWaitlist} className="flex flex-col gap-5">
                   <p className="text-[11px] uppercase tracking-[0.2em] text-white/60 text-center" style={{ fontFamily: "'Chillax', sans-serif" }}>
-                    Join waitlist for early access
+                    RSVP for Launch Updates
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input
@@ -280,11 +278,11 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
           ) : (
             <div className="w-full flex flex-col gap-4 items-center">
               <a
-                href={`/product/${drop.slug}`}
+                href="/shop"
                 data-cuelume-hover="tick"
                 className="w-full text-center rounded-full bg-white text-black py-4 text-[13px] font-bold uppercase tracking-[0.15em] hover:bg-white/90 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_40px_rgba(255,255,255,0.2)]"
               >
-                Shop Now
+                Visit Shop
               </a>
               {stockRemaining !== null && (
                 <p className={`text-[11px] font-bold uppercase tracking-widest ${isLowStock ? 'text-[var(--red)]' : 'text-white/50'} ${shakeClass}`}>
