@@ -180,13 +180,13 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
       className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-0"
       style={{ backgroundColor: bgColor, "--ink-2": "var(--blue)" } as React.CSSProperties}
     >
-      <div ref={contentWrapperRef} className="z-10 flex flex-col items-center gap-12 w-full max-w-4xl px-4 py-24">
+      <div ref={contentWrapperRef} className="z-10 flex flex-col items-center gap-8 w-full max-w-4xl px-6 py-16 md:py-20">
         
         {/* Kinetic Countdown */}
         {!isLive && timeLeft && (
           <div 
-            className="flex gap-4 md:gap-8 text-white font-black text-6xl md:text-9xl tracking-tighter" 
-            style={{ fontFamily: "Archivo, sans-serif" }}
+            className="flex gap-3 md:gap-8 text-white font-black tracking-tighter w-full justify-center" 
+            style={{ fontFamily: "Archivo, sans-serif", fontSize: "clamp(2.8rem, 14vw, 7rem)" }}
           >
             <div className="flex">
               <GlitchDigit digit={timeLeft.d[0]} isLive={isLive} reducedMotion={reducedMotion} />
@@ -226,7 +226,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
         )}
 
         <div 
-          className="flex flex-col items-center gap-6 mt-8 w-full max-w-md"
+          className="flex flex-col items-center gap-5 w-full max-w-md"
         >
           <p className="text-white/60 font-semibold tracking-[0.2em] uppercase text-xs text-center">
             PHYSICAL STORE LAUNCH

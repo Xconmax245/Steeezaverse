@@ -27,22 +27,24 @@ export default function AnnouncementBar() {
     <AnimatePresence>
       {isVisible && (
         <motion.div
+          id="announcement-bar"
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="bg-white text-black overflow-hidden relative z-50"
+          transition={{ duration: 0.3 }}
+          className="bg-white text-black overflow-hidden relative z-[200] w-full"
         >
-          <div className="flex items-center justify-center px-10 py-2.5 text-xs font-bold uppercase tracking-widest font-chillax text-center relative">
-            <span className="flex items-center gap-2">
-              <span className="animate-pulse">🔴</span>
-              Physical Store Launch: October 1st - 3rd
+          <div className="relative flex items-center justify-center w-full py-2.5 px-10">
+            <span className="flex items-center gap-2 font-chillax font-bold uppercase tracking-widest text-[10px] md:text-[11px] whitespace-nowrap">
+              <span className="animate-pulse text-red-600">●</span>
+              <span>Physical Store Launch — Oct 1st – 3rd</span>
             </span>
-            <button 
+            <button
               onClick={handleClose}
-              className="absolute right-4 p-1 opacity-50 hover:opacity-100 transition-opacity"
+              className="absolute right-3 p-1.5 opacity-50 hover:opacity-100 transition-opacity rounded-full hover:bg-black/5 flex-shrink-0"
               aria-label="Close notification"
             >
-              <X size={14} />
+              <X size={12} strokeWidth={2.5} />
             </button>
           </div>
         </motion.div>

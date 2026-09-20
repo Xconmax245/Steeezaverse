@@ -21,6 +21,8 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isDarkBg, setIsDarkBg] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [announcementHeight, setAnnouncementHeight] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const { cartCount, setIsOpen } = useCart();
@@ -32,6 +34,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const onScroll = () => {
+      setScrollY(window.scrollY);
       setScrolled(window.scrollY > 60);
       setIsDarkBg(pathname !== '/' || window.scrollY > window.innerHeight - 50);
     };
@@ -39,6 +42,18 @@ export default function Navbar() {
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, [pathname]);
+
+  useEffect(() => {
+    const checkHeight = () => {
+      const bar = document.getElementById("announcement-bar");
+      setAnnouncementHeight(bar ? bar.offsetHeight : 0);
+    };
+    
+    checkHeight();
+    const interval = setInterval(checkHeight, 500);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? 'hidden' : '';
@@ -69,9 +84,14 @@ export default function Navbar() {
     }),
   };
 
+  const dynamicTop = Math.max(20, 20 + announcementHeight - scrollY);
+
   return (
     <>
-      <header className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] w-full max-w-[680px] pointer-events-none flex items-center justify-center">
+      <header 
+        className="fixed left-1/2 -translate-x-1/2 z-[100] w-full max-w-[680px] pointer-events-none flex items-center justify-center"
+        style={{ top: `${dynamicTop}px` }}
+      >
         
         {/* ─── DESKTOP "WRISTBAND" (hidden on mobile) ─── */}
         <motion.nav
