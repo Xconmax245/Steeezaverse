@@ -142,12 +142,12 @@ export default function CheckoutPage() {
       <div className="min-h-screen pt-32 pb-20 px-6 flex flex-col items-center justify-center bg-black text-white text-center">
         <h1 className="text-3xl font-chillax font-bold uppercase tracking-widest mb-6">Your Cart is Empty</h1>
         <p className="text-white/60 max-w-md mb-8">You cannot proceed to checkout with an empty cart.</p>
-        <button
-          onClick={() => router.push("/shop")}
+        <a
+          href="/shop"
           className="border border-white/20 rounded-full px-8 py-3 text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
         >
           Return to Shop
-        </button>
+        </a>
       </div>
     );
   }
