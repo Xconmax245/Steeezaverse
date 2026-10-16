@@ -9,6 +9,25 @@ const nextConfig = {
       { protocol: "http", hostname: "localhost", port: "54321" },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/account',
+        destination: '/account/notifications',
+        permanent: false,
+      },
+      {
+        source: '/account/orders',
+        destination: '/track',
+        permanent: false,
+      },
+      {
+        source: '/account/profile',
+        destination: '/track',
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
