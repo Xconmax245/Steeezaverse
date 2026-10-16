@@ -34,6 +34,21 @@ export default function ImageUploader({ bucket = 'product-images', onUploaded, m
           method: 'POST',
           body: formData,
         });
+
+        // Guard against non-JSON responses (e.g. 413 "Request Entity Too Large"
+        // which is plain text and would crash JSON.parse with a cryptic error).
+        if (!res.ok) {
+          const contentType = res.headers.get('content-type') ?? '';
+          const msg = contentType.includes('application/json')
+            ? (await res.json()).error
+            : await res.text();
+          throw new Error(
+            res.status === 413
+              ? `Image too large — please keep files under 5 MB (${file.name})`
+              : msg || `Upload failed for ${file.name} (HTTP ${res.status})`
+          );
+        }
+
         const json = await res.json();
         if (!json.success) throw new Error(json.error || `Upload failed for ${file.name}`);
         
