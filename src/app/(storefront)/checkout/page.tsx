@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCart } from "@/components/CartContext";
-import { useRouter } from "next/navigation";
+
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Loader2, ArrowRight, ShieldCheck, CreditCard } from "lucide-react";
@@ -16,7 +16,6 @@ function formatNGN(value: number): string {
 
 export default function CheckoutPage() {
   const { cartId, items, subtotal, isLoading: cartLoading } = useCart();
-  const router = useRouter();
 
   // Form State
   const [email, setEmail] = useState("");
@@ -43,15 +42,15 @@ export default function CheckoutPage() {
   const total = Math.max(0, subtotal - (appliedPromo?.discountAmount || 0)) + shippingCost;
 
   useEffect(() => {
+    // Silently pick up logged-in customer ID if a session exists.
+    // Guests (no session) are fully supported — the server upserts by email.
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user?.id) {
         setCustomerId(session.user.id);
         setEmail(session.user.email || "");
-      } else {
-        router.push("/login?redirect=/checkout");
       }
     });
-  }, [router]);
+  }, []);
 
   const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
