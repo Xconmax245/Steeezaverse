@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/release-pending-stock",
-      "schedule": "0 0 * * *"
+      "schedule": "*/20 * * * *"
     },
     {
       "path": "/api/cron/trigger-drop-notifications",

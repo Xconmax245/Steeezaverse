@@ -38,7 +38,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Usage limit reached' }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true, discount });
+    const discountAmount =
+      discount.type === 'percentage'
+        ? (Number(cartTotal) * Number(discount.value)) / 100
+        : Math.min(Number(discount.value), Number(cartTotal));
+
+    return NextResponse.json({ success: true, discount, discountAmount });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 400 });
   }
