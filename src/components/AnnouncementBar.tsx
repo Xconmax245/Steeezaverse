@@ -37,7 +37,7 @@ export default function AnnouncementBar() {
           <div className="relative flex items-center justify-center w-full py-2.5 px-10">
             <span className="flex items-center gap-2 font-chillax font-bold uppercase tracking-widest text-[10px] md:text-[11px] whitespace-nowrap">
               <span className="animate-pulse text-red-600">●</span>
-              <span>Physical Store Launch — Oct 1st – 3rd</span>
+              <span>Physical Store is Now Open</span>
             </span>
             <button
               onClick={handleClose}

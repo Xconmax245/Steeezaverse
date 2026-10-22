@@ -180,7 +180,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
       className="relative w-full min-h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-0"
       style={{ backgroundColor: bgColor, "--ink-2": "var(--blue)" } as React.CSSProperties}
     >
-      <div ref={contentWrapperRef} className="z-10 flex flex-col items-center gap-8 w-full max-w-4xl px-6 py-16 md:py-20">
+      <div ref={contentWrapperRef} className="z-10 flex flex-col items-center gap-8 w-full max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl px-4 sm:px-6 md:px-8 py-14 md:py-20 lg:py-24">
         
         {/* Kinetic Countdown */}
         {!isLive && timeLeft && (
@@ -216,21 +216,54 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
             initial={reducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="text-white font-black text-6xl md:text-8xl tracking-tighter uppercase text-center leading-none"
-            style={{ fontFamily: "Archivo, sans-serif" }}
+            className="text-white font-black tracking-tighter uppercase text-center leading-[0.92] w-full"
+            style={{ fontFamily: "Archivo, sans-serif", fontSize: "clamp(2.6rem, 10vw, 6.5rem)" }}
           >
-            STORE IS OPEN
+            PHYSICAL STORE
             <br />
-            <span className="text-sz-red text-4xl md:text-6xl mt-2 block">OCTOBER 1 - 3</span>
+            <span className="text-sz-red">IS NOW OPEN</span>
           </motion.h2>
         )}
 
         <div 
-          className="flex flex-col items-center gap-5 w-full max-w-md"
+          className="flex flex-col items-center gap-4 sm:gap-5 w-full max-w-sm sm:max-w-md md:max-w-lg"
         >
-          <p className="text-white/60 font-semibold tracking-[0.2em] uppercase text-xs text-center">
-            PHYSICAL STORE LAUNCH
+          <p className="text-white/70 font-semibold tracking-[0.2em] uppercase text-[10px] sm:text-xs text-center">
+            Open 9am – 7pm Daily &nbsp;·&nbsp; Oct 1 – 3
           </p>
+
+          {/* Store Location Map */}
+          {isLive && (
+            <div className="w-full flex flex-col items-center gap-3 mt-1">
+              {/* Map container — taller on larger screens */}
+              <div className="w-full rounded-xl sm:rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_40px_rgba(0,0,0,0.6)] h-[200px] sm:h-[260px] md:h-[320px] lg:h-[360px]">
+                <iframe
+                  title="Steezaverse Store Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.7929582847974!2d4.5360008999999994!3d7.4880989!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1038376b52a82371%3A0x79336306d0f1eaa8!2sSTEEZAVERSE!5e0!3m2!1sen!2sng!4v1792648726850!5m2!1sen!2sng"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) saturate(0.8) brightness(0.85)" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+              {/* Directions link */}
+              <a
+                href="https://maps.app.goo.gl/7WEyYzQ9D99NeCmS7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-white/50 hover:text-white transition-colors duration-200 py-1"
+                style={{ fontFamily: "'Chillax', sans-serif" }}
+              >
+                <svg className="w-3 h-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Get Directions
+              </a>
+            </div>
+          )}
 
           {!isLive ? (
             <div className="w-full mt-4">
