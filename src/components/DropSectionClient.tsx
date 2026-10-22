@@ -186,7 +186,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
         {!isLive && timeLeft && (
           <div 
             className="flex gap-3 md:gap-8 text-white font-black tracking-tighter w-full justify-center" 
-            style={{ fontFamily: "Archivo, sans-serif", fontSize: "clamp(2.8rem, 14vw, 7rem)" }}
+            style={{ fontFamily: "'Bespoke Sans', sans-serif", fontSize: "clamp(2.8rem, 14vw, 7rem)" }}
           >
             <div className="flex">
               <GlitchDigit digit={timeLeft.d[0]} isLive={isLive} reducedMotion={reducedMotion} />
@@ -217,7 +217,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="text-white font-black tracking-tighter uppercase text-center leading-[0.92] w-full"
-            style={{ fontFamily: "Archivo, sans-serif", fontSize: "clamp(2.6rem, 10vw, 6.5rem)" }}
+            style={{ fontFamily: "'Bespoke Sans', sans-serif", fontSize: "clamp(2.6rem, 10vw, 6.5rem)" }}
           >
             PHYSICAL STORE
             <br />
