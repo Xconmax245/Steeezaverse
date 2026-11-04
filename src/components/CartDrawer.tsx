@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "./CartContext";
 import { useRouter } from "next/navigation";
+import { VAT_AMOUNT_NGN } from "@/lib/constants";
 
 function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
@@ -17,6 +18,8 @@ export default function CartDrawer() {
   const [promoCode, setPromoCode] = useState("");
   const [promoStatus, setPromoStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const router = useRouter();
+  const vatAmount = items.length > 0 ? Number(process.env.NEXT_PUBLIC_VAT_COST_NGN || VAT_AMOUNT_NGN) : 0;
+  const estimatedTotal = items.length > 0 ? subtotal + vatAmount : 0;
 
   const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,10 +193,20 @@ export default function CartDrawer() {
                 {promoStatus === "success" && <p className="text-green-500 text-xs mb-4 uppercase tracking-widest">Promo code applied</p>}
                 {promoStatus === "error" && <p className="text-sz-red text-xs mb-4 uppercase tracking-widest">Invalid or expired code</p>}
 
-                {/* Subtotal */}
-                <div className="flex justify-between items-center mb-6">
-                  <span className="text-white/60 text-sm uppercase tracking-widest">Subtotal</span>
-                  <span className="text-xl font-bold font-chillax text-white">{formatNGN(subtotal)}</span>
+                {/* Breakdown */}
+                <div className="space-y-2 mb-6">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-white/60 uppercase tracking-widest">Subtotal</span>
+                    <span className="text-white font-medium">{formatNGN(subtotal)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-xs text-white/50">
+                    <span className="uppercase tracking-widest">VAT</span>
+                    <span>{formatNGN(vatAmount)}</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-3 border-t border-white/10">
+                    <span className="text-white text-sm uppercase tracking-widest font-bold">Estimated Total</span>
+                    <span className="text-xl font-bold font-chillax text-white">{formatNGN(estimatedTotal)}</span>
+                  </div>
                 </div>
 
                 {/* Checkout CTA */}

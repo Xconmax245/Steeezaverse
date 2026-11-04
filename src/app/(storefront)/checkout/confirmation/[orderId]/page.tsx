@@ -140,6 +140,10 @@ export default async function OrderConfirmationPage({
                   <span>Shipping</span>
                   <span>{order.shipping_cost === 0 ? "Free" : formatNGN(order.shipping_cost)}</span>
                 </div>
+                <div className="flex justify-between text-white/70">
+                  <span>VAT</span>
+                  <span>{formatNGN(order.vat != null ? Number(order.vat) : 500)}</span>
+                </div>
                 <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-white/10">
                   <span>Total</span>
                   <span>{formatNGN(order.total)}</span>

@@ -19,6 +19,7 @@ interface OrderDetail {
   subtotal: number;
   discount_amount: number;
   shipping_cost: number;
+  vat?: number;
   total: number;
   created_at: string;
   updated_at: string;
@@ -59,8 +60,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
   const { data, error } = await (getSupabaseAdmin() as any)
     .from('orders')
     .select(
-      `id, customer_id, order_number, status, payment_status, payment_reference, payment_gateway, discount_code,
-       subtotal, discount_amount, shipping_cost, total, created_at, updated_at,
+      `*,
        customers(email, name, phone),
        addresses(full_name, line1, line2, city, state, phone),
        order_items(id, quantity, unit_price, product_name_snapshot, variant_snapshot)`
@@ -216,6 +216,10 @@ export default async function OrderDetailPage({ params }: { params: { id: string
           <div className="flex justify-between w-full max-w-xs text-xs text-white/40">
             <span className="font-chillax uppercase tracking-widest">Shipping</span>
             <span>{formatNGN(Number(order.shipping_cost))}</span>
+          </div>
+          <div className="flex justify-between w-full max-w-xs text-xs text-white/40">
+            <span className="font-chillax uppercase tracking-widest">VAT</span>
+            <span>{formatNGN(order.vat != null ? Number(order.vat) : 500)}</span>
           </div>
           <div className="flex justify-between w-full max-w-xs text-sm font-bold text-white pt-3 border-t border-white/10 mt-1">
             <span className="font-chillax uppercase tracking-widest">Total</span>

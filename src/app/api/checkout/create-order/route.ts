@@ -4,6 +4,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/server';
 import { sendTelegramAlert } from '@/lib/telegram';
 import { initializePayment, PaymentGateway } from '@/lib/payments';
 import { isValidPhoneNumber } from 'libphonenumber-js';
+import { VAT_AMOUNT_NGN } from '@/lib/constants';
 
 // Creates a `pending` order, atomically reserves stock, and initializes the
 // payment session. The order is only marked `paid` by the gateway webhook —
@@ -296,7 +297,8 @@ export async function POST(request: Request) {
     }
 
     const shippingCost = Number(process.env.SHIPPING_COST_NGN || 0);
-    const total = Math.max(0, subtotal - discountAmount) + shippingCost;
+    const vatAmount = Number(process.env.VAT_COST_NGN || VAT_AMOUNT_NGN);
+    const total = Math.max(0, subtotal - discountAmount) + shippingCost + vatAmount;
 
     // 5. Generate order identifiers.
     const orderNumber = `STZ-${Date.now().toString(36).toUpperCase()}`;
@@ -340,26 +342,40 @@ export async function POST(request: Request) {
     }
 
     // 7. Create the pending order.
-    const { data: order, error: orderError } = await (getSupabaseAdmin() as any)
+    const orderPayload: Record<string, any> = {
+      customer_id: customerId || null,
+      order_number: orderNumber,
+      status: 'pending',
+      subtotal: round2(subtotal),
+      discount_amount: round2(discountAmount),
+      shipping_cost: round2(shippingCost),
+      vat: round2(vatAmount),
+      total: round2(total),
+      payment_status: 'pending',
+      payment_reference: paymentReference,
+      payment_gateway: gateway,
+      shipping_address_id: finalShippingAddressId || null,
+      discount_code: discountCode || null,
+    };
+
+    let { data: order, error: orderError } = await (getSupabaseAdmin() as any)
       .from('orders')
-      .insert([
-        {
-          customer_id: customerId || null,
-          order_number: orderNumber,
-          status: 'pending',
-          subtotal: round2(subtotal),
-          discount_amount: round2(discountAmount),
-          shipping_cost: round2(shippingCost),
-          total: round2(total),
-          payment_status: 'pending',
-          payment_reference: paymentReference,
-          payment_gateway: gateway,
-          shipping_address_id: finalShippingAddressId || null,
-          discount_code: discountCode || null,
-        },
-      ])
+      .insert([orderPayload])
       .select()
       .single();
+
+    // If the database schema has not yet been migrated to include the vat column (PGRST204),
+    // gracefully fall back to creating the order without the vat column while keeping the calculated total.
+    if (orderError && (orderError.code === 'PGRST204' || orderError.message?.includes('vat'))) {
+      const { vat: _, ...payloadWithoutVat } = orderPayload;
+      const fallback = await (getSupabaseAdmin() as any)
+        .from('orders')
+        .insert([payloadWithoutVat])
+        .select()
+        .single();
+      order = fallback.data;
+      orderError = fallback.error;
+    }
 
     if (orderError) {
       await restoreStock(lines);

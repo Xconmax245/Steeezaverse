@@ -135,15 +135,25 @@ export default function TrackClient() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between text-white/70">
               <span>Subtotal</span>
-              <span>₦{orderData.subtotal}</span>
+              <span>₦{Number(orderData.subtotal).toLocaleString('en-NG')}</span>
             </div>
+            {Number(orderData.discount_amount || 0) > 0 && (
+              <div className="flex justify-between text-[#ff2a2a]">
+                <span>Discount</span>
+                <span>-₦{Number(orderData.discount_amount).toLocaleString('en-NG')}</span>
+              </div>
+            )}
             <div className="flex justify-between text-white/70">
               <span>Shipping</span>
-              <span>Calculated at checkout</span>
+              <span>{Number(orderData.shipping_cost || 0) === 0 ? "Free" : `₦${Number(orderData.shipping_cost).toLocaleString('en-NG')}`}</span>
+            </div>
+            <div className="flex justify-between text-white/70">
+              <span>VAT</span>
+              <span>₦{Number(orderData.vat != null ? orderData.vat : 500).toLocaleString('en-NG')}</span>
             </div>
             <div className="flex justify-between font-bold text-lg pt-2 border-t border-white/10">
               <span>Total</span>
-              <span>₦{orderData.total}</span>
+              <span>₦{Number(orderData.total).toLocaleString('en-NG')}</span>
             </div>
           </div>
         </div>

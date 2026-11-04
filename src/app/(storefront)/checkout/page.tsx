@@ -9,6 +9,7 @@ import { Loader2, ArrowRight, ShieldCheck, CreditCard } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import { VAT_AMOUNT_NGN } from '@/lib/constants';
 
 function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
@@ -39,7 +40,10 @@ export default function CheckoutPage() {
   const [promoStatus, setPromoStatus] = useState<"idle" | "loading" | "error">("idle");
 
   const shippingCost = 0; // Flat rate per .env.local specification
-  const total = Math.max(0, subtotal - (appliedPromo?.discountAmount || 0)) + shippingCost;
+  const vatAmount = items.length > 0 ? Number(process.env.NEXT_PUBLIC_VAT_COST_NGN || VAT_AMOUNT_NGN) : 0;
+  const total = items.length > 0
+    ? Math.max(0, subtotal - (appliedPromo?.discountAmount || 0)) + shippingCost + vatAmount
+    : 0;
 
   useEffect(() => {
     // Silently pick up logged-in customer ID if a session exists.
@@ -366,6 +370,10 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-white/70">
                 <span>Shipping</span>
                 <span>{shippingCost === 0 ? "Free" : formatNGN(shippingCost)}</span>
+              </div>
+              <div className="flex justify-between text-white/70">
+                <span>VAT</span>
+                <span>{formatNGN(vatAmount)}</span>
               </div>
               <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-white/10">
                 <span>Total</span>

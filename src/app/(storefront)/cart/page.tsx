@@ -4,6 +4,7 @@ import { useCart } from "@/components/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, Minus, Trash2, ArrowRight } from "lucide-react";
+import { VAT_AMOUNT_NGN } from "@/lib/constants";
 
 function formatNGN(value: number): string {
   return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
@@ -11,6 +12,8 @@ function formatNGN(value: number): string {
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, subtotal, isLoading } = useCart();
+  const vatAmount = items.length > 0 ? Number(process.env.NEXT_PUBLIC_VAT_COST_NGN || VAT_AMOUNT_NGN) : 0;
+  const total = items.length > 0 ? subtotal + vatAmount : 0;
 
   return (
     <main className="min-h-screen bg-[#050505] pt-32 pb-24 px-6 md:px-12 text-white">
@@ -115,6 +118,10 @@ export default function CartPage() {
                   <span>Subtotal</span>
                   <span className="text-white">{formatNGN(subtotal)}</span>
                 </div>
+                <div className="flex justify-between items-center mb-5 text-white/60 uppercase tracking-widest text-sm">
+                  <span>VAT</span>
+                  <span className="text-white">{formatNGN(vatAmount)}</span>
+                </div>
                 <div className="flex justify-between items-center mb-8 text-white/60 uppercase tracking-widest text-sm">
                   <span>Shipping</span>
                   <span className="text-right text-xs">Calculated at<br/>checkout</span>
@@ -122,7 +129,7 @@ export default function CartPage() {
                 
                 <div className="border-t border-white/10 pt-6 flex justify-between items-center mb-10">
                   <span className="text-white uppercase tracking-widest font-bold">Total</span>
-                  <span className="text-2xl font-bold font-chillax text-white">{formatNGN(subtotal)}</span>
+                  <span className="text-2xl font-bold font-chillax text-white">{formatNGN(total)}</span>
                 </div>
 
                 <Link
