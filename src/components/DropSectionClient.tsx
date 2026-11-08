@@ -229,7 +229,7 @@ export default function DropSectionClient({ drop }: { drop: MiniShopItem | null 
           className="flex flex-col items-center gap-4 sm:gap-5 w-full max-w-sm sm:max-w-md md:max-w-lg"
         >
           <p className="text-white/70 font-semibold tracking-[0.2em] uppercase text-[10px] sm:text-xs text-center">
-            Open 9am – 7pm Daily &nbsp;·&nbsp; Oct 1 – 3
+            Open 9am – 7pm Daily
           </p>
 
           {/* Store Location Map */}
