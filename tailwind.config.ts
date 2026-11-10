@@ -20,6 +20,7 @@ const config: Config = {
         sans:    ["Synonym", "sans-serif"],
         chillax: ["Chillax", "sans-serif"],
         aktura:  ["Aktura", "serif"],
+        archivo: ["Archivo", "sans-serif"],
       },
       letterSpacing: {
         tighter2: "-0.04em",

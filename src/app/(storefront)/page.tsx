@@ -1,6 +1,8 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import MarqueeDivider from "@/components/MarqueeDivider";
+import BlackFridaySection from "@/components/BlackFridaySection";
+import BlackFridayPopup from "@/components/BlackFridayPopup";
 import ManifestoSection from "@/components/ManifestoSection";
 import MiniShopSection from "@/components/MiniShopSection";
 import LookbookSection from "@/components/LookbookSection";
@@ -19,6 +21,12 @@ export default function HomePage() {
       
       {/* ── Wavy Divider & Marquee ── */}
       <MarqueeDivider />
+
+      {/* ── Black Friday Section (gated Nov 6-30) ── */}
+      <BlackFridaySection />
+
+      {/* ── Black Friday 24h Popup (homepage only, syncs after intro) ── */}
+      <BlackFridayPopup />
 
       <ManifestoSection />
 
