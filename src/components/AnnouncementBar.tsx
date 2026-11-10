@@ -101,7 +101,7 @@ export default function AnnouncementBar() {
           <span className="text-black">ENDS NOV 30 →</span>
         </span>
       ),
-      href: "/#black-friday-sale",
+      href: "/product/stv-tracksuit",
     },
   ];
 
