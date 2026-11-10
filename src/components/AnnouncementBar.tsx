@@ -15,20 +15,45 @@ export default function AnnouncementBar() {
 
   useEffect(() => {
     if (!isMounted) return;
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(media.matches);
-    const listener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    media.addEventListener("change", listener);
 
-    const storageKey = isSaleActive
-      ? "steezaverse_bf_announcement_dismissed"
-      : "steezaverse_store_launch_dismissed";
-    const dismissed = localStorage.getItem(storageKey);
-    if (!dismissed) {
+    let media: MediaQueryList | null = null;
+    let listener: ((e: MediaQueryListEvent) => void) | null = null;
+
+    try {
+      media = window.matchMedia("(prefers-reduced-motion: reduce)");
+      setReducedMotion(media.matches);
+      listener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+
+      if (typeof media.addEventListener === "function") {
+        media.addEventListener("change", listener);
+      } else if (typeof (media as any).addListener === "function") {
+        (media as any).addListener(listener);
+      }
+    } catch (_) {}
+
+    try {
+      const storageKey = isSaleActive
+        ? "steezaverse_bf_announcement_dismissed"
+        : "steezaverse_store_launch_dismissed";
+      const dismissed = localStorage.getItem(storageKey);
+      if (!dismissed) {
+        setIsVisible(true);
+      }
+    } catch (_) {
       setIsVisible(true);
     }
 
-    return () => media.removeEventListener("change", listener);
+    return () => {
+      if (media && listener) {
+        try {
+          if (typeof media.removeEventListener === "function") {
+            media.removeEventListener("change", listener);
+          } else if (typeof (media as any).removeListener === "function") {
+            (media as any).removeListener(listener);
+          }
+        } catch (_) {}
+      }
+    };
   }, [isMounted, isSaleActive]);
 
   // Rotate messages every 4s during active sale, pausing when hovered or reduced motion
@@ -44,10 +69,12 @@ export default function AnnouncementBar() {
 
   const handleClose = () => {
     setIsVisible(false);
-    const storageKey = isSaleActive
-      ? "steezaverse_bf_announcement_dismissed"
-      : "steezaverse_store_launch_dismissed";
-    localStorage.setItem(storageKey, "true");
+    try {
+      const storageKey = isSaleActive
+        ? "steezaverse_bf_announcement_dismissed"
+        : "steezaverse_store_launch_dismissed";
+      localStorage.setItem(storageKey, "true");
+    } catch (_) {}
   };
 
   if (!isMounted) return null;
@@ -78,7 +105,12 @@ export default function AnnouncementBar() {
     },
   ];
 
-  const activeMessage = isSaleActive && !reducedMotion ? messages[currentIdx] : (isSaleActive ? messages[1] : messages[0]);
+  const activeMessage =
+    (isSaleActive && !reducedMotion
+      ? messages[currentIdx]
+      : isSaleActive
+      ? messages[1]
+      : messages[0]) || messages[0];
 
   return (
     <AnimatePresence>

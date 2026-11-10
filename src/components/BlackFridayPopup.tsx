@@ -80,14 +80,16 @@ export default function BlackFridayPopup() {
   };
 
   if (!isMounted || !isSaleActive || pathname !== "/") {
-    return null;
+    return <div id="black-friday-popup-slot" aria-hidden="true" />;
   }
 
   return (
-    <FlyerModal
-      isOpen={isOpen}
-      onClose={handleClose}
-      productSlug="stv-tracksuit"
-    />
+    <div id="black-friday-popup-slot" aria-hidden={!isOpen}>
+      <FlyerModal
+        isOpen={isOpen}
+        onClose={handleClose}
+        productSlug="stv-tracksuit"
+      />
+    </div>
   );
 }

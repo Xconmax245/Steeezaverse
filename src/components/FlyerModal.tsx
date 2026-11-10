@@ -32,11 +32,32 @@ export default function FlyerModal({
   // Detect prefers-reduced-motion
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReducedMotion(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    let mq: MediaQueryList | null = null;
+    let handler: ((e: MediaQueryListEvent) => void) | null = null;
+
+    try {
+      mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      setReducedMotion(mq.matches);
+      handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+
+      if (typeof mq.addEventListener === "function") {
+        mq.addEventListener("change", handler);
+      } else if (typeof (mq as any).addListener === "function") {
+        (mq as any).addListener(handler);
+      }
+    } catch (_) {}
+
+    return () => {
+      if (mq && handler) {
+        try {
+          if (typeof mq.removeEventListener === "function") {
+            mq.removeEventListener("change", handler);
+          } else if (typeof (mq as any).removeListener === "function") {
+            (mq as any).removeListener(handler);
+          }
+        } catch (_) {}
+      }
+    };
   }, []);
 
   const handleClose = useCallback(() => {

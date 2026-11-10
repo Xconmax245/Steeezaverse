@@ -25,9 +25,6 @@ export default function HomePage() {
       {/* ── Black Friday Section (gated Nov 6-30) ── */}
       <BlackFridaySection />
 
-      {/* ── Black Friday 24h Popup (homepage only, syncs after intro) ── */}
-      <BlackFridayPopup />
-
       <ManifestoSection />
 
       <HomeTransitionWrapper>
@@ -52,6 +49,9 @@ export default function HomePage() {
 
       {/* ── Footer / Loop ── */}
       <Footer />
+
+      {/* ── Black Friday 24h Popup (homepage only, syncs after intro) ── */}
+      <BlackFridayPopup />
     </main>
   );
 }
