@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, ArrowRight, MessageCircle } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { playSoftTick, playButtonPress, playButtonRelease } from "@/lib/sound";
 
@@ -23,11 +23,6 @@ export default function FlyerModal({
   const [reducedMotion, setReducedMotion] = useState(false);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const modalContentRef = useRef<HTMLDivElement>(null);
-
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "2347016764281";
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "Hi Steezaverse, I'm ordering the Black Friday Tracksuit (20% OFF)."
-  )}`;
 
   // Detect prefers-reduced-motion
   useEffect(() => {
@@ -129,7 +124,7 @@ export default function FlyerModal({
           role="dialog"
           aria-modal="true"
           aria-label="Steezaverse Black Friday sale flyer"
-          className="fixed inset-0 z-[999] flex items-center justify-center p-3 sm:p-4 md:p-6"
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4 pt-14 pb-6 overflow-y-auto"
         >
           {/* Backdrop */}
           <motion.div
@@ -138,7 +133,7 @@ export default function FlyerModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/85 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/85 backdrop-blur-md"
           />
 
           {/* Modal Container */}
@@ -147,68 +142,65 @@ export default function FlyerModal({
             initial={
               reducedMotion
                 ? { opacity: 0 }
-                : { opacity: 0, scale: 0.96 }
+                : { opacity: 0, scale: 0.95, y: 15 }
             }
             animate={
               reducedMotion
                 ? { opacity: 1 }
-                : { opacity: 1, scale: 1 }
+                : { opacity: 1, scale: 1, y: 0 }
             }
             exit={
               reducedMotion
                 ? { opacity: 0 }
-                : { opacity: 0, scale: 0.96 }
+                : { opacity: 0, scale: 0.95, y: 10 }
             }
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className="relative z-10 w-full max-w-sm sm:max-w-md max-h-[92vh] flex flex-col items-center bg-[#0d0d0d] rounded-2xl border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden"
+            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 w-full max-w-[360px] sm:max-w-[400px] flex flex-col bg-[#070707] rounded-3xl border border-white/15 shadow-[0_25px_80px_rgba(0,0,0,0.95),_0_0_50px_rgba(255,42,42,0.15)]"
           >
-            {/* Close Button — 44px min touch target, safe area compliant */}
+            {/* Close Button — positioned cleanly above the card so it never covers the flyer text */}
             <button
               ref={closeBtnRef}
               onClick={handleClose}
               aria-label="Close flyer"
-              className="absolute top-3 right-3 z-30 w-11 h-11 flex items-center justify-center rounded-full bg-black/60 hover:bg-black/90 text-white/80 hover:text-white border border-white/20 transition-all focus:outline-none focus:ring-2 focus:ring-sz-red"
+              className="absolute -top-11 right-0 flex items-center gap-2 text-white/70 hover:text-white transition-colors group focus:outline-none focus:ring-1 focus:ring-white/40"
             >
-              <X size={20} strokeWidth={2.5} />
+              <span className="text-[10px] font-chillax uppercase tracking-[0.2em] font-semibold text-white/60 group-hover:text-white transition-colors">
+                Close
+              </span>
+              <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-white text-white group-hover:text-black border border-white/20 flex items-center justify-center transition-all">
+                <X size={15} strokeWidth={2.5} />
+              </span>
             </button>
 
-            {/* Flyer Image Container (max 72vh on desktop, responsive) */}
-            <div className="relative w-full overflow-y-auto overflow-x-hidden flex flex-col items-center p-3 sm:p-4 pb-0">
-              <div className="relative w-full max-h-[68vh] sm:max-h-[72vh] aspect-[4/5] rounded-xl overflow-hidden shadow-inner">
-                <Image
-                  src="/photo_2026-11-10_13-52-33.jpg"
-                  alt="Steezaverse Black Friday sale: 20% off all tracksuits, November 6 to 30"
-                  fill
-                  priority
-                  sizes="(max-width: 640px) 90vw, 420px"
-                  className="object-cover rounded-xl select-none"
-                />
-              </div>
+            {/* Flyer Image Container — flush with rounded top */}
+            <div className="relative w-full aspect-[4/5] rounded-t-3xl overflow-hidden bg-black">
+              <Image
+                src="/photo_2026-11-10_13-52-33.jpg"
+                alt="Steezaverse Black Friday sale: 20% off all tracksuits, November 6 to 30"
+                fill
+                priority
+                sizes="(max-width: 640px) 90vw, 400px"
+                className="object-cover select-none"
+              />
             </div>
 
             {/* Modal Bottom Actions */}
-            <div className="w-full p-4 sm:p-5 pt-3 flex flex-col gap-2.5 bg-gradient-to-t from-black via-black/90 to-transparent">
+            <div className="w-full p-4 sm:p-5 bg-gradient-to-b from-[#070707] to-black border-t border-white/10 rounded-b-3xl flex flex-col items-center gap-2.5">
               <Link
                 href={`/product/${productSlug}`}
                 onClick={handleClose}
                 onMouseDown={playButtonPress}
                 onMouseUp={playButtonRelease}
-                className="w-full flex items-center justify-center gap-2 bg-sz-red hover:bg-sz-red/90 text-white font-chillax font-bold text-xs uppercase tracking-widest py-3.5 rounded-full transition-all shadow-[0_0_25px_rgba(255,42,42,0.35)]"
+                data-cuelume-press
+                className="group w-full flex items-center justify-center gap-2.5 bg-sz-red hover:bg-[#ff3838] text-white font-chillax font-bold text-xs uppercase tracking-[0.2em] py-4 rounded-full transition-all duration-300 shadow-[0_0_30px_rgba(255,42,42,0.35)] hover:shadow-[0_0_45px_rgba(255,42,42,0.55)] hover:scale-[1.01] active:scale-[0.99]"
               >
                 <span>Shop the Tracksuit</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
 
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={handleClose}
-                className="flex items-center justify-center gap-1.5 text-[11px] uppercase tracking-wider text-white/50 hover:text-white/90 py-1 transition-colors"
-              >
-                <MessageCircle size={13} className="text-green-500" />
-                <span>Order on WhatsApp</span>
-              </a>
+              <p className="text-center text-[10px] uppercase font-sans tracking-[0.25em] text-white/40 pt-0.5">
+                Limited run · While stocks last
+              </p>
             </div>
           </motion.div>
         </div>

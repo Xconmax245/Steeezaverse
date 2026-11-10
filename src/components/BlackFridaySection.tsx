@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, MessageCircle } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSaleGate, SALE_END } from "@/lib/sale";
 import { playButtonPress, playButtonRelease } from "@/lib/sound";
@@ -53,10 +53,6 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
   const flyerTriggerRef = useRef<HTMLButtonElement>(null);
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "2347016764281";
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "Hi Steezaverse, I'd like to order the Black Friday Tracksuit (20% OFF)."
-  )}`;
 
   // Detect reduced-motion
   useEffect(() => {
@@ -317,30 +313,18 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                 </motion.div>
               )}
 
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2 w-full sm:w-auto">
-                {/* Primary Red CTA */}
+              {/* CTA */}
+              <div className="pt-2 w-full sm:w-auto">
                 <Link
                   href="/product/stv-tracksuit"
                   onMouseDown={playButtonPress}
                   onMouseUp={playButtonRelease}
                   data-cuelume-press
-                  className="flex items-center justify-center gap-3 bg-sz-red hover:bg-sz-red/90 text-white font-chillax font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-full transition-all shadow-[0_0_30px_rgba(255,42,42,0.3)] hover:scale-[1.02] active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-3 bg-sz-red hover:bg-[#ff3838] text-white font-chillax font-bold text-xs uppercase tracking-[0.2em] px-10 py-4.5 rounded-full transition-all duration-300 shadow-[0_0_35px_rgba(255,42,42,0.35)] hover:shadow-[0_0_50px_rgba(255,42,42,0.55)] hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
                 >
                   <span>Shop the Tracksuit</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
-
-                {/* Secondary Quiet WhatsApp CTA */}
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 text-white/50 hover:text-white text-xs uppercase font-medium tracking-wider px-6 py-4 transition-colors"
-                >
-                  <MessageCircle size={14} className="text-green-500" />
-                  <span>Order on WhatsApp</span>
-                </a>
               </div>
             </div>
 
