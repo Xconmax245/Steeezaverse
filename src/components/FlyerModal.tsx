@@ -74,7 +74,7 @@ export default function FlyerModal({
 
     // Auto-focus the close button inside modal
     const focusTimer = setTimeout(() => {
-      closeBtnRef.current?.focus();
+      closeBtnRef.current?.focus({ preventScroll: true });
     }, 50);
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -162,12 +162,15 @@ export default function FlyerModal({
               ref={closeBtnRef}
               onClick={handleClose}
               aria-label="Close flyer"
-              className="absolute -top-11 right-0 flex items-center gap-2 text-white/70 hover:text-white transition-colors group focus:outline-none focus:ring-1 focus:ring-white/40"
+              data-cursor="pointer"
+              data-cuelume-press
+              data-cuelume-hover="tick"
+              className="absolute -top-11 right-0 flex items-center gap-2 text-white/70 hover:text-white transition-colors group outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 border-0"
             >
-              <span className="text-[10px] font-chillax uppercase tracking-[0.2em] font-semibold text-white/60 group-hover:text-white transition-colors">
+              <span className="text-[10px] font-chillax uppercase tracking-[0.2em] font-semibold text-white/60 group-hover:text-white transition-colors select-none">
                 Close
               </span>
-              <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-white text-white group-hover:text-black border border-white/20 flex items-center justify-center transition-all">
+              <span className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-white text-white group-hover:text-black flex items-center justify-center transition-all shadow-none">
                 <X size={15} strokeWidth={2.5} />
               </span>
             </button>
