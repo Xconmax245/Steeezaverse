@@ -190,13 +190,13 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
     <div id="black-friday-slot" className="w-full">
       <section
         id="black-friday-sale"
-        className="relative w-full bg-black text-white py-16 sm:py-20 md:py-28 overflow-hidden z-20 border-t border-b border-white/5"
+        className="relative w-full bg-black text-white py-10 sm:py-14 lg:py-16 z-20 border-t border-b border-white/5"
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center">
             
             {/* Left Column: Text & Countdown (Mobile: First) */}
-            <div className="flex flex-col items-start gap-6 sm:gap-8 order-1">
+            <div className="flex flex-col items-start gap-3.5 sm:gap-4.5 lg:gap-5 order-1">
               
               {/* Eyebrow */}
               <motion.p
@@ -209,7 +209,7 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
               </motion.p>
 
               {/* Headline: BLACK FRIDAY in white, 20% OFF in red, Archivo 900 same scale */}
-              <div className="flex flex-col font-archivo font-black uppercase tracking-tight leading-[0.92] text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
+              <div className="flex flex-col font-archivo font-black uppercase tracking-tight leading-[0.94] text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
                 <motion.span
                   initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 25 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -234,7 +234,7 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                   initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.15 }}
-                  className="flex items-baseline gap-4 pt-1"
+                  className="flex items-baseline gap-4 pt-0.5"
                 >
                   <span className="line-through text-white/40 text-lg sm:text-xl md:text-2xl font-bold font-chillax">
                     {formatPrice(product.compare_at_price)}
@@ -251,14 +251,14 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                   initial={reducedMotion ? { opacity: 1 } : { opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  className="flex flex-col gap-2 pt-2 w-full max-w-md"
+                  className="flex flex-col gap-1.5 pt-1 w-full max-w-md"
                 >
                   <span className="text-[10px] uppercase font-archivo font-semibold tracking-[0.2em] text-white/40">
                     Sale Ends In
                   </span>
                   <div
                     className="flex items-center gap-2 sm:gap-4 text-white font-black tracking-tighter"
-                    style={{ fontFamily: "'Bespoke Sans', sans-serif", fontSize: "clamp(2rem, 7vw, 3.5rem)" }}
+                    style={{ fontFamily: "'Bespoke Sans', sans-serif", fontSize: "clamp(1.75rem, 5vw, 2.75rem)" }}
                   >
                     {/* Days */}
                     <div className="flex flex-col items-center">
@@ -266,12 +266,12 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                         <GlitchDigit digit={days[0]} reducedMotion={reducedMotion} />
                         <GlitchDigit digit={days[1]} reducedMotion={reducedMotion} />
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-white/30 uppercase mt-1">
+                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-white/30 uppercase mt-0.5">
                         Days
                       </span>
                     </div>
 
-                    <span className="opacity-40 self-start text-xl sm:text-2xl mt-1">:</span>
+                    <span className="opacity-40 self-start text-xl sm:text-2xl mt-0.5">:</span>
 
                     {/* Hours */}
                     <div className="flex flex-col items-center">
@@ -279,12 +279,12 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                         <GlitchDigit digit={hours[0]} reducedMotion={reducedMotion} />
                         <GlitchDigit digit={hours[1]} reducedMotion={reducedMotion} />
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-white/30 uppercase mt-1">
+                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-white/30 uppercase mt-0.5">
                         Hours
                       </span>
                     </div>
 
-                    <span className="opacity-40 self-start text-xl sm:text-2xl mt-1">:</span>
+                    <span className="opacity-40 self-start text-xl sm:text-2xl mt-0.5">:</span>
 
                     {/* Minutes */}
                     <div className="flex flex-col items-center">
@@ -292,12 +292,12 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                         <GlitchDigit digit={minutes[0]} reducedMotion={reducedMotion} />
                         <GlitchDigit digit={minutes[1]} reducedMotion={reducedMotion} />
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-white/30 uppercase mt-1">
+                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-white/30 uppercase mt-0.5">
                         Mins
                       </span>
                     </div>
 
-                    <span className="opacity-40 self-start text-xl sm:text-2xl mt-1">:</span>
+                    <span className="opacity-40 self-start text-xl sm:text-2xl mt-0.5">:</span>
 
                     {/* Seconds */}
                     <div className="flex flex-col items-center text-sz-red">
@@ -305,7 +305,7 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                         <GlitchDigit digit={seconds[0]} reducedMotion={reducedMotion} />
                         <GlitchDigit digit={seconds[1]} reducedMotion={reducedMotion} />
                       </div>
-                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-sz-red/50 uppercase mt-1">
+                      <span className="text-[9px] sm:text-[10px] font-sans font-medium tracking-widest text-sz-red/50 uppercase mt-0.5">
                         Secs
                       </span>
                     </div>
@@ -314,16 +314,18 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
               )}
 
               {/* CTA */}
-              <div className="pt-2 w-full sm:w-auto">
+              <div className="pt-1 pb-1 w-full sm:w-auto">
                 <Link
                   href="/product/stv-tracksuit"
                   onMouseDown={playButtonPress}
                   onMouseUp={playButtonRelease}
+                  data-cursor="pointer"
                   data-cuelume-press
-                  className="group inline-flex items-center justify-center gap-3 bg-sz-red hover:bg-[#ff3838] text-white font-chillax font-bold text-xs uppercase tracking-[0.2em] px-10 py-4.5 rounded-full transition-all duration-300 shadow-[0_0_35px_rgba(255,42,42,0.35)] hover:shadow-[0_0_50px_rgba(255,42,42,0.55)] hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
+                  data-cuelume-hover="tick"
+                  className="group inline-flex items-center justify-center gap-3 bg-sz-red hover:bg-[#ff3838] text-white font-chillax font-bold text-xs sm:text-sm uppercase tracking-[0.2em] px-8 sm:px-10 py-3.5 sm:py-4 rounded-full transition-all duration-300 shadow-[0_0_30px_rgba(255,42,42,0.35)] hover:shadow-[0_0_50px_rgba(255,42,42,0.55)] hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
                 >
                   <span>Shop the Tracksuit</span>
-                  <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>
@@ -334,7 +336,7 @@ export default function BlackFridaySection({ initialProduct }: { initialProduct?
                 ref={flyerContainerRef}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                className="relative w-full max-w-[360px] sm:max-w-[420px] lg:max-w-[460px] perspective-[1000px]"
+                className="relative w-full max-w-[320px] sm:max-w-[380px] lg:max-w-[420px] perspective-[1000px]"
               >
                 <motion.button
                   ref={flyerTriggerRef}
