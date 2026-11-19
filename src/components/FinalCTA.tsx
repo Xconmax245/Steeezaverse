@@ -38,7 +38,7 @@ export default function FinalCTA() {
       </h2>
       
       <Link 
-        href="/drops" 
+        href="/shop" 
         passHref 
         legacyBehavior
       >
@@ -53,7 +53,7 @@ export default function FinalCTA() {
           data-cuelume-press
           data-cuelume-release
         >
-          SHOP THE DROP →
+          SHOP NOW →
         </motion.a>
       </Link>
     </section>

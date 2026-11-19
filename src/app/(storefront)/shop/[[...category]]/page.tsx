@@ -9,10 +9,6 @@ export const metadata: Metadata = {
   description: "The full Steezaverse catalog. Drops, limited-run streetwear, and nothing else.",
 };
 
-function formatNGN(value: number): string {
-  return `₦${value.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
-}
-
 interface Props {
   params: { category?: string[] };
   searchParams: { [key: string]: string | string[] | undefined };
@@ -27,14 +23,11 @@ export default async function ShopPage({ params, searchParams }: Props) {
 
   try {
     if (!hasFilters && !categorySlug) {
-      // ISR Cached default view
       products = await getAllProducts();
     } else {
-      // Dynamic filtered view
       const sizes = searchParams.size ? (Array.isArray(searchParams.size) ? searchParams.size : [searchParams.size]) : undefined;
       const colors = searchParams.color ? (Array.isArray(searchParams.color) ? searchParams.color : [searchParams.color]) : undefined;
       const sort = (searchParams.sort as any) || "featured";
-      
       products = await getFilteredProducts({ categorySlug, sizes, colors, sort });
     }
   } catch (err) {
@@ -42,84 +35,83 @@ export default async function ShopPage({ params, searchParams }: Props) {
     failed = true;
   }
 
-  // Fetch facets (sizes and colors) for the filter sidebar. ISR cached.
   let facets = { sizes: [] as string[], colors: [] as string[] };
   try {
     facets = await getShopFacets();
   } catch (err) {}
 
-  // ── Header stats ──
-  const dropCount = products.filter((p) => p.is_drop).length;
-  const cheapest = products.length
-    ? Math.min(...products.map((p) => p.base_price))
-    : 0;
-  const newestAt = products.reduce<number>((max, p) => {
-    const t = new Date(p.updated_at).getTime();
-    return Number.isNaN(t) ? max : Math.max(max, t);
-  }, 0);
-  const newestLabel = newestAt
-    ? new Date(newestAt).toLocaleDateString("en-NG", { day: "numeric", month: "short" })
-    : "—";
+  const categoryLabel = categorySlug
+    ? categorySlug.replace(/-/g, " ").toUpperCase()
+    : "ALL";
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-black">
+    <main className="relative min-h-screen bg-black">
       <Navbar />
 
-      {/* ── Blueprint texture + top glow ── */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[70vh]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(245,245,245,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(245,245,245,0.028) 1px, transparent 1px)",
-          backgroundSize: "72px 72px",
-          maskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
-          WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 z-0 h-[420px] w-[720px] -translate-x-1/2 rounded-full bg-sz-red/10 blur-[140px]"
-      />
+      {/* ── Shop Header ── */}
+      <section className="relative w-full pt-28 md:pt-32 pb-10 md:pb-14 overflow-hidden">
 
-      <section className="relative z-10 w-full pt-32 pb-32">
-        <div className="max-w-[95vw] mx-auto px-4 md:px-8">
-          {/* ── Minimalist Header ── */}
-          <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/[0.05] pb-8">
-            <div>
-              <h1
-                className="font-chillax font-medium tracking-wide text-white text-4xl md:text-5xl"
-                style={{ animation: "fadeUp 0.7s cubic-bezier(0.22,1,0.36,1) both" }}
-              >
-                THE <span className="text-sz-red italic">{categorySlug ? categorySlug.toUpperCase() : "SHOP"}</span>
-              </h1>
-              <p 
-                className="mt-3 text-xs uppercase tracking-[0.2em] text-white/40 font-medium"
-                style={{ animation: "fadeIn 0.7s 0.2s ease both" }}
-              >
-                {failed
-                  ? "Catalog unavailable"
-                  : "Everything published. Nothing hidden."}
-              </p>
-            </div>
-            
+        {/* Subtle grid texture */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-full z-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
+            backgroundSize: "60px 60px",
+            maskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+          }}
+        />
+
+        {/* Red glow */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full bg-sz-red/8 blur-[120px] z-0"
+        />
+
+        <div className="relative z-10 max-w-[95vw] mx-auto px-4 md:px-8">
+
+          {/* Eyebrow */}
+          <p className="font-archivo font-semibold text-white/35 text-[10px] sm:text-xs uppercase tracking-[0.35em] mb-4">
+            Steezaverse Collection
+          </p>
+
+          {/* Title row */}
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <h1 className="font-chillax font-extrabold uppercase tracking-tight leading-[0.9] text-5xl md:text-7xl lg:text-8xl">
+              {categorySlug ? (
+                <>
+                  <span className="text-white/30">The </span>
+                  <span className="text-white">{categoryLabel}</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-white">The </span>
+                  <span className="text-sz-red">Shop</span>
+                </>
+              )}
+            </h1>
+
+            {/* Item count pill */}
             {!failed && (
-              <div 
-                className="flex items-center gap-6"
-                style={{ animation: "fadeIn 0.7s 0.3s ease both" }}
-              >
-                <div className="flex flex-col text-right">
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/30">Total Pieces</span>
-                  <span className="font-sans text-sm text-white/80">{products.length}</span>
-                </div>
-                <div className="flex flex-col text-right">
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/30">Active Drops</span>
-                  <span className="font-sans text-sm text-sz-red">{dropCount}</span>
-                </div>
+              <div className="flex-shrink-0 flex items-center gap-1.5 self-start sm:self-auto sm:mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-sz-red" />
+                <span className="font-archivo text-[11px] font-semibold text-white/40 uppercase tracking-[0.2em]">
+                  {products.length} {products.length === 1 ? "piece" : "pieces"}
+                </span>
               </div>
             )}
-          </header>
+          </div>
 
+          {/* Divider */}
+          <div className="mt-8 h-px bg-gradient-to-r from-white/15 via-white/5 to-transparent" />
+        </div>
+      </section>
+
+      {/* ── Catalog ── */}
+      <section className="relative z-10 w-full pb-32">
+        <div className="max-w-[95vw] mx-auto px-4 md:px-8">
           {failed ? (
             <EmptyState title="Couldn't load the catalog" hint="Check back in a moment" />
           ) : (
