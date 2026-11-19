@@ -8,27 +8,38 @@ import DropSection from "@/components/DropSection";
 import SilenceSection from "@/components/SilenceSection";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
+import TakeReeksModal from "@/components/TakeReeksModal";
+import { getDropProducts } from "@/lib/products";
 
-export default function HomePage() {
+export default async function HomePage() {
+  let dropStartsAt: string | null = null;
+  try {
+    const drops = await getDropProducts();
+    dropStartsAt = drops[0]?.drop_starts_at || null;
+  } catch {}
+
   return (
     <main>
+      {/* ── Take Reeks Intro Modal (flyer + write-up, 24h localStorage) ── */}
+      <TakeReeksModal dropStartsAt={dropStartsAt} />
+
       <Navbar />
       <HeroSection />
 
       {/* ── Wavy Divider & Marquee ── */}
       <MarqueeDivider />
 
-      {/* ── All Products Grid — outside the GSAP pin wrapper so desktop scroll works ── */}
+      {/* ── All Products Grid (Shop on Home) ── */}
       <MiniShopSection />
 
       {/* ── Lookbook Section ── */}
       <LookbookSection />
 
-      {/* ── Manifesto (3-sentence scroll transition) — after lookbook ── */}
-      <ManifestoSection />
-
-      {/* ── Drop Section ── */}
+      {/* ── Take Reeks Drop Section (directly after Lookbook, id="take-reeks") ── */}
       <DropSection />
+
+      {/* ── Manifesto (3-sentence scroll transition) ── */}
+      <ManifestoSection />
 
       {/* ── Silence Section ── */}
       <SilenceSection />

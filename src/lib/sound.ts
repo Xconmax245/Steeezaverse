@@ -95,3 +95,41 @@ export function playButtonRelease() {
     osc.stop(ctx.currentTime + 0.025);
   } catch (_) {}
 }
+
+/**
+ * Arrival sound played when drop hits zero for active viewers
+ */
+export function playDropArrival() {
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+
+    // Deep sub bass impact
+    const sub = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    sub.type = "sine";
+    sub.frequency.setValueAtTime(90, now);
+    sub.frequency.exponentialRampToValueAtTime(32, now + 0.6);
+    subGain.gain.setValueAtTime(0.25, now);
+    subGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+    sub.connect(subGain);
+    subGain.connect(ctx.destination);
+    sub.start(now);
+    sub.stop(now + 0.65);
+
+    // High shimmer arrival tone
+    const chime = ctx.createOscillator();
+    const chimeGain = ctx.createGain();
+    chime.type = "triangle";
+    chime.frequency.setValueAtTime(520, now);
+    chime.frequency.exponentialRampToValueAtTime(1040, now + 0.35);
+    chimeGain.gain.setValueAtTime(0.12, now);
+    chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+    chime.connect(chimeGain);
+    chimeGain.connect(ctx.destination);
+    chime.start(now);
+    chime.stop(now + 0.5);
+  } catch (_) {}
+}
+
