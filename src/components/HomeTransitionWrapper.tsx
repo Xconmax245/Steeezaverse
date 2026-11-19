@@ -8,6 +8,11 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+/**
+ * Wraps the Lookbook section with a scale+fade scroll-transition intro effect.
+ * Accepts a single child (the Lookbook). The product grid now lives outside this
+ * wrapper so desktop scroll events are never swallowed by GSAP's pin scrub.
+ */
 export default function HomeTransitionWrapper({
   children,
 }: {
@@ -34,7 +39,7 @@ export default function HomeTransitionWrapper({
         scrollTrigger: {
           trigger: container,
           start: "top top",
-          end: () => `+=${window.innerHeight}`,
+          end: () => `+=${window.innerHeight * 0.6}`,
           scrub: true,
         },
       });
@@ -46,30 +51,20 @@ export default function HomeTransitionWrapper({
     return () => ctx.revert();
   }, []);
 
-  const [miniShop, lookbook] = React.Children.toArray(children);
-
   if (reducedMotion) {
-    return (
-      <div className="relative">
-        {miniShop}
-        {lookbook}
-      </div>
-    );
+    return <div className="relative">{children}</div>;
   }
 
   return (
     <div ref={containerRef} className="relative bg-black">
       <div className="sticky top-0 h-screen w-full overflow-hidden" ref={pinnedRef}>
         <div className="w-full h-full flex flex-col justify-center">
-          {miniShop}
+          {children}
         </div>
         <div
           ref={overlayRef}
           className="absolute inset-0 bg-black opacity-0 pointer-events-none z-50"
         />
-      </div>
-      <div className="relative z-40 bg-black shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
-        {lookbook}
       </div>
     </div>
   );
