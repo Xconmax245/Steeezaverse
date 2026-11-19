@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
@@ -249,37 +250,32 @@ export default function HeroSection() {
           </div>
 
           {/* Pill CTA Button */}
-          <motion.button
-            className="flex items-center justify-center gap-3 bg-white text-black px-10 py-4 rounded-full transition-all duration-300 hover:bg-black hover:text-white group border border-white"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() =>
-              window.scrollBy({
-                top: window.innerHeight * 1.5,
-                behavior: "smooth",
-              })
-            }
-            data-cursor="pointer"
-            data-cuelume-press
-            data-cuelume-release
-            data-cuelume-hover="tick"
-          >
-            <span
-              className="font-bold uppercase tracking-[0.15em] mt-[2px]"
-              style={{ fontFamily: "'Chillax', sans-serif", fontSize: "14px" }}
+          <Link href="/shop" className="inline-block" data-cursor="pointer">
+            <motion.div
+              className="flex items-center justify-center gap-3 bg-white text-black px-10 py-4 rounded-full transition-all duration-300 hover:bg-black hover:text-white group border border-white cursor-pointer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              data-cuelume-press
+              data-cuelume-release
+              data-cuelume-hover="tick"
             >
-              SHOP THE DROP
-            </span>
-            <svg 
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor" 
-              strokeWidth={2.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 7L7 17M17 7v9m0-9H8" />
-            </svg>
-          </motion.button>
+              <span
+                className="font-bold uppercase tracking-[0.15em] mt-[2px]"
+                style={{ fontFamily: "'Chillax', sans-serif", fontSize: "14px" }}
+              >
+                SHOP THE DROP
+              </span>
+              <svg 
+                className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor" 
+                strokeWidth={2.5}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 7L7 17M17 7v9m0-9H8" />
+              </svg>
+            </motion.div>
+          </Link>
         </motion.div>
         </div>
       </motion.div>
