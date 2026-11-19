@@ -8,9 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { playSoftTick } from "@/lib/sound";
 import { getDropLaunchTime } from "@/lib/constants";
 
-const STORAGE_KEY = "take_reeks_modal_dismissed_at";
-const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
-
 interface TakeReeksModalProps {
   dropStartsAt?: string | null;
 }
@@ -23,7 +20,7 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  // Check whether modal should be eligible
+  // Show on every reload of the homepage until the drop is live
   useEffect(() => {
     // Only homepage, never on /checkout, /cart, /admin, etc.
     if (pathname !== "/") return;
@@ -31,17 +28,6 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
     // Retire at launch (poster says "Dropping Soon")
     const launchMs = getDropLaunchTime(dropStartsAt);
     if (Date.now() >= launchMs) return;
-
-    // Check 24-hour localStorage
-    try {
-      const dismissedAt = localStorage.getItem(STORAGE_KEY);
-      if (dismissedAt) {
-        const timePassed = Date.now() - Number(dismissedAt);
-        if (timePassed < TWENTY_FOUR_HOURS_MS) {
-          return;
-        }
-      }
-    } catch (_) {}
 
     // Check prefers-reduced-motion
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -51,12 +37,11 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
 
     const showModal = () => {
       delayTimer = setTimeout(() => {
-        // Save current focused element to return focus on close
         if (typeof document !== "undefined") {
           previousFocusRef.current = document.activeElement as HTMLElement | null;
         }
         setIsOpen(true);
-      }, 1000);
+      }, 700);
     };
 
     if (typeof window !== "undefined" && (window as any).introPlayed) {
@@ -67,7 +52,7 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
       // Fallback timer if intro was skipped without event
       const fallbackTimer = setTimeout(() => {
         if (!delayTimer) showModal();
-      }, 4500);
+      }, 3500);
 
       return () => {
         window.removeEventListener("introComplete", handleIntro);
@@ -84,9 +69,6 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
   const handleClose = useCallback(() => {
     playSoftTick();
     setIsOpen(false);
-    try {
-      localStorage.setItem(STORAGE_KEY, Date.now().toString());
-    } catch (_) {}
 
     // Return focus
     setTimeout(() => {
@@ -100,9 +82,9 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
       const section = document.getElementById("take-reeks");
       if (section) {
         section.scrollIntoView({ behavior: "smooth" });
-        // Optionally focus the email input in the drop section
-        const input = section.querySelector("input[type='email']") as HTMLInputElement | null;
-        input?.focus();
+        // Trigger notification action if available
+        const notifyBtn = section.querySelector("button[data-notify-trigger]") as HTMLButtonElement | null;
+        notifyBtn?.click();
       }
     }, 150);
   };
@@ -166,19 +148,19 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="take-reeks-modal-headline"
-        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-5 md:p-6 overflow-y-auto"
       >
-        {/* Backdrop */}
+        {/* Backdrop — clickable with pointer cursor */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={handleClose}
-          className="fixed inset-0 bg-black/85 backdrop-blur-md"
+          className="fixed inset-0 bg-black/85 backdrop-blur-md cursor-pointer"
         />
 
-        {/* Dialog Card */}
+        {/* Dialog Card — responsive max height and natural cursor */}
         <motion.div
           ref={modalRef}
           initial={
@@ -197,10 +179,10 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
               : { opacity: 0, scale: 0.96, y: 10 }
           }
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 w-full max-w-sm sm:max-w-md md:max-w-3xl bg-[#0c0c0c] rounded-2xl md:rounded-3xl border border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.9),_0_0_50px_rgba(0,85,255,0.1)] overflow-hidden flex flex-col md:grid md:grid-cols-[1.1fr,1fr]"
+          className="relative z-10 w-full max-w-[92vw] sm:max-w-md md:max-w-3xl max-h-[92dvh] overflow-y-auto bg-[#0c0c0c] rounded-2xl md:rounded-3xl border border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.95),_0_0_50px_rgba(0,85,255,0.15)] flex flex-col md:grid md:grid-cols-[1.05fr,1fr] cursor-default"
         >
           {/* Poster Column */}
-          <div className="relative w-full aspect-[4/5] max-h-[50dvh] md:max-h-none overflow-hidden bg-black flex-shrink-0">
+          <div className="relative w-full aspect-[4/5] max-h-[38dvh] sm:max-h-[46dvh] md:max-h-none overflow-hidden bg-black flex-shrink-0">
             <Image
               src="/take-reeks-drop.jpg"
               alt="Take Reeks First Collection flyer featuring a model wearing the Take Reeks varsity jacket and cap"
@@ -218,19 +200,21 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
               ref={closeBtnRef}
               onClick={handleClose}
               aria-label="Close Take Reeks announcement"
-              className="absolute top-3 right-3 md:top-4 md:left-4 md:right-auto w-11 h-11 bg-black/70 hover:bg-black backdrop-blur-md rounded-full border border-white/15 text-white flex items-center justify-center transition-all duration-200 shadow-lg group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 z-20"
+              data-cursor="pointer"
+              data-cuelume-hover="tick"
+              className="absolute top-3 right-3 md:top-4 md:left-4 md:right-auto w-11 h-11 bg-black/75 hover:bg-black backdrop-blur-md rounded-full border border-white/20 text-white flex items-center justify-center transition-all duration-200 shadow-xl cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 z-20"
             >
               <X size={18} className="transition-transform duration-200 group-hover:scale-110" />
             </button>
           </div>
 
           {/* Write-up Column */}
-          <div className="p-6 md:p-8 flex flex-col justify-between bg-[#0c0c0c] text-white">
-            <div className="space-y-4 md:space-y-5">
+          <div className="p-5 sm:p-6 md:p-8 flex flex-col justify-between bg-[#0c0c0c] text-white">
+            <div className="space-y-3 sm:space-y-4 md:space-y-5">
               {/* Eyebrow */}
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                <span className="text-[11px] font-archivo font-bold uppercase tracking-[0.25em] text-blue-400">
+                <span className="text-[10px] sm:text-[11px] font-archivo font-bold uppercase tracking-[0.25em] text-blue-400">
                   FIRST COLLECTION
                 </span>
               </div>
@@ -238,27 +222,29 @@ export default function TakeReeksModal({ dropStartsAt }: TakeReeksModalProps) {
               {/* Headline */}
               <h2
                 id="take-reeks-modal-headline"
-                className="font-archivo font-black text-3xl md:text-4xl text-white tracking-tight uppercase leading-none"
+                className="font-archivo font-black text-2xl sm:text-3xl md:text-4xl text-white tracking-tight uppercase leading-none"
               >
                 TAKE REEKS
               </h2>
 
               {/* Body */}
-              <p className="text-sm md:text-[15px] text-white/70 leading-relaxed font-sans font-normal">
+              <p className="text-xs sm:text-sm md:text-[15px] text-white/70 leading-relaxed font-sans font-normal">
                 Our first collection lands Monday, November 23. Statement pieces for people who move different. Limited runs, no restocks.
               </p>
 
               {/* Sign-off */}
-              <p className="font-zodiak italic text-sm md:text-base text-white/50 pt-1">
+              <p className="font-zodiak italic text-xs sm:text-sm md:text-base text-white/50 pt-0.5">
                 Take a ride into the Steezaverse.
               </p>
             </div>
 
             {/* CTA Button */}
-            <div className="pt-6 md:pt-8 mt-auto">
+            <div className="pt-5 sm:pt-6 md:pt-8 mt-auto">
               <button
                 onClick={handleNotifyCTA}
-                className="w-full flex items-center justify-center gap-2.5 bg-[#0055ff] hover:bg-[#0047db] active:bg-[#003bb8] text-white text-xs md:text-sm font-archivo font-bold uppercase tracking-wider py-4 px-6 rounded-full transition-all duration-200 shadow-[0_10px_25px_rgba(0,85,255,0.35)] hover:shadow-[0_12px_30px_rgba(0,85,255,0.5)] transform hover:-translate-y-0.5 active:translate-y-0"
+                data-cursor="pointer"
+                data-cuelume-hover="tick"
+                className="w-full flex items-center justify-center gap-2.5 bg-[#0055ff] hover:bg-[#0047db] active:bg-[#003bb8] text-white text-xs sm:text-sm font-archivo font-bold uppercase tracking-wider py-3.5 sm:py-4 px-6 rounded-full transition-all duration-200 shadow-[0_10px_25px_rgba(0,85,255,0.35)] hover:shadow-[0_12px_30px_rgba(0,85,255,0.5)] transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               >
                 <span>Get notified</span>
                 <ArrowRight size={16} />

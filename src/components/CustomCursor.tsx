@@ -63,7 +63,7 @@ export default function CustomCursor() {
       {/* True-position dot — instant, no lag */}
       <motion.div
         aria-hidden
-        className="fixed top-0 left-0 pointer-events-none z-[9999] rounded-full"
+        className="fixed top-0 left-0 pointer-events-none z-[99999] rounded-full"
         style={{
           x: cursorX,
           y: cursorY,
@@ -78,7 +78,7 @@ export default function CustomCursor() {
       {/* Difference-blend ring — springs behind, inverts colours underneath */}
       <motion.div
         aria-hidden
-        className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full"
+        className="fixed top-0 left-0 pointer-events-none z-[99998] rounded-full"
         style={{
           x: ringX,
           y: ringY,
